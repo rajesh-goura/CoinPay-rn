@@ -40,7 +40,7 @@ const Onboarding1 = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList | null>(null);
   const themeMode = useSelector(selectThemeMode);
-  const dispatch = useAppDispatch();
+
 
   const handleNextPress = () => {
     if (currentIndex < slides.length - 1) {
