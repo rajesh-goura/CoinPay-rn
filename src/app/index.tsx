@@ -9,6 +9,10 @@ import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
 import { useColorScheme } from "react-native";
 import ConfirmPhone from "./screens/registration/ConfirmPhone";
+import CountrySelector from "./screens/accountSetup/CountrySelector";
+import PersonalInfo from "./screens/accountSetup/PersonalInfo";
+import EmailInfo from "./screens/accountSetup/EmailInfo";
+import HomeAddress from "./screens/accountSetup/HomeAddress";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +34,10 @@ const MainNavigation = () => {
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="ConfirmPhone" component={ConfirmPhone} />
+          <Stack.Screen name="CountrySelector" component={CountrySelector} />
+          <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+          <Stack.Screen name="EmailInfo" component={EmailInfo} />
+          <Stack.Screen name="HomeAddress" component={HomeAddress} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
