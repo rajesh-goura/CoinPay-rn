@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import { CustomTheme } from "../../themes/Theme";
+import { navigate } from "../../navigation/navigationService";
 
 const { width: screenWidth } = Dimensions.get("window");
 const totalScreens = 5;
@@ -32,6 +33,7 @@ const HomeAddress = () => {
     }
     // Navigate to next screen or submit
     // navigation.navigate("NextScreen");
+    navigate("ScanId");
     console.log("Address submitted:", { address, city, postCode });
   };
 
