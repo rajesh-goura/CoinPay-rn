@@ -18,6 +18,7 @@ import DocumentScan from "./screens/accountVerify/DocumentScan";
 import SelfieScreen from "./screens/accountVerify/SelfieScreen";
 import SelfieScan from "./screens/accountVerify/SelfieScan";
 import AccountSetup from "./screens/accountVerify/AccountSetup";
+import pinSetup from "./screens/pinSetup/pinSetup";
 
 const Stack = createStackNavigator();
 
@@ -32,7 +33,7 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Onboarding1"
+          initialRouteName="pinSetup"
         >
           <Stack.Screen name="Onboarding1" component={Onboarding1} />
 
@@ -48,6 +49,7 @@ const MainNavigation = () => {
           <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
           <Stack.Screen name="SelfieScan" component={SelfieScan} />
           <Stack.Screen name="AccountSetup" component={AccountSetup} />
+          <Stack.Screen name="pinSetup" component={pinSetup} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
