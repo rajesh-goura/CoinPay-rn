@@ -33,7 +33,7 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="pinSetup"
+          initialRouteName="Onboarding1"
         >
           <Stack.Screen name="Onboarding1" component={Onboarding1} />
 
