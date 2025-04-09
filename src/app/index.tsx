@@ -20,6 +20,7 @@ import SelfieScan from "./screens/accountVerify/SelfieScan";
 import AccountSetup from "./screens/accountVerify/AccountSetup";
 import pinSetup from "./screens/pinSetup/pinSetup";
 import WelcomeScreen from "./screens/welcome/WelcomeScreen";
+import Login from "./screens/login/Login";
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ const MainNavigation = () => {
           <Stack.Screen name="AccountSetup" component={AccountSetup} />
           <Stack.Screen name="pinSetup" component={pinSetup} />
           <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={Login} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
