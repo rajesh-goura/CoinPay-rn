@@ -131,7 +131,7 @@ const AccountSetup = () => {
         </View>
 
         <PrimaryButton 
-          onPress={() => navigate("NextScreen")} 
+          onPress={() => navigate("pinSetup")} 
           text="Continue" 
           disabled={!phoneVerified || !docVerified || !photoVerified}
         />
