@@ -42,7 +42,7 @@ import { CustomTheme } from "../../themes/Theme";
         setConfirmPasscode(true);
       } else if (confirmPasscode && passcode.length === 4) {
         if (passcode === confirmedPasscode) {
-          navigate("NextScreen");
+          navigate("WelcomeScreen");
         } else {
           Vibration.vibrate(500);
           alert("Passcodes do not match");
