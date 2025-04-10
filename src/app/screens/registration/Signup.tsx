@@ -45,7 +45,7 @@ const Signup = () => {
         </Text>
 
         <PrimaryButton onPress={() => navigate("CreateAccount")} text="Sign up" />
-        <SecondaryButton onPress={() => navigate("CreateAccount")} text="Log in" />
+        <SecondaryButton onPress={() => navigate("Login")} text="Log in" />
 
         <View style={styles.policy}>
           <Text style={[styles.policytext, { color: colors.textSecondary }]}>
