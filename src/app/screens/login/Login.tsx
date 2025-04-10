@@ -6,63 +6,86 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  Modal,
-  Image,
   Alert,
   ActivityIndicator
 } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
-import { CountryPicker } from "react-native-country-codes-picker";
-import SecondaryButton from "../../components/SecondaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from '@react-native-firebase/auth'
+import auth from '@react-native-firebase/auth';
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
 ]);
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 2;
-const progress = currentScreen / totalScreens;
 
 const Login = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [callingCode, setCallingCode] = useState("+1");
-  const [isPickerVisible, setPickerVisible] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (phoneNumber.trim() === "") {
-      Alert.alert("Error", "Please enter a valid phone number.");
+  const handleLogin = async () => {
+    if (!email.trim()) {
+      Alert.alert("Error", "Please enter your email address.");
       return;
     }
-    if (password.trim() === "") {
+    if (!password.trim()) {
       Alert.alert("Error", "Please enter your password.");
       return;
     }
     
-    // Here you would typically verify credentials with your backend
-    // For now, we'll simulate a successful login
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      // Sign in with email and password
+      await auth().signInWithEmailAndPassword(email, password);
+      
+      // Check if email is verified
+      const user = auth().currentUser;
+      if (user && !user.emailVerified) {
+        Alert.alert(
+          "Email Not Verified", 
+          "Please verify your email before logging in. Check your inbox for the verification email."
+        );
+        await auth().signOut();
+        return;
+      }
+      
+      // Navigate to main app screen
+      navigate("AddCard"); // Replace with your actual home screen
+      
+    } catch (error: any) {
+      let errorMessage = "Login failed";
+      
+      if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address";
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = "This account has been disabled";
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = "No account found with this email";
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = "Incorrect password";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many attempts. Please try again later.";
+      }
+      
+      Alert.alert("Error", errorMessage);
+    } finally {
       setIsLoading(false);
-      navigate("Home"); // Replace "Home" with your actual next screen name
-    }, 1500);
+    }
   };
 
   const handleForgotPassword = () => {
-    // Navigate to forgot password screen
-    navigate("ForgotPassword");
+    if (!email.trim()) {
+      Alert.alert("Error", "Please enter your email first");
+      return;
+    }
+    navigate("ForgotPassword", { email });
   };
 
   return (
@@ -75,9 +98,6 @@ const Login = () => {
         >
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
       </View>
 
       {/* Content Section */}
@@ -87,46 +107,25 @@ const Login = () => {
             Log in to Coinpay
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            Enter your registered mobile number to Login
+            Enter your email and password to login
           </Text>
 
-          {/* Country Picker & Mobile Number */}
-          <View style={styles.inputRow}>
-            <TouchableOpacity
-              style={[styles.countryPicker, { borderColor: colors.border }]}
-              onPress={() => setPickerVisible(true)}
-            >
-              <Text style={[styles.callingCode, { color: colors.textPrimary }]}>
-                {callingCode}
-              </Text>
-            </TouchableOpacity>
-
-            <TextInput
-              style={[
-                styles.mobileNumber,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.card,
-                },
-              ]}
-              placeholder="Enter your mobile number"
-              placeholderTextColor={colors.textTertiary}
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
-          </View>
-
-          {/* Country Picker Modal */}
-          <CountryPicker
-            show={isPickerVisible}
-            pickerButtonOnPress={(item) => {
-              setCallingCode(item.dial_code);
-              setPickerVisible(false);
-            }}
-            onBackdropPress={() => setPickerVisible(false)}
-            lang="en"
+          {/* Email Input */}
+          <TextInput
+            style={[
+              styles.input,
+              {
+                borderColor: colors.border,
+                color: colors.textPrimary,
+                backgroundColor: colors.card,
+              },
+            ]}
+            placeholder="Enter your email"
+            placeholderTextColor={colors.textTertiary}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
 
           {/* Password Input */}
@@ -178,7 +177,7 @@ const Login = () => {
             <PrimaryButton
               onPress={handleLogin}
               text="Login"
-              disabled={!phoneNumber || !password}
+              disabled={!email || !password}
             />
           )}
         </View>
@@ -196,10 +195,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  progressContainer: {
-    width: "100%",
-    alignItems: "center",
-  },
   content: {
     flex: 1,
     justifyContent: "space-between",
@@ -214,32 +209,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 25,
   },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  countryPicker: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "25%",
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    justifyContent: "center",
-  },
-  callingCode: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginLeft: 5,
-  },
-  mobileNumber: {
-    width: "70%",
+  input: {
+    width: "100%",
     padding: 12,
     fontSize: 16,
     borderWidth: 1,
     borderRadius: 8,
+    marginBottom: 20,
   },
   passwordContainer: {
     flexDirection: "row",
@@ -268,34 +244,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 40,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  img: {
-    width: 140,
-    height: 140,
-  },
-  modalContent: {
-    borderBottomWidth: 2,
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  modalSubtext: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: "center",
   },
 });
 

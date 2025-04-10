@@ -8,7 +8,7 @@ import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
 import { useColorScheme } from "react-native";
-import ConfirmPhone from "./screens/registration/ConfirmPhone";
+import ConfirmPhone from "./screens/registration/EmailVerification";
 import CountrySelector from "./screens/accountSetup/CountrySelector";
 import PersonalInfo from "./screens/accountSetup/PersonalInfo";
 import EmailInfo from "./screens/accountSetup/EmailInfo";
@@ -21,6 +21,12 @@ import AccountSetup from "./screens/accountVerify/AccountSetup";
 import pinSetup from "./screens/pinSetup/pinSetup";
 import WelcomeScreen from "./screens/welcome/WelcomeScreen";
 import Login from "./screens/login/Login";
+import AddCard from "./screens/addCard/AddCard1";
+import CardDetails from "./screens/addCard/CardDetails";
+import CardVerify from "./screens/addCard/CardVerify";
+import CardList from "./screens/addCard/CardList";
+import EmailVerification from "./screens/registration/EmailVerification";
+import ForgotPassword from "./screens/login/ForgotPassword";
 
 const Stack = createStackNavigator();
 
@@ -41,7 +47,7 @@ const MainNavigation = () => {
 
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="ConfirmPhone" component={ConfirmPhone} />
+          <Stack.Screen name="EmailVerification" component={EmailVerification} />
           <Stack.Screen name="CountrySelector" component={CountrySelector} />
           <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
           <Stack.Screen name="EmailInfo" component={EmailInfo} />
@@ -54,6 +60,11 @@ const MainNavigation = () => {
           <Stack.Screen name="pinSetup" component={pinSetup} />
           <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="AddCard" component={AddCard} />
+          <Stack.Screen name="CardDetails" component={CardDetails} />
+          <Stack.Screen name="CardVerify" component={CardVerify} />
+          <Stack.Screen name="CardList" component={CardList} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

@@ -12,13 +12,13 @@ const totalScreens = 5;
 const currentScreen = 1;
 const progress = currentScreen / totalScreens;
 
-const Signup = () => {
+const AddCard = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
   const item = {
-    imageDark: require("@/assets/images/Onboarding/darkmode/Send money abroad.png"),
-    imageLight: require("@/assets/images/Registration/register1.png"),
+    imageDark: require("@/assets/images/AddCard/dark/addCard1.png"),
+    imageLight: require("@/assets/images/AddCard/addCard1.png"),
   };
 
   return (
@@ -29,37 +29,28 @@ const Signup = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
       </View>
 
       {/* Content Section */}
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Create your Coinpay account
+          Let's add your Card
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Coinpay is a powerful tool that allows you to easily send, receive, and track all your transactions.
+          Experience the power of financial organization with our platform
         </Text>
 
-        <PrimaryButton onPress={() => navigate("CreateAccount")} text="Sign up" />
-        <SecondaryButton onPress={() => navigate("Login")} text="Log in" />
+        <PrimaryButton onPress={() => navigate("CardDetails")} text="+ Add your Card" />
+        
 
-        <View style={styles.policy}>
-          <Text style={[styles.policytext, { color: colors.textSecondary }]}>
-            By continuing you accept our 
-            <Text style={[styles.link, { color: colors.primary }]}> Terms of Service</Text> and 
-            <Text style={[styles.link, { color: colors.primary }]}> Privacy Policy</Text>
-          </Text>
-        </View>
+        
       </View>
     </View>
   );
 };
 
-export default Signup;
+export default AddCard;
 
 const styles = StyleSheet.create({
   container: {

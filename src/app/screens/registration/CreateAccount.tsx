@@ -15,12 +15,10 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
-import { CountryPicker } from "react-native-country-codes-picker";
 import SecondaryButton from "../../components/SecondaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from '@react-native-firebase/auth'
-// import auth from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -35,41 +33,50 @@ const CreateAccount = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [callingCode, setCallingCode] = useState("+1");
-  const [isPickerVisible, setPickerVisible] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = () => {
-    if (phoneNumber.trim() === "") {
-      Alert.alert("Error", "Please enter a valid phone number.");
+    if (!email.trim()) {
+      Alert.alert("Error", "Please enter a valid email address.");
+      return;
+    }
+    if (!password.trim()) {
+      Alert.alert("Error", "Please enter a password.");
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert("Error", "Password should be at least 6 characters.");
       return;
     }
     setModalVisible(true);
   };
 
-  const sendOTP = async () => {
+  const createAccount = async () => {
     setIsLoading(true);
     try {
-      const fullPhoneNumber = `${callingCode}${phoneNumber}`;
+      // Create user with email and password
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
       
-      // Firebase phone authentication
-      const confirmation = await auth().signInWithPhoneNumber(fullPhoneNumber);
+      // Send email verification
+      await userCredential.user.sendEmailVerification();
       
-      navigate("ConfirmPhone", {
-        confirmation,
-        phoneNumber: fullPhoneNumber,
-        password // Passing password for later use if needed
+      // Navigate to verification screen
+      navigate("EmailVerification", {
+        email,
+        password
       });
       
-    } catch (error:any) {
-      let errorMessage = "Failed to send OTP";
-      if (error.code === 'auth/invalid-phone-number') {
-        errorMessage = "Invalid phone number format";
-      } else if (error.code === 'auth/quota-exceeded') {
-        errorMessage = "OTP quota exceeded. Please try again later";
+    } catch (error: any) {
+      let errorMessage = "Failed to create account";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "Email address is already in use";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Email address is invalid";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "Password is too weak";
       }
       
       Alert.alert("Error", errorMessage);
@@ -101,46 +108,25 @@ const CreateAccount = () => {
             Create an Account
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            Enter your mobile number to verify your account
+            Enter your email and password to create your account
           </Text>
 
-          {/* Country Picker & Mobile Number */}
-          <View style={styles.inputRow}>
-            <TouchableOpacity
-              style={[styles.countryPicker, { borderColor: colors.border }]}
-              onPress={() => setPickerVisible(true)}
-            >
-              <Text style={[styles.callingCode, { color: colors.textPrimary }]}>
-                {callingCode}
-              </Text>
-            </TouchableOpacity>
-
-            <TextInput
-              style={[
-                styles.mobileNumber,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.card,
-                },
-              ]}
-              placeholder="Enter your mobile number"
-              placeholderTextColor={colors.textTertiary}
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
-          </View>
-
-          {/* Country Picker Modal */}
-          <CountryPicker
-            show={isPickerVisible}
-            pickerButtonOnPress={(item) => {
-              setCallingCode(item.dial_code);
-              setPickerVisible(false);
-            }}
-            onBackdropPress={() => setPickerVisible(false)}
-            lang="en"
+          {/* Email Input */}
+          <TextInput
+            style={[
+              styles.input,
+              {
+                borderColor: colors.border,
+                color: colors.textPrimary,
+                backgroundColor: colors.card,
+              },
+            ]}
+            placeholder="Enter your email"
+            placeholderTextColor={colors.textTertiary}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
 
           {/* Password Input */}
@@ -179,12 +165,12 @@ const CreateAccount = () => {
           <PrimaryButton
             onPress={handleSignUp}
             text="Sign up"
-            disabled={!phoneNumber || !password}
+            disabled={!email || !password || password.length < 6}
           />
         </View>
       </View>
 
-      {/* Modal for Phone Number Verification */}
+      {/* Modal for Email Verification */}
       <Modal visible={isModalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View
@@ -205,10 +191,10 @@ const CreateAccount = () => {
               }
             />
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              Verify your number before we send a code
+              Verify your email address
             </Text>
             <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
-              Is this correct? {callingCode} {phoneNumber}
+              Is this correct? {email}
             </Text>
 
             {/* "Yes" Button */}
@@ -217,14 +203,14 @@ const CreateAccount = () => {
             ) : (
               <>
                 <PrimaryButton
-                  onPress={sendOTP}
-                  text="Yes, send OTP"
+                  onPress={createAccount}
+                  text="Yes, send verification email"
                 />
                 <SecondaryButton
                   onPress={() => {
                     setModalVisible(false);
                   }}
-                  text="No, edit number"
+                  text="No, edit email"
                 />
               </>
             )}
@@ -262,32 +248,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 25,
   },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  countryPicker: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "25%",
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    justifyContent: "center",
-  },
-  callingCode: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginLeft: 5,
-  },
-  mobileNumber: {
-    width: "70%",
+  input: {
+    width: "100%",
     padding: 12,
     fontSize: 16,
     borderWidth: 1,
     borderRadius: 8,
+    marginBottom: 20,
   },
   passwordContainer: {
     flexDirection: "row",

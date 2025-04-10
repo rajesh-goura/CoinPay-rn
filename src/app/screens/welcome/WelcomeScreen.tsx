@@ -44,7 +44,7 @@ const Signup = () => {
           We are happy to have you , it's time to send, receive and track your expense
         </Text>
 
-        <PrimaryButton onPress={() => navigate("CreateAccount")} text="Continue" />
+        <PrimaryButton onPress={() => navigate("Login")} text="Continue" />
         
 
         
