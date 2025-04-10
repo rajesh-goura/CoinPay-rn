@@ -105,7 +105,7 @@ const ConfirmPhone = () => {
         Alert.alert("Success", "Phone number verified!");
         
         // Navigate to the next screen (e.g., profile setup)
-        navigate("Signup");
+        navigate("CountrySelector");
       }
     } catch (error: any) {
       console.error("OTP Verification Error:", error);
