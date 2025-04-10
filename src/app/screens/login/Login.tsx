@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import { CountryPicker } from "react-native-country-codes-picker";
 import SecondaryButton from "../../components/SecondaryButton";
@@ -26,9 +25,6 @@ LogBox.ignoreLogs([
 ]);
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 2;
-const progress = currentScreen / totalScreens;
 
 const Login = () => {
   const { colors, dark } = useTheme();
@@ -56,7 +52,7 @@ const Login = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      navigate("Home"); // Replace "Home" with your actual next screen name
+      navigate("AddCard"); // Replace "Home" with your actual next screen name
     }, 1500);
   };
 
@@ -75,9 +71,6 @@ const Login = () => {
         >
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
       </View>
 
       {/* Content Section */}
@@ -195,10 +188,6 @@ const styles = StyleSheet.create({
   backButton: {
     marginTop: 20,
     marginBottom: 10,
-  },
-  progressContainer: {
-    width: "100%",
-    alignItems: "center",
   },
   content: {
     flex: 1,

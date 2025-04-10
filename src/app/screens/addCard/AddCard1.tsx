@@ -12,13 +12,13 @@ const totalScreens = 5;
 const currentScreen = 1;
 const progress = currentScreen / totalScreens;
 
-const Signup = () => {
+const AddCard = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
   const item = {
-    imageDark: require("@/assets/images/Welcome/dark/welcome.png"),
-    imageLight: require("@/assets/images/Welcome/welcome.png"),
+    imageDark: require("@/assets/images/AddCard/dark/addCard1.png"),
+    imageLight: require("@/assets/images/AddCard/addCard1.png"),
   };
 
   return (
@@ -29,22 +29,19 @@ const Signup = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
       </View>
 
       {/* Content Section */}
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Congratulations! , Welcome to Coinpay
+          Let's add your Card
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          We are happy to have you , it's time to send, receive and track your expense
+          Experience the power of financial organization with our platform
         </Text>
 
-        <PrimaryButton onPress={() => navigate("Login")} text="Continue" />
+        <PrimaryButton onPress={() => navigate("CardDetails")} text="+ Add your Card" />
         
 
         
@@ -53,7 +50,7 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default AddCard;
 
 const styles = StyleSheet.create({
   container: {
