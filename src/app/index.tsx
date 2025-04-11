@@ -27,6 +27,7 @@ import CardVerify from "./screens/addCard/CardVerify";
 import CardList from "./screens/addCard/CardList";
 import EmailVerification from "./screens/registration/EmailVerification";
 import ForgotPassword from "./screens/login/ForgotPassword";
+import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
 
 const Stack = createStackNavigator();
 
@@ -41,7 +42,7 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Onboarding1"
+          initialRouteName="MainApp"
         >
           <Stack.Screen name="Onboarding1" component={Onboarding1} />
 
@@ -65,6 +66,7 @@ const MainNavigation = () => {
           <Stack.Screen name="CardVerify" component={CardVerify} />
           <Stack.Screen name="CardList" component={CardList} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="MainApp" component={BottomTabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
