@@ -62,7 +62,7 @@ export const LightThemeCustom : CustomTheme= {
     modalBackgroun:"rgba(255, 255, 255, 1)",
 
     // Background
-    background: "rgba(255, 255, 255, 1)",
+    background: "rgb(247, 247, 247)",
     backgroundAccent: "rgba(48, 79, 254, 1)",
     backgroundSuccess: "rgba(67, 160, 72, 1)",
     backgroundWarning: "rgba(251, 138, 0, 1)",
