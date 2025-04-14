@@ -165,6 +165,7 @@ const HomePage = () => {
           ]}
         >
           <TouchableOpacity style={[styles.actionButton]}>
+            
             <Image
               source={require("@/assets/icons/dollar-send-circle.png")}
               style={[
@@ -175,12 +176,14 @@ const HomePage = () => {
                   borderWidth: 0,
                 },
               ]}
+              
             />
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
               Send
             </Text>
+            
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>

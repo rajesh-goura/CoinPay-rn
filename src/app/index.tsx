@@ -8,7 +8,6 @@ import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
 import { useColorScheme } from "react-native";
-import ConfirmPhone from "./screens/registration/EmailVerification";
 import CountrySelector from "./screens/accountSetup/CountrySelector";
 import PersonalInfo from "./screens/accountSetup/PersonalInfo";
 import EmailInfo from "./screens/accountSetup/EmailInfo";
@@ -28,6 +27,11 @@ import CardList from "./screens/addCard/CardList";
 import EmailVerification from "./screens/registration/EmailVerification";
 import ForgotPassword from "./screens/login/ForgotPassword";
 import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
+import SendMoney from "./screens/send/SendMoney";
+import SendAmount from "./screens/send/SendAmount";
+import Purpose from "./screens/send/Purpose";
+import SelectAccount from "./screens/send/SelectAccount";
+import PaymentCompleted from "./screens/send/PaymentCompleted";
 
 const Stack = createStackNavigator();
 
@@ -42,7 +46,7 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="MainApp"
+          initialRouteName="SendMoney"
         >
           <Stack.Screen name="Onboarding1" component={Onboarding1} />
 
@@ -67,6 +71,11 @@ const MainNavigation = () => {
           <Stack.Screen name="CardList" component={CardList} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+          <Stack.Screen name="SendMoney" component={SendMoney} />
+          <Stack.Screen name="SendAmount" component={SendAmount} />
+          <Stack.Screen name="Purpose" component={Purpose} />
+          <Stack.Screen name="SelectAccount" component={SelectAccount} />
+          <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
