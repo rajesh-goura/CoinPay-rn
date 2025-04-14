@@ -26,8 +26,8 @@ type EmailInfoRouteParams = {
 };
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 4;
+const totalScreens = 13;
+const currentScreen = 6;
 const progress = currentScreen / totalScreens;
 
 const EmailInfo = () => {

@@ -7,8 +7,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 1;
+const totalScreens = 13;
+const currentScreen = 8;
 const progress = currentScreen / totalScreens;
 
 const AccountSetup = () => {

@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
 } from "react-native";
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +21,6 @@ import { RouteProp } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-// Define the type for route parameters
 type HomeAddressRouteParams = {
   countryName: string;
   personalInfo: {
@@ -29,9 +31,9 @@ type HomeAddressRouteParams = {
   email: string;
 };
 
-const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 5;
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+const totalScreens = 13;
+const currentScreen = 7;
 const progress = currentScreen / totalScreens;
 
 const HomeAddress = () => {
@@ -39,7 +41,6 @@ const HomeAddress = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<{ params: HomeAddressRouteParams }, 'params'>>();
   
-  // Get data from previous screens
   const { countryName, personalInfo, email } = route.params;
   
   const [address, setAddress] = useState("");
@@ -63,7 +64,6 @@ const HomeAddress = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare the complete user data
       const userData = {
         country: countryName,
         personalInfo: {
@@ -79,13 +79,11 @@ const HomeAddress = () => {
         updatedAt: firestore.FieldValue.serverTimestamp(),
       };
 
-      // Save to Firestore
       await firestore()
         .collection('users')
         .doc(currentUser.uid)
         .set(userData, { merge: true });
 
-      // Navigate to success screen or main app
       navigate("ScanId");
     } catch (error) {
       console.error("Error saving user data:", error);
@@ -96,134 +94,143 @@ const HomeAddress = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header with Back Button and Progress Bar */}
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
-
-      {/* Content Section */}
-      <View style={styles.content}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header with Back Button and Progress Bar */}
         <View>
-          <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Home Address
-          </Text>
-          <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            This info needs to be accurate with your ID document
-          </Text>
-
-          {/* Address Line Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            Address
-          </Text>
-          <View style={styles.inputContainer}>
-            <Ionicons 
-              name="location-outline" 
-              size={20} 
-              color={colors.textTertiary} 
-              style={styles.icon} 
-            />
-            <TextInput
-              style={[
-                styles.inputField,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="Address Line"
-              placeholderTextColor={colors.textTertiary}
-              value={address}
-              onChangeText={setAddress}
-              autoCapitalize="words"
-            />
-          </View>
-
-          {/* City Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            City
-          </Text>
-          <View style={styles.inputContainer}>
-            <Ionicons 
-              name="business-outline" 
-              size={20} 
-              color={colors.textTertiary} 
-              style={styles.icon} 
-            />
-            <TextInput
-              style={[
-                styles.inputField,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="City,State"
-              placeholderTextColor={colors.textTertiary}
-              value={city}
-              onChangeText={setCity}
-              autoCapitalize="words"
-            />
-          </View>
-
-          {/* Post Code Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            Post
-          </Text>
-          <View style={styles.inputContainer}>
-            <Ionicons 
-              name="map-outline" 
-              size={20} 
-              color={colors.textTertiary} 
-              style={styles.icon} 
-            />
-            <TextInput
-              style={[
-                styles.inputField,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="Ex: 00000"
-              placeholderTextColor={colors.textTertiary}
-              value={postCode}
-              onChangeText={setPostCode}
-              autoCapitalize="characters"
-              keyboardType="default"
-            />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <View style={styles.progressContainer}>
+            <AnimatedProgressBar progress={progress} />
           </View>
         </View>
 
-        {/* Complete Registration Button */}
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            onPress={handleSubmit}
-            text={isSubmitting ? "Processing..." : "Complete Registration"}
-            disabled={!address || !city || !postCode || isSubmitting}
-          />
+        {/* Content Section */}
+        <View style={styles.content}>
+          <View>
+            <Text style={[styles.heading, { color: colors.textPrimary }]}>
+              Home Address
+            </Text>
+            <Text style={[styles.subtext, { color: colors.textSecondary }]}>
+              This info needs to be accurate with your ID document
+            </Text>
+
+            {/* Address Line Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              Address
+            </Text>
+            <View style={styles.inputContainer}>
+              <Ionicons 
+                name="location-outline" 
+                size={20} 
+                color={colors.textTertiary} 
+                style={styles.icon} 
+              />
+              <TextInput
+                style={[
+                  styles.inputField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="Address Line"
+                placeholderTextColor={colors.textTertiary}
+                value={address}
+                onChangeText={setAddress}
+                autoCapitalize="words"
+              />
+            </View>
+
+            {/* City Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              City
+            </Text>
+            <View style={styles.inputContainer}>
+              <Ionicons 
+                name="business-outline" 
+                size={20} 
+                color={colors.textTertiary} 
+                style={styles.icon} 
+              />
+              <TextInput
+                style={[
+                  styles.inputField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="City,State"
+                placeholderTextColor={colors.textTertiary}
+                value={city}
+                onChangeText={setCity}
+                autoCapitalize="words"
+              />
+            </View>
+
+            {/* Post Code Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              Post
+            </Text>
+            <View style={styles.inputContainer}>
+              <Ionicons 
+                name="map-outline" 
+                size={20} 
+                color={colors.textTertiary} 
+                style={styles.icon} 
+              />
+              <TextInput
+                style={[
+                  styles.inputField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="Ex: 00000"
+                placeholderTextColor={colors.textTertiary}
+                value={postCode}
+                onChangeText={setPostCode}
+                autoCapitalize="characters"
+                keyboardType="default"
+              />
+            </View>
+          </View>
+
+          {/* Complete Registration Button */}
+          <View style={styles.buttonContainer}>
+            <PrimaryButton
+              onPress={handleSubmit}
+              text={isSubmitting ? "Processing..." : "Complete Registration"}
+              disabled={!address || !city || !postCode || isSubmitting}
+            />
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-// Keep all styles the same
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   backButton: {
     marginTop: 20,
@@ -237,6 +244,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     marginTop: 20,
+    minHeight: screenHeight * 0.7,
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,

@@ -129,7 +129,7 @@ const CardList = () => {
 
   const handleContinue = () => {
     // Handle continue action
-    navigate("PaymentConfirmation");
+    navigate("MainApp");
   };
 
   const getCardIcon = (type: string) => {

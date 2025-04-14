@@ -19,6 +19,7 @@ import {
   MaterialCommunityIcons,
   Feather,
 } from "@expo/vector-icons";
+import { navigate } from "../../navigation/navigationService";
 
 const { height } = Dimensions.get('window');
 
@@ -164,7 +165,8 @@ const HomePage = () => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          <TouchableOpacity style={[styles.actionButton]}>
+          <TouchableOpacity style={[styles.actionButton]} 
+           onPress={() => navigate('SendMoney')}>
             
             <Image
               source={require("@/assets/icons/dollar-send-circle.png")}

@@ -15,8 +15,8 @@ import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 2;
+const totalScreens = 13;
+const currentScreen = 9;
 const progress = currentScreen / totalScreens;
 
 export default function DocumentScan() {

@@ -7,8 +7,8 @@ import { navigate } from "../../navigation/navigationService";
 import RoundButton from "../../components/RoundButton"; // Import the new component
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 1;
+const totalScreens = 13;
+const currentScreen = 10;
 const progress = currentScreen / totalScreens;
 
 const SelfieScreen = () => {

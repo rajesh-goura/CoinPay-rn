@@ -183,7 +183,7 @@ const SendMoney = ({ navigation }: any) => {
       {!isKeyboardVisible && (
         <View style={styles.scanButtonContainer}>
           <RoundButton
-            onPress={() => {}}
+            onPress={() => navigate("ScanQr")}
             iconName="qr-code-outline"
             size={32}
           />
