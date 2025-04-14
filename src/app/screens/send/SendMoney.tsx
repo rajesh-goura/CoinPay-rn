@@ -6,32 +6,32 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   Image,
   FlatList,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { Ionicons } from "@expo/vector-icons";
 import RoundButton from "../../components/RoundButton";
+import { navigate } from "../../navigation/navigationService";
 
-const SendRecipient = ({ navigation }: any) => {
+const SendMoney = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const [searchQuery, setSearchQuery] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const screenHeight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       () => setKeyboardVisible(true)
     );
     const keyboardDidHideListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => setKeyboardVisible(false)
     );
 
@@ -86,7 +86,7 @@ const SendRecipient = ({ navigation }: any) => {
   const renderRecipientItem = ({ item }: any) => (
     <TouchableOpacity
       style={[styles.recipientItem, { borderBottomColor: colors.border }]}
-      onPress={() => navigation.navigate("SendAmount", { recipient: item })}
+      onPress={() => navigate("SendAmount", { recipient: item })}
     >
       <View style={styles.recipientLeft}>
         <Image source={item.image} style={styles.recipientImage} />
@@ -94,7 +94,9 @@ const SendRecipient = ({ navigation }: any) => {
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
             {item.name}
           </Text>
-          <Text style={[styles.recipientEmail, { color: colors.textSecondary }]}>
+          <Text
+            style={[styles.recipientEmail, { color: colors.textSecondary }]}
+          >
             {item.email}
           </Text>
         </View>
@@ -129,52 +131,52 @@ const SendRecipient = ({ navigation }: any) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
-        <ScrollView
-          style={styles.scrollContainer}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Modal Container - Now with fixed height */}
-          <View style={[
-            styles.modalContainer, 
-            { 
+        {/* Modal Container - Now with fixed height */}
+        <View
+          style={[
+            styles.modalContainer,
+            {
               backgroundColor: colors.modalBackgroun,
-              maxHeight: screenHeight * 0.6 // Takes 60% of screen height
-            }
-          ]}>
-            {/* Search Bar */}
-            <View style={[
+              maxHeight: screenHeight * 0.6, // Takes 60% of screen height
+            },
+          ]}
+        >
+          {/* Search Bar */}
+          <View
+            style={[
               styles.searchContainer,
               { backgroundColor: colors.card, borderColor: colors.border },
-            ]}>
-              <Ionicons
-                name="search"
-                size={20}
-                color={colors.textSecondary}
-                style={styles.searchIcon}
-              />
-              <TextInput
-                placeholder="Search Recipient Email"
-                placeholderTextColor={colors.textSecondary}
-                style={[styles.searchInput, { color: colors.textPrimary }]}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-            </View>
-
-            <Text style={[styles.mostRecentText, { color: colors.textSecondary }]}>
-              Most Recent
-            </Text>
-
-            <FlatList
-              data={filteredRecipients}
-              renderItem={renderRecipientItem}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={true}
-              contentContainerStyle={styles.listContent}
+            ]}
+          >
+            <Ionicons
+              name="search"
+              size={20}
+              color={colors.textSecondary}
+              style={styles.searchIcon}
+            />
+            <TextInput
+              placeholder="Search Recipient Email"
+              placeholderTextColor={colors.textSecondary}
+              style={[styles.searchInput, { color: colors.textPrimary }]}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
           </View>
-        </ScrollView>
+
+          <Text
+            style={[styles.mostRecentText, { color: colors.textSecondary }]}
+          >
+            Most Recent
+          </Text>
+
+          <FlatList
+            data={filteredRecipients}
+            renderItem={renderRecipientItem}
+            keyExtractor={(item) => item.id}
+            scrollEnabled={true}
+            contentContainerStyle={styles.listContent}
+          />
+        </View>
       </KeyboardAvoidingView>
 
       {/* Scan Button - Hidden when keyboard is visible */}
@@ -298,4 +300,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SendRecipient;
+export default SendMoney;
