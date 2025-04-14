@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "rea
 import React from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import PrimaryButton from "../../components/PrimaryButton";
-import SecondaryButton from "../../components/SecondaryButton";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
