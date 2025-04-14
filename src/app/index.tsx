@@ -28,6 +28,7 @@ import CardList from "./screens/addCard/CardList";
 import EmailVerification from "./screens/registration/EmailVerification";
 import ForgotPassword from "./screens/login/ForgotPassword";
 import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
+import SendRecipient from "./screens/send/SendRecipient";
 
 const Stack = createStackNavigator();
 
@@ -42,7 +43,7 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="MainApp"
+          initialRouteName="SendRecipient"
         >
           <Stack.Screen name="Onboarding1" component={Onboarding1} />
 
@@ -67,6 +68,7 @@ const MainNavigation = () => {
           <Stack.Screen name="CardList" component={CardList} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+          <Stack.Screen name="SendRecipient" component={SendRecipient} />
         </Stack.Navigator>
       </NavigationContainer>
     </>
