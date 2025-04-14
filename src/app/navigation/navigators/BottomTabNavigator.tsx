@@ -1,11 +1,11 @@
 // BottomTabNavigator.tsx
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import SampleScreen from "./SampleScreen";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
+import SampleScreen from "./SampleScreen";
+import HomePage from "../../screens/homepage/HomePage";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,18 +19,18 @@ const BottomTabNavigator = () => {
         tabBarInactiveTintColor: colors.textSecondary,
         tabBarStyle: {
           backgroundColor: colors.modalBackgroun,
-          borderTopWidth:0,
-          shadowColor:"transparent",
-          borderRadius:10,
+          borderTopWidth: 0,
+          shadowColor: "transparent",
+          borderRadius: 10,
           height: 70,
           paddingBottom: 10,
           paddingTop: 10,
-          justifyContent:"center",
-          alignItems:"center",
-          marginLeft:15,
-          marginRight:15,
-          marginBottom:20,
-          marginTop:5,
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: 15,
+          marginRight: 15,
+          marginBottom: 20,
+          marginTop: 5,
         },
         tabBarShowLabel: false,
         headerShown: false,
@@ -39,10 +39,16 @@ const BottomTabNavigator = () => {
       {/* Home Tab */}
       <Tab.Screen
         name="Home"
-        component={SampleScreen}
+        component={HomePage}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require("@/assets/icons/home.png")}
+              style={[
+                styles.tabIcon,
+                { tintColor: focused ? colors.primary : colors.textSecondary },
+              ]}
+            />
           ),
         }}
       />
@@ -52,8 +58,14 @@ const BottomTabNavigator = () => {
         name="Charts"
         component={SampleScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="pie-chart-outlined" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require("@/assets/icons/chart-pie.png")}
+              style={[
+                styles.tabIcon,
+                { tintColor: focused ? colors.primary : colors.textSecondary },
+              ]}
+            />
           ),
         }}
       />
@@ -63,18 +75,19 @@ const BottomTabNavigator = () => {
         name="ScanQR"
         component={SampleScreen}
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <View style={[
-              styles.scanTabContainer,
-              {
-                backgroundColor: colors.primary,
-                borderColor: 'white',
-              }
-            ]}>
-              <Ionicons 
-                name="scan-outline" 
-                size={size} 
-                color="white" // Always white icon
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={[
+                styles.scanTabContainer,
+                {
+                  backgroundColor: colors.primary,
+                  borderColor: "white",
+                },
+              ]}
+            >
+              <Image
+                source={require("@/assets/icons/scanner.png")}
+                style={[styles.scanTabIcon, { tintColor: "white" }]}
               />
             </View>
           ),
@@ -86,8 +99,14 @@ const BottomTabNavigator = () => {
         name="Chat"
         component={SampleScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-outline" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require("@/assets/icons/chat.png")}
+              style={[
+                styles.tabIcon,
+                { tintColor: focused ? colors.primary : colors.textSecondary },
+              ]}
+            />
           ),
         }}
       />
@@ -97,8 +116,14 @@ const BottomTabNavigator = () => {
         name="Profile"
         component={SampleScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="user-o" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require("@/assets/icons/user.png")}
+              style={[
+                styles.tabIcon,
+                { tintColor: focused ? colors.primary : colors.textSecondary },
+              ]}
+            />
           ),
         }}
       />
@@ -107,14 +132,22 @@ const BottomTabNavigator = () => {
 };
 
 const styles = StyleSheet.create({
+  tabIcon: {
+    width: 24,
+    height: 24,
+  },
   scanTabContainer: {
     width: 60,
     height: 60,
-    borderRadius:10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 0,
-    marginTop:10, // Pull the tab up slightly
+    marginTop: 10,
+  },
+  scanTabIcon: {
+    width: 24,
+    height: 24,
   },
 });
 
