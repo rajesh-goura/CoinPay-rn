@@ -5,12 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
-  Dimensions,
   ActivityIndicator,
   Alert,
 } from "react-native";
 import { useTheme, useFocusEffect } from "@react-navigation/native";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
 import { CustomTheme } from "../../themes/Theme";

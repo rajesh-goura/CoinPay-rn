@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Alert,
-  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
