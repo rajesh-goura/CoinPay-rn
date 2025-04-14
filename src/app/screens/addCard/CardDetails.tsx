@@ -38,7 +38,8 @@ const CardDetails = () => {
   const [cvv, setCvv] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleEmailChange = (text: string) => {
     setEmail(text);
@@ -55,25 +56,31 @@ const CardDetails = () => {
   };
 
   const handleVerify = async () => {
-    if (!accountHolderName || !isEmailValid || !cardNumber || !expiryDate || !cvv) {
+    if (
+      !accountHolderName ||
+      !isEmailValid ||
+      !cardNumber ||
+      !expiryDate ||
+      !cvv
+    ) {
       alert("Please fill in all fields correctly");
       return;
     }
-  
+
     try {
       setIsLoading(true);
-  
+
       const currentUser = auth().currentUser;
-  
+
       // Ensure currentUser is not null
       if (!currentUser) {
         Alert.alert("Error", "No user is currently logged in.");
         setIsLoading(false);
         return;
       }
-  
+
       const currentUserEmail = currentUser.email;
-  
+
       if (email === currentUserEmail) {
         // If entered email matches the logged-in user's email
         await saveCardDetails(currentUser.uid);
@@ -81,11 +88,8 @@ const CardDetails = () => {
         navigate("CardList");
       } else {
         // If entered email is different
-        await sendVerificationEmail(email);
-        Alert.alert(
-          "Verification Required",
-          "A verification email has been sent to the provided email address. Please verify and try again."
-        );
+
+        Alert.alert("Entered email is not correct");
       }
     } catch (error: any) {
       console.error("Error:", error);
@@ -102,11 +106,17 @@ const CardDetails = () => {
 
       // Check if the email is already registered
       try {
-        userCredential = await auth().signInWithEmailAndPassword(email, tempPassword);
+        userCredential = await auth().signInWithEmailAndPassword(
+          email,
+          tempPassword
+        );
       } catch (error: any) {
         if (error.code === "auth/user-not-found") {
           // Create a new account for the provided email
-          userCredential = await auth().createUserWithEmailAndPassword(email, tempPassword);
+          userCredential = await auth().createUserWithEmailAndPassword(
+            email,
+            tempPassword
+          );
         } else {
           throw error;
         }
@@ -151,7 +161,9 @@ const CardDetails = () => {
 
   const formatExpiryDate = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
-    return cleanedText.length > 2 ? `${cleanedText.slice(0, 2)}/${cleanedText.slice(2, 4)}` : cleanedText;
+    return cleanedText.length > 2
+      ? `${cleanedText.slice(0, 2)}/${cleanedText.slice(2, 4)}`
+      : cleanedText;
   };
 
   const handleExpiryDateChange = (text: string) => {
@@ -161,7 +173,10 @@ const CardDetails = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.progressContainer}>
@@ -171,18 +186,31 @@ const CardDetails = () => {
 
       <View style={styles.content}>
         <View>
-          <Text style={[styles.heading, { color: colors.textPrimary }]}>Add your card details</Text>
+          <Text style={[styles.heading, { color: colors.textPrimary }]}>
+            Add your card details
+          </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
             Enter your Card details in the below box
           </Text>
 
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Account Holder Name</Text>
+          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+            Account Holder Name
+          </Text>
           <View style={styles.inputWithIconContainer}>
-            <Ionicons name="person" size={24} color={colors.textTertiary} style={styles.leftInputIcon} />
+            <Ionicons
+              name="person"
+              size={24}
+              color={colors.textTertiary}
+              style={styles.leftInputIcon}
+            />
             <TextInput
               style={[
                 styles.inputWithIconField,
-                { borderColor: colors.border, color: colors.textPrimary, backgroundColor: colors.modalBackgroun },
+                {
+                  borderColor: colors.border,
+                  color: colors.textPrimary,
+                  backgroundColor: colors.modalBackgroun,
+                },
               ]}
               placeholder="Name as on card"
               placeholderTextColor={colors.textTertiary}
@@ -192,9 +220,16 @@ const CardDetails = () => {
             />
           </View>
 
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Email</Text>
+          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+            Email
+          </Text>
           <View style={styles.inputWithIconContainer}>
-            <MaterialIcons name="email" size={24} color={colors.textTertiary} style={styles.leftInputIcon} />
+            <MaterialIcons
+              name="email"
+              size={24}
+              color={colors.textTertiary}
+              style={styles.leftInputIcon}
+            />
             <TextInput
               style={[
                 styles.inputWithIconField,
@@ -213,13 +248,24 @@ const CardDetails = () => {
             />
           </View>
 
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Card Number</Text>
+          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+            Card Number
+          </Text>
           <View style={styles.inputWithIconContainer}>
-            <FontAwesome name="credit-card" size={24} color={colors.textTertiary} style={styles.leftInputIcon} />
+            <FontAwesome
+              name="credit-card"
+              size={24}
+              color={colors.textTertiary}
+              style={styles.leftInputIcon}
+            />
             <TextInput
               style={[
                 styles.inputWithIconField,
-                { borderColor: colors.border, color: colors.textPrimary, backgroundColor: colors.modalBackgroun },
+                {
+                  borderColor: colors.border,
+                  color: colors.textPrimary,
+                  backgroundColor: colors.modalBackgroun,
+                },
               ]}
               placeholder="1234 5678 9012 3456"
               placeholderTextColor={colors.textTertiary}
@@ -232,13 +278,24 @@ const CardDetails = () => {
 
           <View style={styles.row}>
             <View style={[styles.halfInputContainer, { marginRight: 10 }]}>
-              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>MM/YY</Text>
+              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+                MM/YY
+              </Text>
               <View style={styles.inputWithIconContainer}>
-                <Ionicons name="calendar" size={20} color={colors.textTertiary} style={styles.leftInputIcon} />
+                <Ionicons
+                  name="calendar"
+                  size={20}
+                  color={colors.textTertiary}
+                  style={styles.leftInputIcon}
+                />
                 <TextInput
                   style={[
                     styles.inputWithIconField,
-                    { borderColor: colors.border, color: colors.textPrimary, backgroundColor: colors.modalBackgroun },
+                    {
+                      borderColor: colors.border,
+                      color: colors.textPrimary,
+                      backgroundColor: colors.modalBackgroun,
+                    },
                   ]}
                   placeholder="MM/YY"
                   placeholderTextColor={colors.textTertiary}
@@ -251,13 +308,24 @@ const CardDetails = () => {
             </View>
 
             <View style={styles.halfInputContainer}>
-              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>CVV</Text>
+              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+                CVV
+              </Text>
               <View style={styles.inputWithIconContainer}>
-                <Ionicons name="lock-closed" size={20} color={colors.textTertiary} style={styles.leftInputIcon} />
+                <Ionicons
+                  name="lock-closed"
+                  size={20}
+                  color={colors.textTertiary}
+                  style={styles.leftInputIcon}
+                />
                 <TextInput
                   style={[
                     styles.inputWithIconField,
-                    { borderColor: colors.border, color: colors.textPrimary, backgroundColor: colors.modalBackgroun },
+                    {
+                      borderColor: colors.border,
+                      color: colors.textPrimary,
+                      backgroundColor: colors.modalBackgroun,
+                    },
                   ]}
                   placeholder="123"
                   placeholderTextColor={colors.textTertiary}
@@ -279,7 +347,13 @@ const CardDetails = () => {
             <PrimaryButton
               onPress={handleVerify}
               text="Verify"
-              disabled={!accountHolderName || !email || !cardNumber || !expiryDate || !cvv}
+              disabled={
+                !accountHolderName ||
+                !email ||
+                !cardNumber ||
+                !expiryDate ||
+                !cvv
+              }
             />
           )}
         </View>
