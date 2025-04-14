@@ -21,7 +21,7 @@ import AccountSetup from "./screens/accountVerify/AccountSetup";
 import pinSetup from "./screens/pinSetup/pinSetup";
 import WelcomeScreen from "./screens/welcome/WelcomeScreen";
 import Login from "./screens/login/Login";
-import AddCard from "./screens/addCard/AddCard1";
+import AddCard from "./screens/addCard/AddCard";
 import CardDetails from "./screens/addCard/CardDetails";
 import CardVerify from "./screens/addCard/CardVerify";
 import CardList from "./screens/addCard/CardList";
