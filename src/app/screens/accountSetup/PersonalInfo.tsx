@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  Keyboard
 } from "react-native";
 import { RouteProp, useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,25 +18,23 @@ import PrimaryButton from "../../components/PrimaryButton";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+
 type PersonalInfoRouteParams = {
   countryName: string;
 };
 
-const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 4;
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+const totalScreens = 13;
+const currentScreen = 5;
 const progress = currentScreen / totalScreens;
 
 const PersonalInfo = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
-  // const route = useRoute();
   const route = useRoute<RouteProp<{ params: PersonalInfoRouteParams }, 'params'>>();
   
-  // Get countryName from previous screen
   const { countryName } = route.params;
   
-  // Form state
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -68,6 +69,7 @@ const PersonalInfo = () => {
 
   const handleCalendarPress = () => {
     setShowDatePicker(true);
+    Keyboard.dismiss(); // Dismiss keyboard when calendar is opened
   };
 
   const handleContinue = () => {
@@ -76,10 +78,8 @@ const PersonalInfo = () => {
       return;
     }
     
-    // Format date as ISO string for Firestore
     const dobISO = dateOfBirth.toISOString();
     
-    // Pass all data to next screen including countryName
     navigate("EmailInfo", {
       countryName,
       personalInfo: {
@@ -91,136 +91,145 @@ const PersonalInfo = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header with Back Button and Progress Bar */}
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
-
-      {/* Content Section */}
-      <View style={styles.content}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header with Back Button and Progress Bar */}
         <View>
-          <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Add your personal info
-          </Text>
-          <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            This info needs to be accurate with your ID document
-          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <View style={styles.progressContainer}>
+            <AnimatedProgressBar progress={progress} />
+          </View>
+        </View>
 
-          {/* Full Name Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Full Name</Text>
-          <TextInput
-            style={[
-              styles.inputField,
-              {
-                borderColor: colors.border,
-                color: colors.textPrimary,
-                backgroundColor: colors.modalBackgroun,
-              },
-            ]}
-            placeholder="Full name"
-            placeholderTextColor={colors.textTertiary}
-            value={fullName}
-            onChangeText={setFullName}
-          />
+        {/* Content Section */}
+        <View style={styles.content}>
+          <View>
+            <Text style={[styles.heading, { color: colors.textPrimary }]}>
+              Add your personal info
+            </Text>
+            <Text style={[styles.subtext, { color: colors.textSecondary }]}>
+              This info needs to be accurate with your ID document
+            </Text>
 
-          {/* Username Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Username</Text>
-          <TextInput
-            style={[
-              styles.inputField,
-              {
-                borderColor: colors.border,
-                color: colors.textPrimary,
-                backgroundColor: colors.modalBackgroun
-              },
-            ]}
-            placeholder="Username"
-            placeholderTextColor={colors.textTertiary}
-            value={username}
-            onChangeText={setUsername}
-          />
-
-          {/* Date of Birth Input */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Date of Birth</Text>
-          <View style={styles.dateInputRow}>
-            <TouchableOpacity
-              onPress={handleCalendarPress}
-              style={[
-                styles.calendarButton,
-                { 
-                  backgroundColor: colors.modalBackgroun,
-                  borderColor: colors.border,
-                  borderRightWidth: 0,
-                  borderTopRightRadius: 0,
-                  borderBottomRightRadius: 0
-                },
-              ]}
-            >
-              <Ionicons
-                name="calendar"
-                size={21}
-                color={colors.textTertiary}
-              />
-            </TouchableOpacity>
+            {/* Full Name Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Full Name</Text>
             <TextInput
               style={[
-                styles.dateInputField,
+                styles.inputField,
                 {
                   borderColor: colors.border,
                   color: colors.textPrimary,
                   backgroundColor: colors.modalBackgroun,
-                  borderLeftWidth: 0,
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0
                 },
               ]}
-              placeholder="MM/DD/YYYY"
+              placeholder="Full name"
               placeholderTextColor={colors.textTertiary}
-              value={dateInput}
-              onChangeText={handleManualDateChange}
-              keyboardType="number-pad"
+              value={fullName}
+              onChangeText={setFullName}
             />
+
+            {/* Username Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Username</Text>
+            <TextInput
+              style={[
+                styles.inputField,
+                {
+                  borderColor: colors.border,
+                  color: colors.textPrimary,
+                  backgroundColor: colors.modalBackgroun
+                },
+              ]}
+              placeholder="Username"
+              placeholderTextColor={colors.textTertiary}
+              value={username}
+              onChangeText={setUsername}
+            />
+
+            {/* Date of Birth Input */}
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Date of Birth</Text>
+            <View style={styles.dateInputRow}>
+              <TouchableOpacity
+                onPress={handleCalendarPress}
+                style={[
+                  styles.calendarButton,
+                  { 
+                    backgroundColor: colors.modalBackgroun,
+                    borderColor: colors.border,
+                    borderRightWidth: 0,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="calendar"
+                  size={21}
+                  color={colors.textTertiary}
+                />
+              </TouchableOpacity>
+              <TextInput
+                style={[
+                  styles.dateInputField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                    borderLeftWidth: 0,
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0
+                  },
+                ]}
+                placeholder="MM/DD/YYYY"
+                placeholderTextColor={colors.textTertiary}
+                value={dateInput}
+                onChangeText={handleManualDateChange}
+                keyboardType="number-pad"
+              />
+            </View>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={dateOfBirth || new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={handleDateChange}
+                maximumDate={new Date()}
+                themeVariant="dark"
+              />
+            )}
           </View>
 
-          {showDatePicker && (
-            <DateTimePicker
-              value={dateOfBirth || new Date()}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleDateChange}
-              maximumDate={new Date()}
-              themeVariant="dark"
+          {/* Continue Button */}
+          <View style={styles.buttonContainer}>
+            <PrimaryButton
+              onPress={handleContinue}
+              text="Continue"
+              disabled={!fullName || !username || !dateOfBirth}
             />
-          )}
+          </View>
         </View>
-
-        {/* Continue Button */}
-        <View style={styles.buttonContainer}>
-          <PrimaryButton
-            onPress={handleContinue}
-            text="Continue"
-            disabled={!fullName || !username || !dateOfBirth}
-          />
-        </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-// Keep all styles exactly the same
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   backButton: {
     marginTop: 20,
@@ -234,6 +243,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     marginTop: 20,
+    minHeight: screenHeight * 0.7, // Ensure minimum height for smaller screens
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,

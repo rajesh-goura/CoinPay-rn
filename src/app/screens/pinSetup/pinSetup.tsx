@@ -14,8 +14,8 @@ import {
 import { CustomTheme } from "../../themes/Theme";
   
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-  const totalScreens = 5;
-  const currentScreen = 2;
+  const totalScreens = 13;
+  const currentScreen = 11;
   const progress = currentScreen / totalScreens;
   
   const CreatePasscode = () => {

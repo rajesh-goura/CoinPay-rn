@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from '@react-native-firebase/auth';
+import auth from "@react-native-firebase/auth";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -39,41 +39,40 @@ const Login = () => {
       Alert.alert("Error", "Please enter your password.");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       // Sign in with email and password
       await auth().signInWithEmailAndPassword(email, password);
-      
+
       // Check if email is verified
       const user = auth().currentUser;
       if (user && !user.emailVerified) {
         Alert.alert(
-          "Email Not Verified", 
+          "Email Not Verified",
           "Please verify your email before logging in. Check your inbox for the verification email."
         );
         await auth().signOut();
         return;
       }
-      
+
       // Navigate to main app screen
       navigate("AddCard"); // Replace with your actual home screen
-      
     } catch (error: any) {
       let errorMessage = "Login failed";
-      
-      if (error.code === 'auth/invalid-email') {
+
+      if (error.code === "auth/invalid-email") {
         errorMessage = "Invalid email address";
-      } else if (error.code === 'auth/user-disabled') {
+      } else if (error.code === "auth/user-disabled") {
         errorMessage = "This account has been disabled";
-      } else if (error.code === 'auth/user-not-found') {
+      } else if (error.code === "auth/user-not-found") {
         errorMessage = "No account found with this email";
-      } else if (error.code === 'auth/wrong-password') {
+      } else if (error.code === "auth/wrong-password") {
         errorMessage = "Incorrect password";
-      } else if (error.code === 'auth/too-many-requests') {
+      } else if (error.code === "auth/too-many-requests") {
         errorMessage = "Too many attempts. Please try again later.";
       }
-      
+
       Alert.alert("Error", errorMessage);
     } finally {
       setIsLoading(false);
@@ -111,59 +110,71 @@ const Login = () => {
           </Text>
 
           {/* Email Input */}
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: colors.border,
-                color: colors.textPrimary,
-                backgroundColor: colors.card,
-              },
-            ]}
-            placeholder="Enter your email"
-            placeholderTextColor={colors.textTertiary}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
+          <View style={styles.inputLabelContainer}>
+            <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
+              Email Address
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: colors.border,
+                  color: colors.textPrimary,
+                  backgroundColor: colors.card,
+                },
+              ]}
+              placeholder="Enter your email"
+              placeholderTextColor={colors.textTertiary}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
 
           {/* Password Input */}
-          <View
-            style={[
-              styles.passwordContainer,
-              {
-                borderColor: colors.border,
-                backgroundColor: colors.card,
-              },
-            ]}
-          >
-            <TextInput
-              style={[styles.passwordInput, { color: colors.textPrimary }]}
-              placeholder="Enter your password"
-              placeholderTextColor={colors.textTertiary}
-              secureTextEntry={!passwordVisible}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.eyeIcon}
+          <View style={styles.inputLabelContainer}>
+            <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
+              Password
+            </Text>
+            <View
+              style={[
+                styles.passwordContainer,
+                {
+                  borderColor: colors.border,
+                  backgroundColor: colors.card,
+                },
+              ]}
             >
-              <Ionicons
-                name={passwordVisible ? "eye" : "eye-off"}
-                size={24}
-                color={colors.textTertiary}
+              <TextInput
+                style={[styles.passwordInput, { color: colors.textPrimary }]}
+                placeholder="Enter your password"
+                placeholderTextColor={colors.textTertiary}
+                secureTextEntry={!passwordVisible}
+                value={password}
+                onChangeText={setPassword}
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={styles.eyeIcon}
+              >
+                <Ionicons
+                  name={passwordVisible ? "eye" : "eye-off"}
+                  size={24}
+                  color={colors.textTertiary}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Forgot Password Link */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handleForgotPassword}
             style={styles.forgotPasswordContainer}
           >
-            <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>
+            <Text
+              style={[styles.forgotPasswordText, { color: colors.primary }]}
+            >
               Forgot Password?
             </Text>
           </TouchableOpacity>
@@ -207,7 +218,15 @@ const styles = StyleSheet.create({
   },
   subtext: {
     fontSize: 16,
-    marginBottom: 25,
+    marginBottom: 35,
+  },
+  inputLabelContainer: {
+    marginBottom: 0,
+  },
+  inputLabel: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 0,
   },
   input: {
     width: "100%",
@@ -235,12 +254,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   forgotPasswordContainer: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginBottom: 30,
   },
   forgotPasswordText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   buttonContainer: {
     marginBottom: 40,

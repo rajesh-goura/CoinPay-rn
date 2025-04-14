@@ -35,7 +35,7 @@ const slides = [
   },
 ];
 
-const Onboarding1 = () => {
+const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList | null>(null);
   const { colors, dark } = useTheme();
@@ -198,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Onboarding1;
+export default Onboarding;

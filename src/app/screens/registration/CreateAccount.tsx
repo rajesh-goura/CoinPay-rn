@@ -9,7 +9,7 @@ import {
   Modal,
   Image,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,14 +18,14 @@ import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from '@react-native-firebase/auth';
+import auth from "@react-native-firebase/auth";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
 ]);
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
+const totalScreens = 13;
 const currentScreen = 2;
 const progress = currentScreen / totalScreens;
 
@@ -58,27 +58,29 @@ const CreateAccount = () => {
     setIsLoading(true);
     try {
       // Create user with email and password
-      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-      
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
       // Send email verification
       await userCredential.user.sendEmailVerification();
-      
+
       // Navigate to verification screen
       navigate("EmailVerification", {
         email,
-        password
+        password,
       });
-      
     } catch (error: any) {
       let errorMessage = "Failed to create account";
-      if (error.code === 'auth/email-already-in-use') {
+      if (error.code === "auth/email-already-in-use") {
         errorMessage = "Email address is already in use";
-      } else if (error.code === 'auth/invalid-email') {
+      } else if (error.code === "auth/invalid-email") {
         errorMessage = "Email address is invalid";
-      } else if (error.code === 'auth/weak-password') {
+      } else if (error.code === "auth/weak-password") {
         errorMessage = "Password is too weak";
       }
-      
+
       Alert.alert("Error", errorMessage);
     } finally {
       setIsLoading(false);
@@ -112,51 +114,61 @@ const CreateAccount = () => {
           </Text>
 
           {/* Email Input */}
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: colors.border,
-                color: colors.textPrimary,
-                backgroundColor: colors.card,
-              },
-            ]}
-            placeholder="Enter your email"
-            placeholderTextColor={colors.textTertiary}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
+          <View style={styles.inputLabelContainer}>
+            <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
+              Email Address
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: colors.border,
+                  color: colors.textPrimary,
+                  backgroundColor: colors.card,
+                },
+              ]}
+              placeholder="Enter your email"
+              placeholderTextColor={colors.textTertiary}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
 
           {/* Password Input */}
-          <View
-            style={[
-              styles.passwordContainer,
-              {
-                borderColor: colors.border,
-                backgroundColor: colors.card,
-              },
-            ]}
-          >
-            <TextInput
-              style={[styles.passwordInput, { color: colors.textPrimary }]}
-              placeholder="Enter your password"
-              placeholderTextColor={colors.textTertiary}
-              secureTextEntry={!passwordVisible}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.eyeIcon}
+          <View style={styles.inputLabelContainer}>
+            <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
+              Password
+            </Text>
+            <View
+              style={[
+                styles.passwordContainer,
+                {
+                  borderColor: colors.border,
+                  backgroundColor: colors.card,
+                },
+              ]}
             >
-              <Ionicons
-                name={passwordVisible ? "eye" : "eye-off"}
-                size={24}
-                color={colors.textTertiary}
+              <TextInput
+                style={[styles.passwordInput, { color: colors.textPrimary }]}
+                placeholder="Enter your password"
+                placeholderTextColor={colors.textTertiary}
+                secureTextEntry={!passwordVisible}
+                value={password}
+                onChangeText={setPassword}
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={styles.eyeIcon}
+              >
+                <Ionicons
+                  name={passwordVisible ? "eye" : "eye-off"}
+                  size={24}
+                  color={colors.textTertiary}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -193,7 +205,9 @@ const CreateAccount = () => {
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
               Verify your email address
             </Text>
-            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+            <Text
+              style={[styles.modalSubtext, { color: colors.textSecondary }]}
+            >
               Is this correct? {email}
             </Text>
 
@@ -246,7 +260,15 @@ const styles = StyleSheet.create({
   },
   subtext: {
     fontSize: 16,
-    marginBottom: 25,
+    marginBottom: 35,
+  },
+  inputLabelContainer: {
+    marginBottom: 0,
+  },
+  inputLabel: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 0,
   },
   input: {
     width: "100%",

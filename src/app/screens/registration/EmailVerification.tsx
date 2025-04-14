@@ -17,7 +17,7 @@ import auth from "@react-native-firebase/auth";
 import { navigate } from "../../navigation/navigationService";
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
+const totalScreens = 13;
 const currentScreen = 3;
 const progress = currentScreen / totalScreens;
 
@@ -59,22 +59,33 @@ const EmailVerification = () => {
     try {
       setIsLoading(true);
       
-      // Reload user to get latest verification status
       const user = auth().currentUser;
-      if (user) {
-        await user.reload();
-        
-        if (user.emailVerified) {
-          // Email is verified, navigate to next screen
-          navigate("CountrySelector");
-          return;
-        } else {
-          Alert.alert("Email Not Verified", "Please verify your email before continuing.");
-        }
+      if (!user) {
+        Alert.alert("Error", "No user found. Please try again.");
+        return;
+      }
+  
+      // Force reload the user to get latest verification status
+      await user.reload();
+      
+      // Add a small delay to ensure Firebase has updated
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Check verification status again after reload
+      if (user.emailVerified) {
+        navigate("CountrySelector");
+      } else {
+        Alert.alert(
+          "Please verify your email before continuing. " +
+          "If you've already verified, wait a few moments and try again."
+        );
       }
     } catch (error: any) {
       console.error("Verification check error:", error);
-      Alert.alert("Error", "Failed to check verification status. Please try again.");
+      Alert.alert(
+        "Error", 
+        error.message || "Failed to check verification status. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }

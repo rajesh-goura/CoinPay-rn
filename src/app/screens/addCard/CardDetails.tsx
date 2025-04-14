@@ -8,6 +8,9 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
 } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,10 +23,7 @@ import { navigate } from "../../navigation/navigationService";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 
-const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 4;
-const progress = currentScreen / totalScreens;
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const CardDetails = () => {
   const { colors } = useTheme() as CustomTheme;
@@ -88,7 +88,6 @@ const CardDetails = () => {
         navigate("CardList");
       } else {
         // If entered email is different
-
         Alert.alert("Entered email is not correct");
       }
     } catch (error: any) {
@@ -171,201 +170,208 @@ const CardDetails = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
-
-      <View style={styles.content}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
+        keyboardShouldPersistTaps="handled"
+      >
         <View>
-          <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Add your card details
-          </Text>
-          <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            Enter your Card details in the below box
-          </Text>
-
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            Account Holder Name
-          </Text>
-          <View style={styles.inputWithIconContainer}>
-            <Ionicons
-              name="person"
-              size={24}
-              color={colors.textTertiary}
-              style={styles.leftInputIcon}
-            />
-            <TextInput
-              style={[
-                styles.inputWithIconField,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="Name as on card"
-              placeholderTextColor={colors.textTertiary}
-              value={accountHolderName}
-              onChangeText={setAccountHolderName}
-              autoCapitalize="words"
-            />
-          </View>
-
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            Email
-          </Text>
-          <View style={styles.inputWithIconContainer}>
-            <MaterialIcons
-              name="email"
-              size={24}
-              color={colors.textTertiary}
-              style={styles.leftInputIcon}
-            />
-            <TextInput
-              style={[
-                styles.inputWithIconField,
-                {
-                  borderColor: isEmailValid ? colors.border : colors.error,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="Your email"
-              placeholderTextColor={colors.textTertiary}
-              value={email}
-              onChangeText={handleEmailChange}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            Card Number
-          </Text>
-          <View style={styles.inputWithIconContainer}>
-            <FontAwesome
-              name="credit-card"
-              size={24}
-              color={colors.textTertiary}
-              style={styles.leftInputIcon}
-            />
-            <TextInput
-              style={[
-                styles.inputWithIconField,
-                {
-                  borderColor: colors.border,
-                  color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun,
-                },
-              ]}
-              placeholder="1234 5678 9012 3456"
-              placeholderTextColor={colors.textTertiary}
-              value={cardNumber}
-              onChangeText={handleCardNumberChange}
-              keyboardType="number-pad"
-              maxLength={19}
-            />
-          </View>
-
-          <View style={styles.row}>
-            <View style={[styles.halfInputContainer, { marginRight: 10 }]}>
-              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-                MM/YY
-              </Text>
-              <View style={styles.inputWithIconContainer}>
-                <Ionicons
-                  name="calendar"
-                  size={20}
-                  color={colors.textTertiary}
-                  style={styles.leftInputIcon}
-                />
-                <TextInput
-                  style={[
-                    styles.inputWithIconField,
-                    {
-                      borderColor: colors.border,
-                      color: colors.textPrimary,
-                      backgroundColor: colors.modalBackgroun,
-                    },
-                  ]}
-                  placeholder="MM/YY"
-                  placeholderTextColor={colors.textTertiary}
-                  value={expiryDate}
-                  onChangeText={handleExpiryDateChange}
-                  keyboardType="number-pad"
-                  maxLength={5}
-                />
-              </View>
-            </View>
-
-            <View style={styles.halfInputContainer}>
-              <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-                CVV
-              </Text>
-              <View style={styles.inputWithIconContainer}>
-                <Ionicons
-                  name="lock-closed"
-                  size={20}
-                  color={colors.textTertiary}
-                  style={styles.leftInputIcon}
-                />
-                <TextInput
-                  style={[
-                    styles.inputWithIconField,
-                    {
-                      borderColor: colors.border,
-                      color: colors.textPrimary,
-                      backgroundColor: colors.modalBackgroun,
-                    },
-                  ]}
-                  placeholder="123"
-                  placeholderTextColor={colors.textTertiary}
-                  value={cvv}
-                  onChangeText={(text) => setCvv(text.replace(/[^0-9]/g, ""))}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  secureTextEntry={true}
-                />
-              </View>
-            </View>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.buttonContainer}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} />
-          ) : (
-            <PrimaryButton
-              onPress={handleVerify}
-              text="Verify"
-              disabled={
-                !accountHolderName ||
-                !email ||
-                !cardNumber ||
-                !expiryDate ||
-                !cvv
-              }
-            />
-          )}
+        <View style={styles.content}>
+          <View>
+            <Text style={[styles.heading, { color: colors.textPrimary }]}>
+              Add your card details
+            </Text>
+            <Text style={[styles.subtext, { color: colors.textSecondary }]}>
+              Enter your Card details in the below box
+            </Text>
+
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              Account Holder Name
+            </Text>
+            <View style={styles.inputWithIconContainer}>
+              <Ionicons
+                name="person"
+                size={24}
+                color={colors.textTertiary}
+                style={styles.leftInputIcon}
+              />
+              <TextInput
+                style={[
+                  styles.inputWithIconField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="Name as on card"
+                placeholderTextColor={colors.textTertiary}
+                value={accountHolderName}
+                onChangeText={setAccountHolderName}
+                autoCapitalize="words"
+              />
+            </View>
+
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              Email
+            </Text>
+            <View style={styles.inputWithIconContainer}>
+              <MaterialIcons
+                name="email"
+                size={24}
+                color={colors.textTertiary}
+                style={styles.leftInputIcon}
+              />
+              <TextInput
+                style={[
+                  styles.inputWithIconField,
+                  {
+                    borderColor: isEmailValid ? colors.border : colors.error,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="Your email"
+                placeholderTextColor={colors.textTertiary}
+                value={email}
+                onChangeText={handleEmailChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              Card Number
+            </Text>
+            <View style={styles.inputWithIconContainer}>
+              <FontAwesome
+                name="credit-card"
+                size={24}
+                color={colors.textTertiary}
+                style={styles.leftInputIcon}
+              />
+              <TextInput
+                style={[
+                  styles.inputWithIconField,
+                  {
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                    backgroundColor: colors.modalBackgroun,
+                  },
+                ]}
+                placeholder="1234 5678 9012 3456"
+                placeholderTextColor={colors.textTertiary}
+                value={cardNumber}
+                onChangeText={handleCardNumberChange}
+                keyboardType="number-pad"
+                maxLength={19}
+              />
+            </View>
+
+            <View style={styles.row}>
+              <View style={[styles.halfInputContainer, { marginRight: 10 }]}>
+                <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+                  MM/YY
+                </Text>
+                <View style={styles.inputWithIconContainer}>
+                  <Ionicons
+                    name="calendar"
+                    size={20}
+                    color={colors.textTertiary}
+                    style={styles.leftInputIcon}
+                  />
+                  <TextInput
+                    style={[
+                      styles.inputWithIconField,
+                      {
+                        borderColor: colors.border,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.modalBackgroun,
+                      },
+                    ]}
+                    placeholder="MM/YY"
+                    placeholderTextColor={colors.textTertiary}
+                    value={expiryDate}
+                    onChangeText={handleExpiryDateChange}
+                    keyboardType="number-pad"
+                    maxLength={5}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.halfInputContainer}>
+                <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+                  CVV
+                </Text>
+                <View style={styles.inputWithIconContainer}>
+                  <Ionicons
+                    name="lock-closed"
+                    size={20}
+                    color={colors.textTertiary}
+                    style={styles.leftInputIcon}
+                  />
+                  <TextInput
+                    style={[
+                      styles.inputWithIconField,
+                      {
+                        borderColor: colors.border,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.modalBackgroun,
+                      },
+                    ]}
+                    placeholder="123"
+                    placeholderTextColor={colors.textTertiary}
+                    value={cvv}
+                    onChangeText={(text) => setCvv(text.replace(/[^0-9]/g, ""))}
+                    keyboardType="number-pad"
+                    maxLength={4}
+                    secureTextEntry={true}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.buttonContainer}>
+            {isLoading ? (
+              <ActivityIndicator size="large" color={colors.primary} />
+            ) : (
+              <PrimaryButton
+                onPress={handleVerify}
+                text="Verify"
+                disabled={
+                  !accountHolderName ||
+                  !email ||
+                  !cardNumber ||
+                  !expiryDate ||
+                  !cvv
+                }
+              />
+            )}
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   backButton: {
     marginTop: 20,
@@ -379,6 +385,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     marginTop: 20,
+    minHeight: screenHeight * 0.7,
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,

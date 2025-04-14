@@ -3,7 +3,6 @@ import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./navigation/navigationService";
-import Onboarding1 from "./screens/onboarding/Onboarding1";
 import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
@@ -32,6 +31,8 @@ import SendAmount from "./screens/send/SendAmount";
 import Purpose from "./screens/send/Purpose";
 import SelectAccount from "./screens/send/SelectAccount";
 import PaymentCompleted from "./screens/send/PaymentCompleted";
+import Onboarding from "./screens/onboarding/Onboarding";
+import ScanQr from "./screens/send/ScanQr";
 
 const Stack = createStackNavigator();
 
@@ -46,9 +47,9 @@ const MainNavigation = () => {
       <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="SendMoney"
+          initialRouteName="Onboarding"
         >
-          <Stack.Screen name="Onboarding1" component={Onboarding1} />
+          <Stack.Screen name="Onboarding" component={Onboarding} />
 
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
@@ -76,6 +77,7 @@ const MainNavigation = () => {
           <Stack.Screen name="Purpose" component={Purpose} />
           <Stack.Screen name="SelectAccount" component={SelectAccount} />
           <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
+          <Stack.Screen name="ScanQr" component={ScanQr} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

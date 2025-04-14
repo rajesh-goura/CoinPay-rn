@@ -15,8 +15,8 @@ import { CustomTheme } from "@/src/app/themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 
 const { width: screenWidth } = Dimensions.get("window");
-const totalScreens = 5;
-const currentScreen = 3;
+const totalScreens = 13;
+const currentScreen = 4;
 const progress = currentScreen / totalScreens;
 
 const CountrySelector = () => {
