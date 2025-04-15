@@ -21,6 +21,9 @@ import {
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
 
+// Import the SvgIcon component
+import SvgIcon from "../../components/SvgIcon";
+
 // Direct SVG imports
 import CreditCardMinusIcon from '@/assets/icons/credit-card-minus.svg';
 import CoinsIcon from '@/assets/icons/coins.svg';
@@ -189,7 +192,7 @@ const HomePage = () => {
                 },
               ]}
             >
-              <DollarSendCircleIcon width={28} height={28} fill="white" />
+              <SvgIcon icon={DollarSendCircleIcon} width={28} height={28} fill="white" />
             </View>
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
@@ -210,7 +213,7 @@ const HomePage = () => {
                 },
               ]}
             >
-              <DollarReceiveCircleIcon width={28} height={28} fill="white" />
+              <SvgIcon icon={DollarReceiveCircleIcon} width={28} height={28} fill="white" />
             </View>
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
@@ -256,7 +259,7 @@ const HomePage = () => {
                     { backgroundColor: iconBg },
                   ]}
                 >
-                  <Icon width={20} height={20} fill="white" />
+                  <SvgIcon icon={Icon} width={20} height={20} fill="white" />
                 </View>
                 <Text
                   style={[styles.transactionTitle, { color: colors.textPrimary }]}

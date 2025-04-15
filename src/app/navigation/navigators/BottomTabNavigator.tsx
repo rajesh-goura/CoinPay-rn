@@ -1,4 +1,3 @@
-// BottomTabNavigator.tsx
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "@react-navigation/native";
@@ -7,8 +6,9 @@ import { View, StyleSheet } from "react-native";
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
+import SvgIcon from "../../components/SvgIcon";
 
-// Direct SVG imports
+// Import SVGs as React components
 import HomeIcon from '@/assets/icons/home.svg';
 import ChartPieIcon from '@/assets/icons/chart-pie.svg';
 import ScannerIcon from '@/assets/icons/scanner.svg';
@@ -33,10 +33,7 @@ const BottomTabNavigator = () => {
           height: 70,
           paddingBottom: 10,
           paddingTop: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          marginLeft: 15,
-          marginRight: 15,
+          marginHorizontal: 15,
           marginBottom: 20,
           marginTop: 5,
         },
@@ -44,85 +41,73 @@ const BottomTabNavigator = () => {
         headerShown: false,
       }}
     >
-      {/* Home Tab */}
       <Tab.Screen
         name="Home"
         component={HomePage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <HomeIcon 
-              width={24} 
-              height={24} 
-              fill={focused ? colors.primary : colors.textSecondary}
+            <SvgIcon 
+              icon={HomeIcon}
+              color={focused ? colors.primary : colors.textSecondary}
+              size={24}
             />
           ),
         }}
       />
 
-      {/* Charts Tab */}
       <Tab.Screen
         name="Charts"
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <ChartPieIcon 
-              width={24} 
-              height={24} 
-              fill={focused ? colors.primary : colors.textSecondary}
+            <SvgIcon 
+              icon={ChartPieIcon}
+              color={focused ? colors.primary : colors.textSecondary}
+              size={24}
             />
           ),
         }}
       />
 
-      {/* ScanQR Tab - Special Styling */}
       <Tab.Screen
         name="ScanQR"
         component={ScanQr}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View
-              style={[
-                styles.scanTabContainer,
-                {
-                  backgroundColor: colors.primary,
-                },
-              ]}
-            >
-              <ScannerIcon 
-                width={24} 
-                height={24} 
-                fill="white"
+          tabBarIcon: () => (
+            <View style={[styles.scanTabContainer, { backgroundColor: colors.primary }]}>
+              <SvgIcon 
+                icon={ScannerIcon}
+                color="white"
+                size={24}
               />
             </View>
           ),
         }}
       />
 
-      {/* Chat Tab */}
       <Tab.Screen
         name="Chat"
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <ChatIcon 
-              width={24} 
-              height={24} 
-              fill={focused ? colors.primary : colors.textSecondary}
+            <SvgIcon 
+              icon={ChatIcon}
+              color={focused ? colors.primary : colors.textSecondary}
+              size={24}
             />
           ),
         }}
       />
 
-      {/* Profile Tab */}
       <Tab.Screen
         name="Profile"
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <UserIcon 
-              width={24} 
-              height={24} 
-              fill={focused ? colors.primary : colors.textSecondary}
+            <SvgIcon 
+              icon={UserIcon}
+              color={focused ? colors.primary : colors.textSecondary}
+              size={24}
             />
           ),
         }}
@@ -132,22 +117,21 @@ const BottomTabNavigator = () => {
 };
 
 const styles = StyleSheet.create({
-  tabIcon: {
-    width: 24,
-    height: 24,
-  },
   scanTabContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 0,
-    marginTop: 10,
-  },
-  scanTabIcon: {
-    width: 24,
-    height: 24,
+    marginTop: -28, // Pull the button up slightly
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 
