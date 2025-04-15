@@ -1,9 +1,10 @@
-import React from "react";
-import { StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import { StatusBar, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./navigation/navigationService";
 import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
+import { useAppSelector } from "../app/redux/store"; // Add this import
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
 import { useColorScheme } from "react-native";
@@ -36,50 +37,85 @@ import ScanQr from "./screens/send/ScanQr";
 
 const Stack = createStackNavigator();
 
-const MainNavigation = () => {
+const AuthStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Onboarding" component={Onboarding} />
+    <Stack.Screen name="Signup" component={Signup} />
+    <Stack.Screen name="CreateAccount" component={CreateAccount} />
+    <Stack.Screen name="EmailVerification" component={EmailVerification} />
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+  </Stack.Navigator>
+);
+
+const AppStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+    <Stack.Screen name="AddCard" component={AddCard} />
+    <Stack.Screen name="CardDetails" component={CardDetails} />
+    <Stack.Screen name="CardVerify" component={CardVerify} />
+    <Stack.Screen name="CardList" component={CardList} />
+    <Stack.Screen name="SendMoney" component={SendMoney} />
+    <Stack.Screen name="SendAmount" component={SendAmount} />
+    <Stack.Screen name="Purpose" component={Purpose} />
+    <Stack.Screen name="SelectAccount" component={SelectAccount} />
+    <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
+    <Stack.Screen name="ScanQr" component={ScanQr} />
+  </Stack.Navigator>
+);
+
+const SetupStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="CountrySelector" component={CountrySelector} />
+    <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+    <Stack.Screen name="EmailInfo" component={EmailInfo} />
+    <Stack.Screen name="HomeAddress" component={HomeAddress} />
+    <Stack.Screen name="ScanId" component={ScanId} />
+    <Stack.Screen name="DocumentScan" component={DocumentScan} />
+    <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
+    <Stack.Screen name="SelfieScan" component={SelfieScan} />
+    <Stack.Screen name="AccountSetup" component={AccountSetup} />
+    <Stack.Screen name="pinSetup" component={pinSetup} />
+    <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+  </Stack.Navigator>
+);
+
+const RootNavigator = () => {
+  const { token, isLoading } = useAppSelector((state) => state.auth);
   const systemTheme = useColorScheme();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer
+      ref={navigationRef}
+      theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}
+    >
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!token ? (
+          <>
+            <Stack.Screen name="Auth" component={AuthStack} />
+            <Stack.Screen name="Setup" component={SetupStack} />
+          </>
+        ) : (
+          <Stack.Screen name="App" component={AppStack} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const MainNavigation = () => {
   return (
     <>
-      {/* StatusBar Fix */}
       <StatusBar barStyle="light-content" backgroundColor="#304FFE" />
-
-      {/* Navigation Container */}
-      <NavigationContainer ref={navigationRef} theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Onboarding"
-        >
-          <Stack.Screen name="Onboarding" component={Onboarding} />
-
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="EmailVerification" component={EmailVerification} />
-          <Stack.Screen name="CountrySelector" component={CountrySelector} />
-          <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
-          <Stack.Screen name="EmailInfo" component={EmailInfo} />
-          <Stack.Screen name="HomeAddress" component={HomeAddress} />
-          <Stack.Screen name="ScanId" component={ScanId} />
-          <Stack.Screen name="DocumentScan" component={DocumentScan} />
-          <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
-          <Stack.Screen name="SelfieScan" component={SelfieScan} />
-          <Stack.Screen name="AccountSetup" component={AccountSetup} />
-          <Stack.Screen name="pinSetup" component={pinSetup} />
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="AddCard" component={AddCard} />
-          <Stack.Screen name="CardDetails" component={CardDetails} />
-          <Stack.Screen name="CardVerify" component={CardVerify} />
-          <Stack.Screen name="CardList" component={CardList} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-          <Stack.Screen name="MainApp" component={BottomTabNavigator} />
-          <Stack.Screen name="SendMoney" component={SendMoney} />
-          <Stack.Screen name="SendAmount" component={SendAmount} />
-          <Stack.Screen name="Purpose" component={Purpose} />
-          <Stack.Screen name="SelectAccount" component={SelectAccount} />
-          <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
-          <Stack.Screen name="ScanQr" component={ScanQr} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <RootNavigator />
     </>
   );
 };

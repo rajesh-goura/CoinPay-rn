@@ -1,13 +1,19 @@
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import PrimaryButton from "../../components/PrimaryButton";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+import SecondaryButton from "../../components/SecondaryButton";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-
-
 
 const AddCard = () => {
   const { colors, dark } = useTheme();
@@ -20,17 +26,22 @@ const AddCard = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      
       {/* Header: Back Button (Top) & Progress Bar (Below) */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
 
       {/* Content Section */}
       <View style={styles.content}>
-        <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
+        <Image
+          style={styles.img}
+          source={dark ? item.imageDark : item.imageLight}
+        />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
           Let's add your Card
         </Text>
@@ -38,10 +49,11 @@ const AddCard = () => {
           Experience the power of financial organization with our platform
         </Text>
 
-        <PrimaryButton onPress={() => navigate("CardDetails")} text="+ Add your Card" />
-        
-
-        
+        <PrimaryButton
+          onPress={() => navigate("CardDetails")}
+          text="+ Add your Card"
+        />
+        <SecondaryButton onPress={() => navigate("MainApp")} text=" Go to HomePage"></SecondaryButton>
       </View>
     </View>
   );

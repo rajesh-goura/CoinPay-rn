@@ -6,6 +6,7 @@ import { CustomTheme } from "../../themes/Theme";
 import { View, StyleSheet, Image } from "react-native";
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
+import ScanQr from "../../screens/send/ScanQr";
 
 const Tab = createBottomTabNavigator();
 
@@ -73,7 +74,7 @@ const BottomTabNavigator = () => {
       {/* ScanQR Tab - Special Styling */}
       <Tab.Screen
         name="ScanQR"
-        component={SampleScreen}
+        component={ScanQr}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
