@@ -3,10 +3,17 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
+
+// Direct SVG imports
+import HomeIcon from '@/assets/icons/home.svg';
+import ChartPieIcon from '@/assets/icons/chart-pie.svg';
+import ScannerIcon from '@/assets/icons/scanner.svg';
+import ChatIcon from '@/assets/icons/chat.svg';
+import UserIcon from '@/assets/icons/user.svg';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,12 +50,10 @@ const BottomTabNavigator = () => {
         component={HomePage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/home.png")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
+            <HomeIcon 
+              width={24} 
+              height={24} 
+              fill={focused ? colors.primary : colors.textSecondary}
             />
           ),
         }}
@@ -60,12 +65,10 @@ const BottomTabNavigator = () => {
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/chart-pie.png")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
+            <ChartPieIcon 
+              width={24} 
+              height={24} 
+              fill={focused ? colors.primary : colors.textSecondary}
             />
           ),
         }}
@@ -82,13 +85,13 @@ const BottomTabNavigator = () => {
                 styles.scanTabContainer,
                 {
                   backgroundColor: colors.primary,
-                  borderColor: "white",
                 },
               ]}
             >
-              <Image
-                source={require("@/assets/icons/scanner.png")}
-                style={[styles.scanTabIcon, { tintColor: "white" }]}
+              <ScannerIcon 
+                width={24} 
+                height={24} 
+                fill="white"
               />
             </View>
           ),
@@ -101,12 +104,10 @@ const BottomTabNavigator = () => {
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/chat.png")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
+            <ChatIcon 
+              width={24} 
+              height={24} 
+              fill={focused ? colors.primary : colors.textSecondary}
             />
           ),
         }}
@@ -118,12 +119,10 @@ const BottomTabNavigator = () => {
         component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/user.png")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
+            <UserIcon 
+              width={24} 
+              height={24} 
+              fill={focused ? colors.primary : colors.textSecondary}
             />
           ),
         }}

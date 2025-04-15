@@ -21,11 +21,19 @@ import {
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
 
+// Direct SVG imports
+import CreditCardMinusIcon from '@/assets/icons/credit-card-minus.svg';
+import CoinsIcon from '@/assets/icons/coins.svg';
+import InvoiceIcon from '@/assets/icons/invoice.svg';
+import SackDollarIcon from '@/assets/icons/sack-dollar.svg';
+import DollarSendCircleIcon from '@/assets/icons/dollar-send-circle.svg';
+import DollarReceiveCircleIcon from '@/assets/icons/dollar-receive-circle.svg';
+
 const { height } = Dimensions.get("window");
 
 const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation();
 
   // Transaction data
   const transactions = [
@@ -33,32 +41,32 @@ const HomePage = () => {
       id: 1,
       title: t("homePage.transactions.spending"),
       amount: -500,
-      icon: require("@/assets/icons/credit-card-minus.png"),
-      iconBg: "#007AFF", // Blue
+      Icon: CreditCardMinusIcon,
+      iconBg: "#007AFF",
       type: "expense",
     },
     {
       id: 2,
       title: t("homePage.transactions.income"),
       amount: 3000,
-      icon: require("@/assets/icons/coins.png"),
-      iconBg: "#34C759", // Green
+      Icon: CoinsIcon,
+      iconBg: "#34C759",
       type: "income",
     },
     {
       id: 3,
       title: t("homePage.transactions.bills"),
       amount: -800,
-      icon: require("@/assets/icons/invoice.png"),
-      iconBg: "#FFCC00", // Yellow
+      Icon: InvoiceIcon,
+      iconBg: "#FFCC00",
       type: "expense",
     },
     {
       id: 4,
       title: t("homePage.transactions.savings"),
       amount: 1000,
-      icon: require("@/assets/icons/sack-dollar.png"),
-      iconBg: "#FF9500", // Orange
+      Icon: SackDollarIcon,
+      iconBg: "#FF9500",
       type: "savings",
     },
   ];
@@ -170,17 +178,19 @@ const HomePage = () => {
             style={[styles.actionButton]}
             onPress={() => navigate("SendMoney")}
           >
-            <Image
-              source={require("@/assets/icons/dollar-send-circle.png")}
+            <View
               style={[
                 styles.actionIcon,
                 {
                   backgroundColor: colors.primary,
                   borderRadius: 50,
-                  borderWidth: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 },
               ]}
-            />
+            >
+              <DollarSendCircleIcon width={28} height={28} fill="white" />
+            </View>
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
@@ -189,13 +199,19 @@ const HomePage = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>
-            <Image
-              source={require("@/assets/icons/dollar-receive-circle.png")}
+            <View
               style={[
                 styles.actionIcon,
-                { backgroundColor: "#FFD700", borderRadius: 50, borderWidth: 0 },
+                { 
+                  backgroundColor: "#FFD700", 
+                  borderRadius: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
               ]}
-            />
+            >
+              <DollarReceiveCircleIcon width={28} height={28} fill="white" />
+            </View>
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
@@ -225,9 +241,9 @@ const HomePage = () => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          {transactions.map((transaction) => (
+          {transactions.map(({ id, title, amount, Icon, iconBg, type }) => (
             <TouchableOpacity
-              key={transaction.id}
+              key={id}
               style={[
                 styles.transactionItem,
                 { backgroundColor: colors.modalBackgroun },
@@ -237,31 +253,28 @@ const HomePage = () => {
                 <View
                   style={[
                     styles.transactionIconContainer,
-                    { backgroundColor: transaction.iconBg },
+                    { backgroundColor: iconBg },
                   ]}
                 >
-                  <Image
-                    source={transaction.icon}
-                    style={styles.transactionIcon}
-                  />
+                  <Icon width={20} height={20} fill="white" />
                 </View>
                 <Text
                   style={[styles.transactionTitle, { color: colors.textPrimary }]}
                 >
-                  {transaction.title}
+                  {title}
                 </Text>
               </View>
               <Text
                 style={[
                   styles.transactionAmount,
-                  transaction.type === "expense" && { color: "#FF3B30" },
-                  transaction.type === "income" && { color: "#34C759" },
-                  transaction.type === "savings" && { color: "#FFD700" },
+                  type === "expense" && { color: "#FF3B30" },
+                  type === "income" && { color: "#34C759" },
+                  type === "savings" && { color: "#FFD700" },
                 ]}
               >
-                {transaction.amount > 0
-                  ? `+$${Math.abs(transaction.amount)}`
-                  : `-$${Math.abs(transaction.amount)}`}
+                {amount > 0
+                  ? `+$${Math.abs(amount)}`
+                  : `-$${Math.abs(amount)}`}
               </Text>
             </TouchableOpacity>
           ))}
