@@ -9,7 +9,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import { RouteProp, useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +18,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 type PersonalInfoRouteParams = {
   countryName: string;
@@ -31,10 +32,11 @@ const progress = currentScreen / totalScreens;
 const PersonalInfo = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
-  const route = useRoute<RouteProp<{ params: PersonalInfoRouteParams }, 'params'>>();
-  
+  const route = useRoute<RouteProp<{ params: PersonalInfoRouteParams }, "params">>();
+  const { t } = useTranslation(); // Hook for translations
+
   const { countryName } = route.params;
-  
+
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -42,7 +44,7 @@ const PersonalInfo = () => {
   const [dateInput, setDateInput] = useState("");
 
   const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === "ios");
     if (selectedDate) {
       setDateOfBirth(selectedDate);
       const formattedDate = `${selectedDate.getMonth() + 1}/${selectedDate.getDate()}/${selectedDate.getFullYear()}`;
@@ -52,12 +54,12 @@ const PersonalInfo = () => {
 
   const handleManualDateChange = (text: string) => {
     setDateInput(text);
-    const dateParts = text.split('/');
+    const dateParts = text.split("/");
     if (dateParts.length === 3) {
       const month = parseInt(dateParts[0], 10);
       const day = parseInt(dateParts[1], 10);
       const year = parseInt(dateParts[2], 10);
-      
+
       if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {
         const date = new Date(year, month - 1, day);
         if (!isNaN(date.getTime())) {
@@ -74,19 +76,19 @@ const PersonalInfo = () => {
 
   const handleContinue = () => {
     if (!fullName || !username || !dateOfBirth) {
-      alert("Please fill in all fields");
+      alert(t("personalInfo.error")); // Use translation for error message
       return;
     }
-    
+
     const dobISO = dateOfBirth.toISOString();
-    
+
     navigate("EmailInfo", {
       countryName,
       personalInfo: {
         fullName,
         username,
-        dateOfBirth: dobISO
-      }
+        dateOfBirth: dobISO,
+      },
     });
   };
 
@@ -117,14 +119,16 @@ const PersonalInfo = () => {
         <View style={styles.content}>
           <View>
             <Text style={[styles.heading, { color: colors.textPrimary }]}>
-              Add your personal info
+              {t("personalInfo.title")} {/* Title from translations */}
             </Text>
             <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-              This info needs to be accurate with your ID document
+              {t("personalInfo.instructions")} {/* Instructions from translations */}
             </Text>
 
             {/* Full Name Input */}
-            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Full Name</Text>
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              {t("personalInfo.fullName")}
+            </Text>
             <TextInput
               style={[
                 styles.inputField,
@@ -134,42 +138,43 @@ const PersonalInfo = () => {
                   backgroundColor: colors.modalBackgroun,
                 },
               ]}
-              placeholder="Full name"
+              placeholder={t("personalInfo.fullNamePlaceholder")}
               placeholderTextColor={colors.textTertiary}
               value={fullName}
               onChangeText={setFullName}
             />
 
             {/* Username Input */}
-            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Username</Text>
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              {t("personalInfo.username")}
+            </Text>
             <TextInput
               style={[
                 styles.inputField,
                 {
                   borderColor: colors.border,
                   color: colors.textPrimary,
-                  backgroundColor: colors.modalBackgroun
+                  backgroundColor: colors.modalBackgroun,
                 },
               ]}
-              placeholder="Username"
+              placeholder={t("personalInfo.usernamePlaceholder")}
               placeholderTextColor={colors.textTertiary}
               value={username}
               onChangeText={setUsername}
             />
 
             {/* Date of Birth Input */}
-            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Date of Birth</Text>
+            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+              {t("personalInfo.dateOfBirth")}
+            </Text>
             <View style={styles.dateInputRow}>
               <TouchableOpacity
                 onPress={handleCalendarPress}
                 style={[
                   styles.calendarButton,
-                  { 
+                  {
                     backgroundColor: colors.modalBackgroun,
                     borderColor: colors.border,
-                    borderRightWidth: 0,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0
                   },
                 ]}
               >
@@ -186,12 +191,9 @@ const PersonalInfo = () => {
                     borderColor: colors.border,
                     color: colors.textPrimary,
                     backgroundColor: colors.modalBackgroun,
-                    borderLeftWidth: 0,
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0
                   },
                 ]}
-                placeholder="MM/DD/YYYY"
+                placeholder={t("personalInfo.dateOfBirthPlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 value={dateInput}
                 onChangeText={handleManualDateChange}
@@ -203,7 +205,7 @@ const PersonalInfo = () => {
               <DateTimePicker
                 value={dateOfBirth || new Date()}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                display={Platform.OS === "ios" ? "spinner" : "default"}
                 onChange={handleDateChange}
                 maximumDate={new Date()}
                 themeVariant="dark"
@@ -215,7 +217,7 @@ const PersonalInfo = () => {
           <View style={styles.buttonContainer}>
             <PrimaryButton
               onPress={handleContinue}
-              text="Continue"
+              text={t("personalInfo.continue")} // Button text from translations
               disabled={!fullName || !username || !dateOfBirth}
             />
           </View>

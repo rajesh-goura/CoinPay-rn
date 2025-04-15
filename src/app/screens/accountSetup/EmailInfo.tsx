@@ -13,7 +13,8 @@ import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 // Define the type for route parameters
 type EmailInfoRouteParams = {
@@ -33,11 +34,12 @@ const progress = currentScreen / totalScreens;
 const EmailInfo = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
-  const route = useRoute<RouteProp<{ params: EmailInfoRouteParams }, 'params'>>();
-  
+  const route = useRoute<RouteProp<{ params: EmailInfoRouteParams }, "params">>();
+  const { t } = useTranslation(); // Use translation hook
+
   // Get data from previous screens
   const { countryName, personalInfo } = route.params;
-  
+
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
 
@@ -50,15 +52,15 @@ const EmailInfo = () => {
 
   const handleContinue = () => {
     if (!isValidEmail) {
-      alert("Please enter a valid email address");
+      alert(t("emailInfo.error")); // Use translation for error message
       return;
     }
-    
+
     // Pass all collected data to next screen
     navigate("HomeAddress", {
       countryName,
       personalInfo,
-      email
+      email,
     });
   };
 
@@ -81,20 +83,22 @@ const EmailInfo = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Add your Email
+            {t("emailInfo.title")} {/* Title from translations */}
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            This info needs to be accurate with your ID document
+            {t("emailInfo.instructions")} {/* Instructions from translations */}
           </Text>
 
           {/* Email Input with Mail Icon */}
-          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Email Address</Text>
+          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+            {t("emailInfo.emailLabel")}
+          </Text>
           <View style={styles.inputContainer}>
-            <Ionicons 
-              name="mail-outline" 
-              size={20} 
-              color={colors.textTertiary} 
-              style={styles.icon} 
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color={colors.textTertiary}
+              style={styles.icon}
             />
             <TextInput
               style={[
@@ -105,7 +109,7 @@ const EmailInfo = () => {
                   backgroundColor: colors.modalBackgroun,
                 },
               ]}
-              placeholder="name@example.com"
+              placeholder={t("emailInfo.emailPlaceholder")} // Placeholder from translations
               placeholderTextColor={colors.textTertiary}
               value={email}
               onChangeText={validateEmail}
@@ -120,7 +124,7 @@ const EmailInfo = () => {
         <View style={styles.buttonContainer}>
           <PrimaryButton
             onPress={handleContinue}
-            text="Continue"
+            text={t("emailInfo.continue")} // Button text from translations
             disabled={!isValidEmail}
           />
         </View>

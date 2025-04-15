@@ -13,6 +13,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { CountryPicker } from "react-native-country-codes-picker";
 import { CustomTheme } from "@/src/app/themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth } = Dimensions.get("window");
 const totalScreens = 13;
@@ -22,6 +23,7 @@ const progress = currentScreen / totalScreens;
 const CountrySelector = () => {
   const { colors, dark } = useTheme() as CustomTheme;
   const navigation = useNavigation();
+  const { t } = useTranslation(); // Hook for translations
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [country, setCountry] = useState({
     name: "",
@@ -40,13 +42,13 @@ const CountrySelector = () => {
 
   const handleContinue = () => {
     if (!country.code) {
-      alert("Please select your country of residence");
+      alert(t("countrySelector.error")); // Use translation for error message
       return;
     }
-    
+
     // Navigate to next screen with JUST the country name (not flag or code)
-    navigate("PersonalInfo", { 
-      countryName: country.name 
+    navigate("PersonalInfo", {
+      countryName: country.name,
     });
   };
 
@@ -65,17 +67,19 @@ const CountrySelector = () => {
         </View>
       </View>
 
-      {/* Content Section (UNCHANGED - keeps showing flag and name) */}
+      {/* Content Section */}
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Country of Residence
+            {t("countrySelector.title")} {/* Title from translations */}
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            This info needs to be accurate with your ID document
+            {t("countrySelector.instructions")} {/* Instructions from translations */}
           </Text>
-            <Text style={[styles.subtext1, { color: colors.textSecondary }]}>Country</Text>
-          {/* Country Picker (UNCHANGED) */}
+          <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
+            {t("countrySelector.country")} {/* Country label from translations */}
+          </Text>
+          {/* Country Picker */}
           <TouchableOpacity
             style={[
               styles.countryPickerButton,
@@ -89,13 +93,15 @@ const CountrySelector = () => {
             {country.flag ? (
               <View style={styles.countrySelection}>
                 <Text style={styles.flagText}>{country.flag}</Text>
-                <Text style={[styles.countryName, { color: colors.textPrimary }]}>
+                <Text
+                  style={[styles.countryName, { color: colors.textPrimary }]}
+                >
                   {country.name}
                 </Text>
               </View>
             ) : (
               <Text style={[styles.placeholder, { color: colors.textTertiary }]}>
-                Select your country
+                {t("countrySelector.selectCountry")} {/* Placeholder text */}
               </Text>
             )}
             <Ionicons
@@ -105,8 +111,8 @@ const CountrySelector = () => {
             />
           </TouchableOpacity>
         </View>
-        
-        {/* Country Picker Modal (UNCHANGED) */}
+
+        {/* Country Picker Modal */}
         <CountryPicker
           show={showCountryPicker}
           pickerButtonOnPress={handleCountrySelect}
@@ -125,10 +131,10 @@ const CountrySelector = () => {
               color: colors.textSecondary,
             },
             textInput: {
-                color: colors.textPrimary,
-                backgroundColor: colors.modalBackgroun,
-                placeholderTextColor: colors.textTertiary,
-              } as any,
+              color: colors.textPrimary,
+              backgroundColor: colors.modalBackgroun,
+              placeholderTextColor: colors.textTertiary,
+            } as any,
             countryName: {
               color: colors.textPrimary,
             },
@@ -142,11 +148,11 @@ const CountrySelector = () => {
           onBackdropPress={() => setShowCountryPicker(false)}
         />
 
-        {/* Continue Button - now uses handleContinue */}
+        {/* Continue Button */}
         <View style={styles.buttonContainer}>
           <PrimaryButton
             onPress={handleContinue}
-            text="Continue"
+            text={t("countrySelector.continue")} // Button text from translations
             disabled={!country.code}
           />
         </View>
@@ -185,7 +191,7 @@ const styles = StyleSheet.create({
   },
   subtext1: {
     fontSize: 20,
-    fontWeight:"400",
+    fontWeight: "400",
     marginBottom: 10,
   },
   countryPickerButton: {

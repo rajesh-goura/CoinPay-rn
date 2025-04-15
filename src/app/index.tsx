@@ -34,6 +34,7 @@ import SelectAccount from "./screens/send/SelectAccount";
 import PaymentCompleted from "./screens/send/PaymentCompleted";
 import Onboarding from "./screens/onboarding/Onboarding";
 import ScanQr from "./screens/send/ScanQr";
+import SettingsScreen from "./screens/settings/SettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const AuthStack = () => (
     <Stack.Screen name="EmailVerification" component={EmailVerification} />
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
   </Stack.Navigator>
 );
 

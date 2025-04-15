@@ -19,6 +19,7 @@ import SecondaryButton from "../../components/SecondaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
 import auth from "@react-native-firebase/auth";
+import { useTranslation } from "react-i18next";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -30,6 +31,7 @@ const currentScreen = 2;
 const progress = currentScreen / totalScreens;
 
 const CreateAccount = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -40,15 +42,15 @@ const CreateAccount = () => {
 
   const handleSignUp = () => {
     if (!email.trim()) {
-      Alert.alert("Error", "Please enter a valid email address.");
+      Alert.alert(t("common.error"), t("createAccount.errors.emailRequired"));
       return;
     }
     if (!password.trim()) {
-      Alert.alert("Error", "Please enter a password.");
+      Alert.alert(t("common.error"), t("createAccount.errors.passwordRequired"));
       return;
     }
     if (password.length < 6) {
-      Alert.alert("Error", "Password should be at least 6 characters.");
+      Alert.alert(t("common.error"), t("createAccount.errors.passwordLength"));
       return;
     }
     setModalVisible(true);
@@ -57,31 +59,22 @@ const CreateAccount = () => {
   const createAccount = async () => {
     setIsLoading(true);
     try {
-      // Create user with email and password
       const userCredential = await auth().createUserWithEmailAndPassword(
         email,
         password
       );
-
-      // Send email verification
       await userCredential.user.sendEmailVerification();
-
-      // Navigate to verification screen
-      navigate("EmailVerification", {
-        email,
-        password,
-      });
+      navigate("EmailVerification", { email, password });
     } catch (error: any) {
-      let errorMessage = "Failed to create account";
+      let errorKey = "createAccount.errors.default";
       if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Email address is already in use";
+        errorKey = "createAccount.errors.emailInUse";
       } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Email address is invalid";
+        errorKey = "createAccount.errors.invalidEmail";
       } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password is too weak";
+        errorKey = "createAccount.errors.weakPassword";
       }
-
-      Alert.alert("Error", errorMessage);
+      Alert.alert(t("common.error"), t(errorKey));
     } finally {
       setIsLoading(false);
       setModalVisible(false);
@@ -107,16 +100,16 @@ const CreateAccount = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Create an Account
+            {t("createAccount.title")}
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            Enter your email and password to create your account
+            {t("createAccount.subtitle")}
           </Text>
 
           {/* Email Input */}
           <View style={styles.inputLabelContainer}>
             <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
-              Email Address
+              {t("createAccount.emailLabel")}
             </Text>
             <TextInput
               style={[
@@ -127,7 +120,7 @@ const CreateAccount = () => {
                   backgroundColor: colors.card,
                 },
               ]}
-              placeholder="Enter your email"
+              placeholder={t("createAccount.emailPlaceholder")}
               placeholderTextColor={colors.textTertiary}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -139,7 +132,7 @@ const CreateAccount = () => {
           {/* Password Input */}
           <View style={styles.inputLabelContainer}>
             <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
-              Password
+              {t("createAccount.passwordLabel")}
             </Text>
             <View
               style={[
@@ -152,7 +145,7 @@ const CreateAccount = () => {
             >
               <TextInput
                 style={[styles.passwordInput, { color: colors.textPrimary }]}
-                placeholder="Enter your password"
+                placeholder={t("createAccount.passwordPlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 secureTextEntry={!passwordVisible}
                 value={password}
@@ -176,7 +169,7 @@ const CreateAccount = () => {
         <View style={styles.buttonContainer}>
           <PrimaryButton
             onPress={handleSignUp}
-            text="Sign up"
+            text={t("createAccount.signupButton")}
             disabled={!email || !password || password.length < 6}
           />
         </View>
@@ -203,28 +196,23 @@ const CreateAccount = () => {
               }
             />
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              Verify your email address
+              {t("createAccount.modal.title")}
             </Text>
-            <Text
-              style={[styles.modalSubtext, { color: colors.textSecondary }]}
-            >
-              Is this correct? {email}
+            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+              {t("createAccount.modal.subtext", { email })}
             </Text>
 
-            {/* "Yes" Button */}
             {isLoading ? (
               <ActivityIndicator size="large" color={colors.primary} />
             ) : (
               <>
                 <PrimaryButton
                   onPress={createAccount}
-                  text="Yes, send verification email"
+                  text={t("createAccount.modal.confirmButton")}
                 />
                 <SecondaryButton
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                  text="No, edit email"
+                  onPress={() => setModalVisible(false)}
+                  text={t("createAccount.modal.editButton")}
                 />
               </>
             )}

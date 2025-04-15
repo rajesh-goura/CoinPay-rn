@@ -9,7 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,9 +17,10 @@ import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
-import { RouteProp } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { RouteProp } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 type HomeAddressRouteParams = {
   countryName: string;
@@ -39,10 +40,11 @@ const progress = currentScreen / totalScreens;
 const HomeAddress = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
-  const route = useRoute<RouteProp<{ params: HomeAddressRouteParams }, 'params'>>();
-  
+  const route = useRoute<RouteProp<{ params: HomeAddressRouteParams }, "params">>();
+  const { t } = useTranslation(); // Use translation hook
+
   const { countryName, personalInfo, email } = route.params;
-  
+
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postCode, setPostCode] = useState("");
@@ -50,14 +52,14 @@ const HomeAddress = () => {
 
   const handleSubmit = async () => {
     if (!address || !city || !postCode) {
-      Alert.alert("Error", "Please fill in all address fields");
+      Alert.alert(t("homeAddress.error.title"), t("homeAddress.error.message"));
       return;
     }
 
     const currentUser = auth().currentUser;
-    
+
     if (!currentUser) {
-      Alert.alert("Error", "User not authenticated");
+      Alert.alert(t("homeAddress.error.title"), t("homeAddress.error.authError"));
       return;
     }
 
@@ -80,14 +82,14 @@ const HomeAddress = () => {
       };
 
       await firestore()
-        .collection('users')
+        .collection("users")
         .doc(currentUser.uid)
         .set(userData, { merge: true });
 
       navigate("ScanId");
     } catch (error) {
       console.error("Error saving user data:", error);
-      Alert.alert("Error", "Failed to save data. Please try again.");
+      Alert.alert(t("homeAddress.error.title"), t("homeAddress.error.saveError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -120,22 +122,22 @@ const HomeAddress = () => {
         <View style={styles.content}>
           <View>
             <Text style={[styles.heading, { color: colors.textPrimary }]}>
-              Home Address
+              {t("homeAddress.title")}
             </Text>
             <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-              This info needs to be accurate with your ID document
+              {t("homeAddress.instructions")}
             </Text>
 
             {/* Address Line Input */}
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              Address
+              {t("homeAddress.addressLabel")}
             </Text>
             <View style={styles.inputContainer}>
-              <Ionicons 
-                name="location-outline" 
-                size={20} 
-                color={colors.textTertiary} 
-                style={styles.icon} 
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.textTertiary}
+                style={styles.icon}
               />
               <TextInput
                 style={[
@@ -146,7 +148,7 @@ const HomeAddress = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="Address Line"
+                placeholder={t("homeAddress.addressPlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 value={address}
                 onChangeText={setAddress}
@@ -156,14 +158,14 @@ const HomeAddress = () => {
 
             {/* City Input */}
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              City
+              {t("homeAddress.cityLabel")}
             </Text>
             <View style={styles.inputContainer}>
-              <Ionicons 
-                name="business-outline" 
-                size={20} 
-                color={colors.textTertiary} 
-                style={styles.icon} 
+              <Ionicons
+                name="business-outline"
+                size={20}
+                color={colors.textTertiary}
+                style={styles.icon}
               />
               <TextInput
                 style={[
@@ -174,7 +176,7 @@ const HomeAddress = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="City,State"
+                placeholder={t("homeAddress.cityPlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 value={city}
                 onChangeText={setCity}
@@ -184,14 +186,14 @@ const HomeAddress = () => {
 
             {/* Post Code Input */}
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              Post
+              {t("homeAddress.postCodeLabel")}
             </Text>
             <View style={styles.inputContainer}>
-              <Ionicons 
-                name="map-outline" 
-                size={20} 
-                color={colors.textTertiary} 
-                style={styles.icon} 
+              <Ionicons
+                name="map-outline"
+                size={20}
+                color={colors.textTertiary}
+                style={styles.icon}
               />
               <TextInput
                 style={[
@@ -202,7 +204,7 @@ const HomeAddress = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="Ex: 00000"
+                placeholder={t("homeAddress.postCodePlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 value={postCode}
                 onChangeText={setPostCode}
@@ -216,7 +218,7 @@ const HomeAddress = () => {
           <View style={styles.buttonContainer}>
             <PrimaryButton
               onPress={handleSubmit}
-              text={isSubmitting ? "Processing..." : "Complete Registration"}
+              text={isSubmitting ? t("homeAddress.processing") : t("homeAddress.completeRegistration")}
               disabled={!address || !city || !postCode || isSubmitting}
             />
           </View>

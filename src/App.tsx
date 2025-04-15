@@ -7,6 +7,7 @@ import { Appearance } from 'react-native';
 import { updateSystemTheme } from './app/redux/slices/themeSlice';
 import MainNavigator from './app/index';
 import { loadToken } from './app/redux/slices/authSlice';
+import "./app/localization/i18n";
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {

@@ -1,4 +1,3 @@
-// HomePage.tsx
 import React from "react";
 import {
   View,
@@ -20,17 +19,19 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 
 const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation(); // Use translation hook
 
   // Transaction data
   const transactions = [
     {
       id: 1,
-      title: "Spending",
+      title: t("homePage.transactions.spending"),
       amount: -500,
       icon: require("@/assets/icons/credit-card-minus.png"),
       iconBg: "#007AFF", // Blue
@@ -38,7 +39,7 @@ const HomePage = () => {
     },
     {
       id: 2,
-      title: "Income",
+      title: t("homePage.transactions.income"),
       amount: 3000,
       icon: require("@/assets/icons/coins.png"),
       iconBg: "#34C759", // Green
@@ -46,7 +47,7 @@ const HomePage = () => {
     },
     {
       id: 3,
-      title: "Bills",
+      title: t("homePage.transactions.bills"),
       amount: -800,
       icon: require("@/assets/icons/invoice.png"),
       iconBg: "#FFCC00", // Yellow
@@ -54,7 +55,7 @@ const HomePage = () => {
     },
     {
       id: 4,
-      title: "Savings",
+      title: t("homePage.transactions.savings"),
       amount: 1000,
       icon: require("@/assets/icons/sack-dollar.png"),
       iconBg: "#FF9500", // Orange
@@ -65,12 +66,12 @@ const HomePage = () => {
   return (
     <View style={styles.flexContainer}>
       {/* Background Image - Top Half */}
-      <Image 
+      <Image
         source={require("@/assets/images/bluebg.jpg")}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
-      
+
       {/* Content ScrollView */}
       <ScrollView
         style={[styles.contentScroll, { backgroundColor: colors.background }]}
@@ -102,7 +103,7 @@ const HomePage = () => {
               style={styles.searchIcon}
             />
             <TextInput
-              placeholder="Search Payments"
+              placeholder={t("homePage.searchPlaceholder")}
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
             />
@@ -137,7 +138,7 @@ const HomePage = () => {
             $20,000
           </Text>
           <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>
-            Available Balance
+            {t("homePage.availableBalance")}
           </Text>
 
           {/* Add Money Button */}
@@ -153,7 +154,7 @@ const HomePage = () => {
               color={colors.textPrimary}
             />
             <Text style={[styles.addMoneyText, { color: colors.textPrimary }]}>
-              Add Money
+              {t("homePage.addMoney")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -165,9 +166,10 @@ const HomePage = () => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          <TouchableOpacity style={[styles.actionButton]} 
-           onPress={() => navigate('SendMoney')}>
-            
+          <TouchableOpacity
+            style={[styles.actionButton]}
+            onPress={() => navigate("SendMoney")}
+          >
             <Image
               source={require("@/assets/icons/dollar-send-circle.png")}
               style={[
@@ -178,14 +180,12 @@ const HomePage = () => {
                   borderWidth: 0,
                 },
               ]}
-              
             />
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
-              Send
+              {t("homePage.actions.send")}
             </Text>
-            
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>
@@ -199,7 +199,7 @@ const HomePage = () => {
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
-              Request
+              {t("homePage.actions.request")}
             </Text>
           </TouchableOpacity>
 
@@ -208,14 +208,14 @@ const HomePage = () => {
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
-              Bank
+              {t("homePage.actions.bank")}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Transactions Section */}
         <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-          Transactions
+          {t("homePage.transactions.title")}
         </Text>
 
         {/* Transactions List */}
