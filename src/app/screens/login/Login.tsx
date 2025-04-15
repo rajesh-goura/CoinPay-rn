@@ -14,8 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from "@react-native-firebase/auth";
-import * as SecureStore from 'expo-secure-store';
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { login } from "../../redux/slices/authSlice";
 
