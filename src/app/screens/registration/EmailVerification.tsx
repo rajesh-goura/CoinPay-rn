@@ -15,6 +15,7 @@ import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import auth from "@react-native-firebase/auth";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth } = Dimensions.get("window");
 const totalScreens = 13;
@@ -22,6 +23,7 @@ const currentScreen = 3;
 const progress = currentScreen / totalScreens;
 
 const EmailVerification = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
@@ -44,10 +46,10 @@ const EmailVerification = () => {
       const user = auth().currentUser;
       if (user) {
         await user.sendEmailVerification();
-        Alert.alert("Success", "Verification email has been resent");
+        Alert.alert(t("emailVerification.success"), t("emailVerification.resendSuccess"));
       }
     } catch (error: any) {
-      Alert.alert("Error", "Failed to resend verification email. Please try again.");
+      Alert.alert(t("common.error"), t("emailVerification.errors.resendFailed"));
       console.error("Resend verification error:", error);
     } finally {
       setIsLoading(false);
@@ -61,30 +63,26 @@ const EmailVerification = () => {
       
       const user = auth().currentUser;
       if (!user) {
-        Alert.alert("Error", "No user found. Please try again.");
+        Alert.alert(t("common.error"), t("emailVerification.errors.noUser"));
         return;
       }
   
-      // Force reload the user to get latest verification status
       await user.reload();
-      
-      // Add a small delay to ensure Firebase has updated
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Check verification status again after reload
       if (user.emailVerified) {
         navigate("CountrySelector");
       } else {
         Alert.alert(
-          "Please verify your email before continuing. " +
-          "If you've already verified, wait a few moments and try again."
+          t("emailVerification.notVerifiedTitle"),
+          t("emailVerification.notVerifiedMessage")
         );
       }
     } catch (error: any) {
       console.error("Verification check error:", error);
       Alert.alert(
-        "Error", 
-        error.message || "Failed to check verification status. Please try again."
+        t("common.error"), 
+        error.message || t("emailVerification.errors.verificationCheckFailed")
       );
     } finally {
       setIsLoading(false);
@@ -122,29 +120,31 @@ const EmailVerification = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Verify your email
+            {t("emailVerification.title")}
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            We sent a verification email to {email}
+            {t("emailVerification.sentEmail", { email })}
           </Text>
           <Text style={[styles.instructions, { color: colors.textSecondary }]}>
-            Please check your inbox and click the verification link to continue.
+            {t("emailVerification.instructions")}
           </Text>
 
           {/* Resend Verification Email */}
           <View style={styles.resendContainer}>
             <Text style={[styles.resendText, { color: colors.textSecondary }]}>
-              Didn't receive email?{" "}
+              {t("emailVerification.didNotReceive")}{" "}
             </Text>
             {isLoading ? (
               <ActivityIndicator size="small" color={colors.primary} />
             ) : canResend ? (
               <TouchableOpacity onPress={handleResend}>
-                <Text style={{ color: colors.primary }}>Resend</Text>
+                <Text style={{ color: colors.primary }}>
+                  {t("emailVerification.resend")}
+                </Text>
               </TouchableOpacity>
             ) : (
               <Text style={{ color: colors.textTertiary }}>
-                Resend in {resendTime}s
+                {t("emailVerification.resendIn", { seconds: resendTime })}
               </Text>
             )}
           </View>
@@ -157,7 +157,7 @@ const EmailVerification = () => {
           ) : (
             <PrimaryButton
               onPress={checkVerification}
-              text="I've Verified My Email"
+              text={t("emailVerification.verifiedButton")}
             />
           )}
         </View>

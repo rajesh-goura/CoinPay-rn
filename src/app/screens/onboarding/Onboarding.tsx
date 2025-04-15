@@ -11,34 +11,37 @@ import {
 import { navigate } from "../../navigation/navigationService";
 import { useTheme } from "@react-navigation/native";
 import PrimaryButton from "../../components/PrimaryButton";
+import { useTranslation } from "react-i18next";
+import SecondaryButton from "../../components/SecondaryButton";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
-const slides = [
-  {
-    id: "1",
-    imageLight: require("@/assets/images/Onboarding/Trust.png"),
-    imageDark: require("@/assets/images/Onboarding/darkmode/Trust.png"),
-    text: "Trusted by millions of people, part of one part",
-  },
-  {
-    id: "2",
-    imageLight: require("@/assets/images/Onboarding/Send money abroad.png"),
-    imageDark: require("@/assets/images/Onboarding/darkmode/Send money abroad.png"),
-    text: "Spend money abroad, and track your expense",
-  },
-  {
-    id: "3",
-    imageLight: require("@/assets/images/Onboarding/Receive Money.png"),
-    imageDark: require("@/assets/images/Onboarding/darkmode/Receive Money.png"),
-    text: "Receive Money From Anywhere In The World",
-  },
-];
-
 const Onboarding = () => {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList | null>(null);
   const { colors, dark } = useTheme();
+
+  const slides = [
+    {
+      id: "1",
+      imageLight: require("@/assets/images/Onboarding/Trust.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Trust.png"),
+      textKey: "onboarding.slide1", // Using translation key instead of hardcoded text
+    },
+    {
+      id: "2",
+      imageLight: require("@/assets/images/Onboarding/Send money abroad.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Send money abroad.png"),
+      textKey: "onboarding.slide2",
+    },
+    {
+      id: "3",
+      imageLight: require("@/assets/images/Onboarding/Receive Money.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Receive Money.png"),
+      textKey: "onboarding.slide3",
+    },
+  ];
 
   const handleNextPress = () => {
     if (currentIndex < slides.length - 1) {
@@ -59,12 +62,7 @@ const Onboarding = () => {
   };
 
   const renderItem = ({ item }: any) => (
-    <View
-      style={[
-        styles.content,
-        { backgroundColor: colors.background },
-      ]}
-    >
+    <View style={[styles.content, { backgroundColor: colors.background }]}>
       <Image
         source={dark ? item.imageDark : item.imageLight}
         style={styles.img}
@@ -78,33 +76,21 @@ const Onboarding = () => {
                 styles.indicatorDot,
                 index === currentIndex && [
                   styles.activeDot,
-                  {
-                    backgroundColor: colors.primary,
-                  },
+                  { backgroundColor: colors.primary },
                 ],
               ]}
             />
           ))}
         </View>
-        <Text
-          style={[
-            styles.text,
-            { color: colors.textPrimary },
-          ]}
-        >
-          {item.text}
+        <Text style={[styles.text, { color: colors.textPrimary }]}>
+          {t(item.textKey)} {/* Using the translation function here */}
         </Text>
       </View>
     </View>
   );
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: colors.background },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         ref={flatListRef}
         data={slides}
@@ -126,8 +112,9 @@ const Onboarding = () => {
 
       <PrimaryButton
         onPress={handleNextPress}
-        text={currentIndex === slides.length - 1 ? "Get Started" : "Next"}
+        text={currentIndex === slides.length - 1 ? t("common.getStarted") : t("common.next")}
       />
+      <SecondaryButton onPress={()=>navigate("SettingsScreen")} text="go to settings"></SecondaryButton>
     </View>
   );
 };
@@ -165,6 +152,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     marginTop: 20,
+    paddingTop:15,
     lineHeight: screenWidth < 400 ? 30 : 40,
   },
   indicatorContainer: {

@@ -6,6 +6,7 @@ import SecondaryButton from "../../components/SecondaryButton";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -13,6 +14,7 @@ const currentScreen = 1;
 const progress = currentScreen / totalScreens;
 
 const Signup = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -38,20 +40,27 @@ const Signup = () => {
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Create your Coinpay account
+          {t("registration.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Coinpay is a powerful tool that allows you to easily send, receive, and track all your transactions.
+          {t("registration.subtitle")}
         </Text>
 
-        <PrimaryButton onPress={() => navigate("CreateAccount")} text="Sign up" />
-        <SecondaryButton onPress={() => navigate("Login")} text="Log in" />
+        <PrimaryButton 
+          onPress={() => navigate("CreateAccount")} 
+          text={t("registration.signup")} 
+        />
+        <SecondaryButton 
+          onPress={() => navigate("Login")} 
+          text={t("registration.login")} 
+        />
 
         <View style={styles.policy}>
           <Text style={[styles.policytext, { color: colors.textSecondary }]}>
-            By continuing you accept our 
-            <Text style={[styles.link, { color: colors.primary }]}> Terms of Service</Text> and 
-            <Text style={[styles.link, { color: colors.primary }]}> Privacy Policy</Text>
+            {t("registration.termsAndPolicy", {
+              terms: t("registration.terms"),
+              privacy: t("registration.privacy")
+            })}
           </Text>
         </View>
       </View>
@@ -101,6 +110,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "700",
     marginTop: 20,
+    paddingTop:15,
     lineHeight: screenWidth < 400 ? 30 : 40,
   },
   subtext: {
