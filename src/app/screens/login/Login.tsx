@@ -14,8 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
-import auth from "@react-native-firebase/auth";
-import * as SecureStore from 'expo-secure-store';
+import { useTranslation } from "react-i18next"; // Translation hook
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { login } from "../../redux/slices/authSlice";
 
@@ -29,27 +28,26 @@ const Login = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-  const authState = useAppSelector(state => state.auth);
-  
+  const authState = useAppSelector((state) => state.auth);
+  const { t } = useTranslation(); // Hook for translations
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      Alert.alert("Error", "Please enter both email and password");
+      Alert.alert(t("login.error.title"), t("login.error.emptyFields"));
       return;
     }
 
     try {
       const result = await dispatch(login({ email, password }));
       if (login.fulfilled.match(result)) {
-        // Navigate on successful login
         navigate("AddCard");
       } else if (login.rejected.match(result)) {
-        // Error is already handled in the slice
-        if (result.payload === 'EMAIL_NOT_VERIFIED') {
-          Alert.alert("Error", "Please verify your email first");
+        if (result.payload === "EMAIL_NOT_VERIFIED") {
+          Alert.alert(t("login.error.title"), t("login.error.emailNotVerified"));
         }
       }
     } catch (error) {
@@ -57,10 +55,9 @@ const Login = () => {
     }
   };
 
-
   const handleForgotPassword = () => {
     if (!email.trim()) {
-      Alert.alert("Error", "Please enter your email first");
+      Alert.alert(t("login.error.title"), t("login.error.emptyEmail"));
       return;
     }
     navigate("ForgotPassword", { email });
@@ -82,16 +79,16 @@ const Login = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Log in to Coinpay
+            {t("login.title")}
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            Enter your email and password to login
+            {t("login.subtitle")}
           </Text>
 
           {/* Email Input */}
           <View style={styles.inputLabelContainer}>
             <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
-              Email Address
+              {t("login.emailLabel")}
             </Text>
             <TextInput
               style={[
@@ -102,7 +99,7 @@ const Login = () => {
                   backgroundColor: colors.card,
                 },
               ]}
-              placeholder="Enter your email"
+              placeholder={t("login.emailPlaceholder")}
               placeholderTextColor={colors.textTertiary}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -114,7 +111,7 @@ const Login = () => {
           {/* Password Input */}
           <View style={styles.inputLabelContainer}>
             <Text style={[styles.inputLabel, { color: colors.textPrimary }]}>
-              Password
+              {t("login.passwordLabel")}
             </Text>
             <View
               style={[
@@ -127,7 +124,7 @@ const Login = () => {
             >
               <TextInput
                 style={[styles.passwordInput, { color: colors.textPrimary }]}
-                placeholder="Enter your password"
+                placeholder={t("login.passwordPlaceholder")}
                 placeholderTextColor={colors.textTertiary}
                 secureTextEntry={!passwordVisible}
                 value={password}
@@ -154,7 +151,7 @@ const Login = () => {
             <Text
               style={[styles.forgotPasswordText, { color: colors.primary }]}
             >
-              Forgot Password?
+              {t("login.forgotPassword")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -166,7 +163,7 @@ const Login = () => {
           ) : (
             <PrimaryButton
               onPress={handleLogin}
-              text="Login"
+              text={t("login.loginButton")}
               disabled={!email || !password}
             />
           )}
