@@ -15,6 +15,9 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
 import auth from "@react-native-firebase/auth";
+import * as SecureStore from 'expo-secure-store';
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { login } from "../../redux/slices/authSlice";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -25,59 +28,35 @@ const { width: screenWidth } = Dimensions.get("window");
 const Login = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+  const authState = useAppSelector(state => state.auth);
+  
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim()) {
-      Alert.alert("Error", "Please enter your email address.");
-      return;
-    }
-    if (!password.trim()) {
-      Alert.alert("Error", "Please enter your password.");
+    if (!email.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
-    setIsLoading(true);
     try {
-      // Sign in with email and password
-      await auth().signInWithEmailAndPassword(email, password);
-
-      // Check if email is verified
-      const user = auth().currentUser;
-      if (user && !user.emailVerified) {
-        Alert.alert(
-          "Email Not Verified",
-          "Please verify your email before logging in. Check your inbox for the verification email."
-        );
-        await auth().signOut();
-        return;
+      const result = await dispatch(login({ email, password }));
+      if (login.fulfilled.match(result)) {
+        // Navigate on successful login
+        navigate("AddCard");
+      } else if (login.rejected.match(result)) {
+        // Error is already handled in the slice
+        if (result.payload === 'EMAIL_NOT_VERIFIED') {
+          Alert.alert("Error", "Please verify your email first");
+        }
       }
-
-      // Navigate to main app screen
-      navigate("AddCard"); // Replace with your actual home screen
-    } catch (error: any) {
-      let errorMessage = "Login failed";
-
-      if (error.code === "auth/invalid-email") {
-        errorMessage = "Invalid email address";
-      } else if (error.code === "auth/user-disabled") {
-        errorMessage = "This account has been disabled";
-      } else if (error.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email";
-      } else if (error.code === "auth/wrong-password") {
-        errorMessage = "Incorrect password";
-      } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Too many attempts. Please try again later.";
-      }
-
-      Alert.alert("Error", errorMessage);
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Login error:", error);
     }
   };
+
 
   const handleForgotPassword = () => {
     if (!email.trim()) {
@@ -182,7 +161,7 @@ const Login = () => {
 
         {/* Login Button */}
         <View style={styles.buttonContainer}>
-          {isLoading ? (
+          {authState.isLoading ? (
             <ActivityIndicator size="large" color={colors.primary} />
           ) : (
             <PrimaryButton
