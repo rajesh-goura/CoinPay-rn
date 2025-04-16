@@ -3,7 +3,8 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Image } from 'expo-image';
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
@@ -44,7 +45,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require("@/assets/icons/home.png")}
+              source={require("@/assets/icons/home.svg")}
               style={[
                 styles.tabIcon,
                 { tintColor: focused ? colors.primary : colors.textSecondary },
@@ -61,7 +62,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require("@/assets/icons/chart-pie.png")}
+              source={require("@/assets/icons/chart-pie.svg")}
               style={[
                 styles.tabIcon,
                 { tintColor: focused ? colors.primary : colors.textSecondary },
@@ -87,7 +88,7 @@ const BottomTabNavigator = () => {
               ]}
             >
               <Image
-                source={require("@/assets/icons/scanner.png")}
+                source={require("@/assets/icons/scanner.svg")}
                 style={[styles.scanTabIcon, { tintColor: "white" }]}
               />
             </View>
@@ -102,7 +103,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require("@/assets/icons/chat.png")}
+              source={require("@/assets/icons/chat.svg")}
               style={[
                 styles.tabIcon,
                 { tintColor: focused ? colors.primary : colors.textSecondary },
@@ -119,7 +120,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require("@/assets/icons/user.png")}
+              source={require("@/assets/icons/user.svg")}
               style={[
                 styles.tabIcon,
                 { tintColor: focused ? colors.primary : colors.textSecondary },
