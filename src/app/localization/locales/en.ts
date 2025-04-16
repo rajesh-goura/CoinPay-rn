@@ -147,6 +147,99 @@ const en = {
           savings: "Savings",
         },
       },
+      accountSetup: {
+        title: "Setting up your account",
+        subtitle: "We are analyzing your data to verify",
+        steps: {
+          phone: "Phone verified",
+          document: "Checking Document ID",
+          photo: "Verifying Photo"
+        },
+        uploadButton: "Upload",
+        continueButton: "Continue"
+      },
+      documentScan: {
+        permissionMessage: "We need your permission to show the camera",
+        grantPermission: "Grant Permission",
+        scanInstruction: "Please scan front of your ID document",
+        statusHeading: "ID Verification in progress",
+        statusSubtext: "Hold tight, it won't take long",
+        captureButton: "Capture Picture",
+        saveButton: "Save Picture"
+      },
+      scanId: {
+        title: "Scan ID document to verify your identity",
+        subtitle: "Confirm your identity with a few taps on your phone"
+      },
+      selfieScreen: {
+        title: "Take Selfie to verify your identity",
+        subtitle: "Quick and easy identification verification using your phone's camera. Confirm your identity with a self-captured photo",
+        buttonLabel: "Take a Selfie"
+      },
+      selfieScan: {
+        permissionMessage: "We need your permission to show the camera",
+        grantPermission: "Grant Permission",
+        instructions: "Take a clear selfie for verification",
+        retake: "Retake",
+        confirm: "Confirm"
+      },
+      welcomeScreen: {
+        congratulations: "Congratulations! , Welcome to Coinpay",
+        welcomeMessage: "We are happy to have you , it's time to send, receive and track your expense",
+        continue: "Continue"
+      },
+      passcode: {
+        createTitle: "Create Passcode",
+        createSubtitle: "This info needs to be accurate with your document ID",
+        confirmTitle: "Confirm Passcode",
+        confirmSubtitle: "Please re-enter your passcode for confirmation",
+        mismatchError: "Passcodes do not match"
+      },
+      addCard: {
+        title: "Let's add your Card",
+        subtitle: "Experience the power of financial organization with our platform",
+        addButton: "+ Add your Card",
+        homeButton: "Go to HomePage"
+      },
+      cardDetails: {
+        title: "Add your card details",
+        subtitle: "Enter your Card details in the below box",
+        accountHolderName: "Account Holder Name",
+        email: "Email",
+        cardNumber: "Card Number",
+        expiryDate: "MM/YY",
+        cvv: "CVV",
+        verifyButton: "Verify",
+        placeholders: {
+          name: "Name as on card",
+          email: "Your email",
+          cardNumber: "1234 5678 9012 3456",
+          expiryDate: "MM/YY",
+          cvv: "123"
+        },
+        alerts: {
+          fillAllFields: "Please fill in all fields correctly",
+          error: "Error",
+          noUser: "No user is currently logged in.",
+          success: "Success",
+          cardAdded: "Card added successfully!",
+          emailMismatch: "Entered email is not correct",
+          genericError: "An error occurred"
+        }
+      },
+      cardList: {
+        title: "Your Payment Methods",
+        subtitle: "Select or add a payment method",
+        noCards: "No cards added yet",
+        expires: "Exp",
+        addCardButton: "Add Another Card",
+        continueButton: "Continue",
+        alerts: {
+          error: "Error",
+          loadFailed: "Failed to load cards",
+          deleteFailed: "Failed to delete card"
+        }
+      }
     
   };
   

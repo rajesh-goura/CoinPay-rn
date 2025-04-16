@@ -38,49 +38,6 @@ import SettingsScreen from "./screens/settings/SettingsScreen";
 
 const Stack = createStackNavigator();
 
-const AuthStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Onboarding" component={Onboarding} />
-    <Stack.Screen name="Signup" component={Signup} />
-    <Stack.Screen name="CreateAccount" component={CreateAccount} />
-    <Stack.Screen name="EmailVerification" component={EmailVerification} />
-    <Stack.Screen name="Login" component={Login} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-  </Stack.Navigator>
-);
-
-const AppStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="MainApp" component={BottomTabNavigator} />
-    <Stack.Screen name="AddCard" component={AddCard} />
-    <Stack.Screen name="CardDetails" component={CardDetails} />
-    <Stack.Screen name="CardVerify" component={CardVerify} />
-    <Stack.Screen name="CardList" component={CardList} />
-    <Stack.Screen name="SendMoney" component={SendMoney} />
-    <Stack.Screen name="SendAmount" component={SendAmount} />
-    <Stack.Screen name="Purpose" component={Purpose} />
-    <Stack.Screen name="SelectAccount" component={SelectAccount} />
-    <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
-    <Stack.Screen name="ScanQr" component={ScanQr} />
-  </Stack.Navigator>
-);
-
-const SetupStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="CountrySelector" component={CountrySelector} />
-    <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
-    <Stack.Screen name="EmailInfo" component={EmailInfo} />
-    <Stack.Screen name="HomeAddress" component={HomeAddress} />
-    <Stack.Screen name="ScanId" component={ScanId} />
-    <Stack.Screen name="DocumentScan" component={DocumentScan} />
-    <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
-    <Stack.Screen name="SelfieScan" component={SelfieScan} />
-    <Stack.Screen name="AccountSetup" component={AccountSetup} />
-    <Stack.Screen name="pinSetup" component={pinSetup} />
-    <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-  </Stack.Navigator>
-);
 
 const RootNavigator = () => {
   const { token, isLoading } = useAppSelector((state) => state.auth);
@@ -102,17 +59,45 @@ const RootNavigator = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!token ? (
           <>
-            <Stack.Screen name="Auth" component={AuthStack} />
-            <Stack.Screen name="Setup" component={SetupStack} />
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="CreateAccount" component={CreateAccount} />
+            <Stack.Screen name="EmailVerification" component={EmailVerification} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+            {/* Setup Screens */}
+            <Stack.Screen name="CountrySelector" component={CountrySelector} />
+            <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+            <Stack.Screen name="EmailInfo" component={EmailInfo} />
+            <Stack.Screen name="HomeAddress" component={HomeAddress} />
+            <Stack.Screen name="ScanId" component={ScanId} />
+            <Stack.Screen name="DocumentScan" component={DocumentScan} />
+            <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
+            <Stack.Screen name="SelfieScan" component={SelfieScan} />
+            <Stack.Screen name="AccountSetup" component={AccountSetup} />
+            <Stack.Screen name="pinSetup" component={pinSetup} />
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
           </>
         ) : (
-          <Stack.Screen name="App" component={AppStack} />
+          <>
+            <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            <Stack.Screen name="AddCard" component={AddCard} />
+            <Stack.Screen name="CardDetails" component={CardDetails} />
+            <Stack.Screen name="CardVerify" component={CardVerify} />
+            <Stack.Screen name="CardList" component={CardList} />
+            <Stack.Screen name="SendMoney" component={SendMoney} />
+            <Stack.Screen name="SendAmount" component={SendAmount} />
+            <Stack.Screen name="Purpose" component={Purpose} />
+            <Stack.Screen name="SelectAccount" component={SelectAccount} />
+            <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
+            <Stack.Screen name="ScanQr" component={ScanQr} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
 const MainNavigation = () => {
   return (
     <>

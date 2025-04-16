@@ -12,10 +12,12 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
 import SecondaryButton from "../../components/SecondaryButton";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const AddCard = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -26,7 +28,7 @@ const AddCard = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header: Back Button (Top) & Progress Bar (Below) */}
+      {/* Header: Back Button (Top) */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -43,17 +45,20 @@ const AddCard = () => {
           source={dark ? item.imageDark : item.imageLight}
         />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Let's add your Card
+          {t("addCard.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Experience the power of financial organization with our platform
+          {t("addCard.subtitle")}
         </Text>
 
         <PrimaryButton
           onPress={() => navigate("CardDetails")}
-          text="+ Add your Card"
+          text={t("addCard.addButton")}
         />
-        <SecondaryButton onPress={() => navigate("MainApp")} text=" Go to HomePage"></SecondaryButton>
+        <SecondaryButton 
+          onPress={() => navigate("MainApp")} 
+          text={t("addCard.homeButton")}
+        />
       </View>
     </View>
   );

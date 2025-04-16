@@ -1,3 +1,5 @@
+import WelcomeScreen from "../../screens/welcome/WelcomeScreen";
+
 const hi ={
     onboarding: {
         slide1: "लाखों लोगों द्वारा विश्वसनीय, एक हिस्सा",
@@ -139,6 +141,99 @@ const hi ={
           savings: "बचत",
         },
       },
+      accountSetup: {
+        title: "आपका खाता सेटअप हो रहा है",
+        subtitle: "हम आपके डेटा को सत्यापित करने के लिए विश्लेषण कर रहे हैं",
+        steps: {
+          phone: "फोन सत्यापित",
+          document: "दस्तावेज़ आईडी की जाँच",
+          photo: "फोटो सत्यापित किया जा रहा है"
+        },
+        uploadButton: "अपलोड",
+        continueButton: "जारी रखें"
+      },
+      documentScan: {
+        permissionMessage: "हमें कैमरा दिखाने के लिए आपकी अनुमति चाहिए",
+        grantPermission: "अनुमति दें",
+        scanInstruction: "कृपया अपने आईडी दस्तावेज़ का सामने का हिस्सा स्कैन करें",
+        statusHeading: "आईडी सत्यापन प्रगति पर है",
+        statusSubtext: "कृपया प्रतीक्षा करें, इसमें ज्यादा समय नहीं लगेगा",
+        captureButton: "तस्वीर लें",
+        saveButton: "तस्वीर सहेजें"
+      },
+      scanId: {
+        title: "अपनी पहचान सत्यापित करने के लिए आईडी दस्तावेज़ स्कैन करें",
+        subtitle: "अपने फोन पर कुछ टैप के साथ अपनी पहचान की पुष्टि करें"
+      },
+      selfieScreen: {
+        title: "अपनी पहचान सत्यापित करने के लिए सेल्फी लें",
+        subtitle: "अपने फोन के कैमरे का उपयोग करके त्वरित और आसान पहचान सत्यापन। एक स्व-कैप्चर की गई फोटो के साथ अपनी पहचान की पुष्टि करें",
+        buttonLabel: "सेल्फी लें"
+      },
+      selfieScan: {
+        permissionMessage: "हमें कैमरा दिखाने के लिए आपकी अनुमति चाहिए",
+        grantPermission: "अनुमति दें",
+        instructions: "सत्यापन के लिए एक स्पष्ट सेल्फी लें",
+        retake: "फिर से लें",
+        confirm: "पुष्टि करें"
+      },
+      welcomeScreen: {
+        congratulations: "बधाई हो! , कॉइनपे में आपका स्वागत है",
+        welcomeMessage: "आपको हमारे साथ पाकर हमें खुशी हुई, अब आप भेजने, प्राप्त करने और अपने खर्चों को ट्रैक करने के लिए तैयार हैं",
+        continue: "जारी रखें"
+      },
+      passcode: {
+        createTitle: "पासकोड बनाएं",
+        createSubtitle: "यह जानकारी आपके दस्तावेज़ आईडी से सटीक होनी चाहिए",
+        confirmTitle: "पासकोड की पुष्टि करें",
+        confirmSubtitle: "पुष्टि के लिए कृपया अपना पासकोड फिर से दर्ज करें",
+        mismatchError: "पासकोड मेल नहीं खाते"
+      },
+      addCard: {
+        title: "अपना कार्ड जोड़ें",
+        subtitle: "हमारे प्लेटफॉर्म के साथ वित्तीय संगठन की शक्ति का अनुभव करें",
+        addButton: "+ अपना कार्ड जोड़ें",
+        homeButton: "होमपेज पर जाएं"
+      },
+      cardDetails: {
+        title: "अपने कार्ड का विवरण जोड़ें",
+        subtitle: "नीचे दिए गए बॉक्स में अपने कार्ड का विवरण दर्ज करें",
+        accountHolderName: "खाता धारक का नाम",
+        email: "ईमेल",
+        cardNumber: "कार्ड नंबर",
+        expiryDate: "महीना/साल",
+        cvv: "सीवीवी",
+        verifyButton: "सत्यापित करें",
+        placeholders: {
+          name: "कार्ड पर नाम",
+          email: "आपका ईमेल",
+          cardNumber: "1234 5678 9012 3456",
+          expiryDate: "महीना/साल",
+          cvv: "123"
+        },
+        alerts: {
+          fillAllFields: "कृपया सभी फ़ील्ड सही ढंग से भरें",
+          error: "त्रुटि",
+          noUser: "कोई उपयोगकर्ता वर्तमान में लॉग इन नहीं है",
+          success: "सफलता",
+          cardAdded: "कार्ड सफलतापूर्वक जोड़ा गया!",
+          emailMismatch: "दर्ज किया गया ईमेल सही नहीं है",
+          genericError: "एक त्रुटि हुई"
+        }
+      },
+      cardList: {
+        title: "आपके भुगतान तरीके",
+        subtitle: "एक भुगतान विधि चुनें या जोड़ें",
+        noCards: "अभी तक कोई कार्ड नहीं जोड़ा गया",
+        expires: "समाप्ति",
+        addCardButton: "एक और कार्ड जोड़ें",
+        continueButton: "जारी रखें",
+        alerts: {
+          error: "त्रुटि",
+          loadFailed: "कार्ड लोड करने में विफल",
+          deleteFailed: "कार्ड हटाने में विफल"
+        }
+      }
       
 };
 export default hi;

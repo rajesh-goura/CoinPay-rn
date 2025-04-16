@@ -4,7 +4,8 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
-import RoundButton from "../../components/RoundButton"; // Import the new component
+import RoundButton from "../../components/RoundButton";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -12,6 +13,7 @@ const currentScreen = 10;
 const progress = currentScreen / totalScreens;
 
 const SelfieScreen = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -21,9 +23,7 @@ const SelfieScreen = () => {
   };
 
   const handleScanPress = () => {
-    // Handle scan functionality here
     console.log("Scan button pressed");
-    // navigate("CreateAccount");
     navigate("SelfieScan");
   };
 
@@ -44,13 +44,12 @@ const SelfieScreen = () => {
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Take Selfie to verify your identity
+          {t("selfieScreen.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Quick and easy identification verification using your phone's camera.Confirm your identity with a self-captured photo 
+          {t("selfieScreen.subtitle")}
         </Text>
 
-        {/* Replace PrimaryButton with RoundButton */}
         <RoundButton 
           onPress={handleScanPress}
           iconName="camera-outline"
@@ -58,7 +57,7 @@ const SelfieScreen = () => {
           style={{ marginTop: 30 }}
         />
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Take a Selfie
+          {t("selfieScreen.buttonLabel")}
         </Text>
       </View>
     </View>
