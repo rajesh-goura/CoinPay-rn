@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Image,
   Dimensions,
 } from "react-native";
+import { Image } from 'expo-image';
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import {
@@ -33,7 +33,7 @@ const HomePage = () => {
       id: 1,
       title: t("homePage.transactions.spending"),
       amount: -500,
-      icon: require("@/assets/icons/credit-card-minus.png"),
+      icon: require("@/assets/icons/credit-card-minus.svg"),
       iconBg: "#007AFF", // Blue
       type: "expense",
     },
@@ -41,7 +41,7 @@ const HomePage = () => {
       id: 2,
       title: t("homePage.transactions.income"),
       amount: 3000,
-      icon: require("@/assets/icons/coins.png"),
+      icon: require("@/assets/icons/coins.svg"),
       iconBg: "#34C759", // Green
       type: "income",
     },
@@ -49,7 +49,7 @@ const HomePage = () => {
       id: 3,
       title: t("homePage.transactions.bills"),
       amount: -800,
-      icon: require("@/assets/icons/invoice.png"),
+      icon: require("@/assets/icons/invoice.svg"),
       iconBg: "#FFCC00", // Yellow
       type: "expense",
     },
@@ -57,7 +57,7 @@ const HomePage = () => {
       id: 4,
       title: t("homePage.transactions.savings"),
       amount: 1000,
-      icon: require("@/assets/icons/sack-dollar.png"),
+      icon: require("@/assets/icons/sack-dollar.svg"),
       iconBg: "#FF9500", // Orange
       type: "savings",
     },
@@ -171,7 +171,7 @@ const HomePage = () => {
             onPress={() => navigate("SendMoney")}
           >
             <Image
-              source={require("@/assets/icons/dollar-send-circle.png")}
+              source={require("@/assets/icons/dollar-send-circle.svg")}
               style={[
                 styles.actionIcon,
                 {
@@ -190,7 +190,7 @@ const HomePage = () => {
 
           <TouchableOpacity style={[styles.actionButton]}>
             <Image
-              source={require("@/assets/icons/dollar-receive-circle.png")}
+              source={require("@/assets/icons/dollar-receive-circle.svg")}
               style={[
                 styles.actionIcon,
                 { backgroundColor: "#FFD700", borderRadius: 50, borderWidth: 0 },
