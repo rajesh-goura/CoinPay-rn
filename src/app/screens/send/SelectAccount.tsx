@@ -1,5 +1,4 @@
-// SelectAccount.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,17 +6,34 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useFocusEffect } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import { navigate } from "../../navigation/navigationService";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+import { useTranslation } from "react-i18next";
+
+type Card = {
+  id: string;
+  lastFour: string;
+  type: "visa" | "mastercard" | "amex" | "other";
+  name: string;
+  expiry: string;
+};
 
 const SelectAccount = ({ navigation, route }: any) => {
+  const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const { recipient, amount, currency, purpose } = route.params;
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Mock data for recipient (you can replace with actual data from route.params)
   const recipientData = {
@@ -26,40 +42,115 @@ const SelectAccount = ({ navigation, route }: any) => {
     image: require("@/assets/images/user.png"),
   };
 
-  // Mock data for payment accounts
-  const accounts = [
-    {
-      id: "acc1",
-      type: "Credit Card",
-      icon: "credit-card",
-      number: "**** **** **** 4242",
-    },
-    {
-      id: "acc2",
-      type: "Debit Card",
-      icon: "credit-card",
-      number: "**** **** **** 5555",
-    },
-    {
-      id: "acc3",
-      type: "Bank Account",
-      icon: "bank",
-      number: "**** **** 1234",
-    },
-  ];
-
-  const handlePay = () => {
-    const selectedAccountObj = accounts.find(
-      (acc) => acc.id === selectedAccount
-    );
-    navigate("PaymentCompleted", {
-      recipient,
-      amount,
-      currency,
-      purpose,
-      account: selectedAccountObj,
-    });
+  const fetchCards = async () => {
+    try {
+      const user = auth().currentUser;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      
+      const cardsSnapshot = await firestore()
+        .collection('cards')
+        .doc(user.uid)
+        .collection('userCards')
+        .orderBy('createdAt', 'desc')
+        .get();
+      
+      const cardsData = cardsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        lastFour: doc.data().lastFour,
+        type: doc.data().type || 'other',
+        name: doc.data().accountHolderName,
+        expiry: doc.data().expiryDate,
+      }));
+      
+      setCards(cardsData);
+    } catch (error) {
+      console.error("Error fetching cards:", error);
+      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.loadFailed"));
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCards();
+    }, [])
+  );
+
+  const handlePay = async () => {
+    if (!selectedAccount) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      const user = auth().currentUser;
+      if (!user) {
+        Alert.alert("Error", "You must be logged in to make payments");
+        return;
+      }
+
+      // Convert amount to number
+      const paymentAmount = parseFloat(amount);
+      if (isNaN(paymentAmount)) {
+        Alert.alert("Error", "Invalid amount");
+        return;
+      }
+
+      // Deduct amount from user's balance in Firestore
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          balance: firestore.FieldValue.increment(-paymentAmount),
+          updatedAt: firestore.FieldValue.serverTimestamp(),
+        });
+
+      const selectedCard = cards.find(card => card.id === selectedAccount);
+      
+      navigate("PaymentCompleted", {
+        recipient,
+        amount,
+        currency,
+        purpose,
+        account: {
+          type: selectedCard?.type === 'visa' ? 'Visa' : 
+                selectedCard?.type === 'mastercard' ? 'Mastercard' : 
+                selectedCard?.type === 'amex' ? 'Amex' : 'Card',
+          number: `•••• •••• •••• ${selectedCard?.lastFour}`,
+          expiry: selectedCard?.expiry
+        },
+      });
+    } catch (error) {
+      console.error("Payment error:", error);
+      Alert.alert("Error", "Failed to process payment");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const getCardIcon = (type: string) => {
+    switch (type) {
+      case "visa":
+        return <FontAwesome name="cc-visa" size={24} color={colors.textPrimary} />;
+      case "mastercard":
+        return <FontAwesome name="cc-mastercard" size={24} color={colors.textPrimary} />;
+      case "amex":
+        return <FontAwesome name="cc-amex" size={24} color={colors.textPrimary} />;
+      default:
+        return <FontAwesome name="credit-card" size={24} color={colors.textPrimary} />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -101,58 +192,61 @@ const SelectAccount = ({ navigation, route }: any) => {
         </Text>
 
         {/* Account Options */}
-        {accounts.map((account) => (
-          <TouchableOpacity
-            key={account.id}
-            style={[
-              styles.accountItem,
-              { backgroundColor: colors.modalBackgroun },
-              selectedAccount === account.id && { borderColor: colors.primary },
-            ]}
-            onPress={() => setSelectedAccount(account.id)}
-          >
-            <View style={styles.accountLeft}>
-              <FontAwesome
-                name={account.icon as any}
-                size={20}
-                color={colors.textPrimary}
-                style={styles.accountIcon}
-              />
-              <View>
-                <Text
-                  style={[styles.accountType, { color: colors.textPrimary }]}
-                >
-                  {account.type}
-                </Text>
-                <Text
-                  style={[
-                    styles.accountNumber,
-                    { color: colors.textSecondary },
-                  ]}
-                >
-                  {account.number}
-                </Text>
+        {cards.length === 0 ? (
+          <Text style={[styles.noCardsText, { color: colors.textSecondary }]}>
+            No cards available. Please add a card first.
+          </Text>
+        ) : (
+          cards.map((card) => (
+            <TouchableOpacity
+              key={card.id}
+              style={[
+                styles.accountItem,
+                { backgroundColor: colors.modalBackgroun },
+                selectedAccount === card.id && { borderColor: colors.primary },
+              ]}
+              onPress={() => setSelectedAccount(card.id)}
+            >
+              <View style={styles.accountLeft}>
+                <View style={styles.cardIcon}>
+                  {getCardIcon(card.type)}
+                </View>
+                <View>
+                  <Text style={[styles.accountType, { color: colors.textPrimary }]}>
+                    {card.type === 'visa' ? 'Visa' : 
+                     card.type === 'mastercard' ? 'Mastercard' : 
+                     card.type === 'amex' ? 'Amex' : 'Card'} •••• {card.lastFour}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.accountNumber,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    {card.name} • Expires {card.expiry}
+                  </Text>
+                </View>
               </View>
-            </View>
-            {selectedAccount === account.id ? (
-              <Ionicons
-                name="checkmark-circle"
-                size={24}
-                color={colors.primary}
-              />
-            ) : (
-              <View style={[styles.checkbox, { borderColor: colors.border }]} />
-            )}
-          </TouchableOpacity>
-        ))}
+              {selectedAccount === card.id ? (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={24}
+                  color={colors.primary}
+                />
+              ) : (
+                <View style={[styles.checkbox, { borderColor: colors.border }]} />
+              )}
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
 
       {/* Pay Button */}
       <View style={styles.buttonContainer}>
         <PrimaryButton
-          text={`Pay  ${currency}  ${amount}`}
+          text={isProcessing ? "Processing..." : `Pay ${currency} ${amount}`}
           onPress={handlePay}
-          disabled={!selectedAccount}
+          disabled={!selectedAccount || isProcessing || cards.length === 0}
         />
       </View>
     </View>
@@ -217,7 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
+    padding: 16,
     borderRadius: 12,
     borderWidth: 1,
     marginBottom: 16,
@@ -225,13 +319,15 @@ const styles = StyleSheet.create({
   accountLeft: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
-  accountIcon: {
+  cardIcon: {
     marginRight: 16,
   },
   accountType: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "500",
+    marginBottom: 4,
     fontFamily: "Poppins",
   },
   accountNumber: {
@@ -249,6 +345,12 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 20,
     right: 20,
+  },
+  noCardsText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    fontFamily: "Poppins",
   },
 });
 

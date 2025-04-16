@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Image } from 'expo-image';
 import { useTheme } from "@react-navigation/native";
@@ -20,12 +21,52 @@ import {
 } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 const { height } = Dimensions.get("window");
 
 const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation();
+  const [balance, setBalance] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user balance from Firestore
+  useEffect(() => {
+    const user = auth().currentUser;
+    
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = firestore()
+      .collection('users')
+      .doc(user.uid)
+      .onSnapshot(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          const userData = documentSnapshot.data();
+          setBalance(userData?.balance || 0);
+        } else {
+          setBalance(0);
+        }
+        setLoading(false);
+      });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Format balance for display
+  const formatBalance = (amount: number | null) => {
+    if (amount === null) return "$0";
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
 
   // Transaction data
   const transactions = [
@@ -34,7 +75,7 @@ const HomePage = () => {
       title: t("homePage.transactions.spending"),
       amount: -500,
       icon: require("@/assets/icons/credit-card-minus.svg"),
-      iconBg: "#007AFF", // Blue
+      iconBg: "#007AFF",
       type: "expense",
     },
     {
@@ -42,7 +83,7 @@ const HomePage = () => {
       title: t("homePage.transactions.income"),
       amount: 3000,
       icon: require("@/assets/icons/coins.svg"),
-      iconBg: "#34C759", // Green
+      iconBg: "#34C759",
       type: "income",
     },
     {
@@ -50,7 +91,7 @@ const HomePage = () => {
       title: t("homePage.transactions.bills"),
       amount: -800,
       icon: require("@/assets/icons/invoice.svg"),
-      iconBg: "#FFCC00", // Yellow
+      iconBg: "#FFCC00",
       type: "expense",
     },
     {
@@ -58,7 +99,7 @@ const HomePage = () => {
       title: t("homePage.transactions.savings"),
       amount: 1000,
       icon: require("@/assets/icons/sack-dollar.svg"),
-      iconBg: "#FF9500", // Orange
+      iconBg: "#FF9500",
       type: "savings",
     },
   ];
@@ -134,9 +175,13 @@ const HomePage = () => {
           </TouchableOpacity>
 
           {/* Available Balance */}
-          <Text style={[styles.balanceAmount, { color: colors.textPrimary }]}>
-            $20,000
-          </Text>
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.textPrimary} />
+          ) : (
+            <Text style={[styles.balanceAmount, { color: colors.textPrimary }]}>
+              {formatBalance(balance)}
+            </Text>
+          )}
           <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>
             {t("homePage.availableBalance")}
           </Text>
@@ -147,6 +192,7 @@ const HomePage = () => {
               styles.addMoneyButton,
               { backgroundColor: "transparent", borderColor: colors.border },
             ]}
+            onPress={() => navigate("UpdateMoney")}
           >
             <MaterialCommunityIcons
               name="wallet-outline"

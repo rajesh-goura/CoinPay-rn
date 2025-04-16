@@ -35,6 +35,7 @@ import PaymentCompleted from "./screens/send/PaymentCompleted";
 import Onboarding from "./screens/onboarding/Onboarding";
 import ScanQr from "./screens/send/ScanQr";
 import SettingsScreen from "./screens/settings/SettingsScreen";
+import UpdateMoney from "./screens/balance/UpdateMoney";
 
 const Stack = createStackNavigator();
 
@@ -82,6 +83,7 @@ const RootNavigator = () => {
         ) : (
           <>
             <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
             <Stack.Screen name="AddCard" component={AddCard} />
             <Stack.Screen name="CardDetails" component={CardDetails} />
             <Stack.Screen name="CardVerify" component={CardVerify} />

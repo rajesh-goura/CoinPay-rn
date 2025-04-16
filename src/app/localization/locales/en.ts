@@ -239,7 +239,35 @@ const en = {
           loadFailed: "Failed to load cards",
           deleteFailed: "Failed to delete card"
         }
+      },
+      updateMoney: {
+        title: "Update Balance",
+        subtitle: "Add or deduct money from your account",
+        amountLabel: "Amount",
+        addMoney: "Add Money",
+        deductMoney: "Deduct Money",
+        customAction: "Custom Transaction",
+        adding: "Adding...",
+        deducting: "Deducting...",
+        success: {
+          title: "Success",
+          added: "Successfully added {{amount}} to your balance",
+          deducted: "Successfully deducted {{amount}} from your balance"
+        },
+        error: {
+          title: "Error",
+          amountEmpty: "Please enter an amount",
+          invalidAmount: "Please enter a valid positive amount",
+          userNotLoggedIn: "You need to be logged in",
+          general: "Failed to update balance"
+        },
+        confirm: {
+          title: "Confirm",
+          add: "Add {{amount}} to your balance?",
+          deduct: "Deduct ${amount} from your balance?"
+        }
       }
+      
     
   };
   
