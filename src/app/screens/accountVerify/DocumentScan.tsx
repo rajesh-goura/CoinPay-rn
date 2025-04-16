@@ -13,6 +13,7 @@ import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -20,6 +21,7 @@ const currentScreen = 9;
 const progress = currentScreen / totalScreens;
 
 export default function DocumentScan() {
+  const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const [facing, setFacing] = useState<CameraType>("back");
@@ -37,14 +39,14 @@ export default function DocumentScan() {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={[styles.message, { color: colors.text }]}>
-          We need your permission to show the camera
+          {t("documentScan.permissionMessage")}
         </Text>
         <TouchableOpacity
           style={[styles.permissionButton, { backgroundColor: colors.primary }]}
           onPress={requestPermission}
         >
           <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
-            Grant Permission
+            {t("documentScan.grantPermission")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -91,7 +93,7 @@ export default function DocumentScan() {
         {/* Camera Section */}
         <View style={styles.cameraSection}>
           <Text style={[styles.scanInstruction, { color: colors.textPrimary }]}>
-            Please scan front of your ID document
+            {t("documentScan.scanInstruction")}
           </Text>
           
           <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
@@ -103,7 +105,7 @@ export default function DocumentScan() {
         <View style={styles.bottomSection}>
           <View style={styles.statusContainer}>
             <Text style={[styles.statusHeading, { color: colors.textPrimary }]}>
-              ID Verification in progress
+              {t("documentScan.statusHeading")}
             </Text>
             {isLoading ? (
               <ActivityIndicator
@@ -113,7 +115,7 @@ export default function DocumentScan() {
               />
             ) : (
               <Text style={[styles.statusSubtext, { color: colors.textPrimary }]}>
-                Hold tight, it won't take long
+                {t("documentScan.statusSubtext")}
               </Text>
             )}
           </View>
@@ -125,7 +127,7 @@ export default function DocumentScan() {
                 onPress={takePicture}
               >
                 <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
-                  Capture Picture
+                  {t("documentScan.captureButton")}
                 </Text>
               </TouchableOpacity>
             ) : (
@@ -134,7 +136,7 @@ export default function DocumentScan() {
                 onPress={savePicture}
               >
                 <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
-                  Save Picture
+                  {t("documentScan.saveButton")}
                 </Text>
               </TouchableOpacity>
             )}
@@ -144,6 +146,7 @@ export default function DocumentScan() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

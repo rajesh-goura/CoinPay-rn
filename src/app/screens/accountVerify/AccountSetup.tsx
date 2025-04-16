@@ -5,6 +5,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -12,6 +13,7 @@ const currentScreen = 8;
 const progress = currentScreen / totalScreens;
 
 const AccountSetup = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -52,10 +54,10 @@ const AccountSetup = () => {
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Setting up your account
+          {t("accountSetup.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-         We are analyzing your data to verify
+          {t("accountSetup.subtitle")}
         </Text>
 
         {/* Verification Steps */}
@@ -67,7 +69,9 @@ const AccountSetup = () => {
             </View>
             <View style={styles.stepContent}>
               <View style={styles.stepRow}>
-                <Text style={[styles.stepText, { color: colors.textPrimary }]}>Phone verified</Text>
+                <Text style={[styles.stepText, { color: colors.textPrimary }]}>
+                  {t("accountSetup.steps.phone")}
+                </Text>
                 {phoneVerified ? (
                   <View style={styles.verifiedIcon}>
                     <Ionicons name="checkmark" size={20} color="white" />
@@ -87,7 +91,9 @@ const AccountSetup = () => {
             </View>
             <View style={styles.stepContent}>
               <View style={styles.stepRow}>
-                <Text style={[styles.stepText, { color: colors.textPrimary }]}>Checking Document ID</Text>
+                <Text style={[styles.stepText, { color: colors.textPrimary }]}>
+                  {t("accountSetup.steps.document")}
+                </Text>
                 {docVerified ? (
                   <View style={styles.verifiedIcon}>
                     <Ionicons name="checkmark" size={20} color="white" />
@@ -107,7 +113,9 @@ const AccountSetup = () => {
             </View>
             <View style={styles.stepContent}>
               <View style={styles.stepRow}>
-                <Text style={[styles.stepText, { color: colors.textPrimary }]}>Verifying Photo</Text>
+                <Text style={[styles.stepText, { color: colors.textPrimary }]}>
+                  {t("accountSetup.steps.photo")}
+                </Text>
                 {photoUploading ? (
                   <View style={styles.loadingIcon}>
                     <Ionicons name="refresh" size={20} color="#304FFE" />
@@ -121,7 +129,9 @@ const AccountSetup = () => {
                     style={styles.uploadButton} 
                     onPress={handlePhotoUpload}
                   >
-                    <Text style={styles.uploadButtonText}>Upload</Text>
+                    <Text style={styles.uploadButtonText}>
+                      {t("accountSetup.uploadButton")}
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -132,11 +142,9 @@ const AccountSetup = () => {
 
         <PrimaryButton 
           onPress={() => navigate("pinSetup")} 
-          text="Continue" 
+          text={t("accountSetup.continueButton")}
           disabled={!phoneVerified || !docVerified || !photoVerified}
         />
-
-       
       </View>
     </View>
   );

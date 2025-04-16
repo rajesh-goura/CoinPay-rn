@@ -16,7 +16,7 @@ import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
-
+import { useTranslation } from "react-i18next";
 
 type Card = {
   id: string;
@@ -27,6 +27,7 @@ type Card = {
 };
 
 const CardList = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +68,7 @@ const CardList = () => {
       setDeleteAnimations(newAnimations);
     } catch (error) {
       console.error("Error fetching cards:", error);
-      Alert.alert("Error", "Failed to load cards");
+      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -119,7 +120,7 @@ const CardList = () => {
       setDeleteAnimations(newAnimations);
     } catch (error) {
       console.error("Error deleting card:", error);
-      Alert.alert("Error", "Failed to delete card");
+      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.deleteFailed"));
     }
   };
 
@@ -128,7 +129,6 @@ const CardList = () => {
   };
 
   const handleContinue = () => {
-    // Handle continue action
     navigate("MainApp");
   };
 
@@ -158,10 +158,10 @@ const CardList = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Your Payment Methods
+          {t("cardList.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Select or add a payment method
+          {t("cardList.subtitle")}
         </Text>
       </View>
 
@@ -169,7 +169,7 @@ const CardList = () => {
       <View style={styles.cardList}>
         {cards.length === 0 ? (
           <Text style={[styles.noCardsText, { color: colors.textSecondary }]}>
-            No cards added yet
+            {t("cardList.noCards")}
           </Text>
         ) : (
           cards.map((card) => (
@@ -194,7 +194,7 @@ const CardList = () => {
                       •••• •••• •••• {card.lastFour}
                     </Text>
                     <Text style={[styles.cardSubtext, { color: colors.textSecondary }]}>
-                      {card.name} • Exp {card.expiry}
+                      {card.name} • {t("cardList.expires")} {card.expiry}
                     </Text>
                   </View>
                 </View>
@@ -233,17 +233,18 @@ const CardList = () => {
       <View style={styles.buttonGroup}>
         <PrimaryButton
           onPress={handleAddCard}
-          text="Add Another Card"
+          text={t("cardList.addCardButton")}
         />
         <SecondaryButton
           onPress={handleContinue}
-          text="Continue"
+          text={t("cardList.continueButton")}
           disabled={cards.length === 0}
         />
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

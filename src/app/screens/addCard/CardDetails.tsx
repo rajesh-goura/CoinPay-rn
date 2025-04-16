@@ -22,10 +22,12 @@ import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const CardDetails = () => {
+  const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
 
@@ -63,7 +65,7 @@ const CardDetails = () => {
       !expiryDate ||
       !cvv
     ) {
-      alert("Please fill in all fields correctly");
+      alert(t("cardDetails.alerts.fillAllFields"));
       return;
     }
 
@@ -72,9 +74,8 @@ const CardDetails = () => {
 
       const currentUser = auth().currentUser;
 
-      // Ensure currentUser is not null
       if (!currentUser) {
-        Alert.alert("Error", "No user is currently logged in.");
+        Alert.alert(t("cardDetails.alerts.error"), t("cardDetails.alerts.noUser"));
         setIsLoading(false);
         return;
       }
@@ -82,17 +83,15 @@ const CardDetails = () => {
       const currentUserEmail = currentUser.email;
 
       if (email === currentUserEmail) {
-        // If entered email matches the logged-in user's email
         await saveCardDetails(currentUser.uid);
-        Alert.alert("Success", "Card added successfully!");
+        Alert.alert(t("cardDetails.alerts.success"), t("cardDetails.alerts.cardAdded"));
         navigate("CardList");
       } else {
-        // If entered email is different
-        Alert.alert("Entered email is not correct");
+        Alert.alert(t("cardDetails.alerts.emailMismatch"));
       }
     } catch (error: any) {
       console.error("Error:", error);
-      Alert.alert("Error", error.message || "An error occurred");
+      Alert.alert(t("cardDetails.alerts.error"), error.message || t("cardDetails.alerts.genericError"));
     } finally {
       setIsLoading(false);
     }
@@ -191,14 +190,14 @@ const CardDetails = () => {
         <View style={styles.content}>
           <View>
             <Text style={[styles.heading, { color: colors.textPrimary }]}>
-              Add your card details
+              {t("cardDetails.title")}
             </Text>
             <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-              Enter your Card details in the below box
+              {t("cardDetails.subtitle")}
             </Text>
 
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              Account Holder Name
+              {t("cardDetails.accountHolderName")}
             </Text>
             <View style={styles.inputWithIconContainer}>
               <Ionicons
@@ -216,7 +215,7 @@ const CardDetails = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="Name as on card"
+                placeholder={t("cardDetails.placeholders.name")}
                 placeholderTextColor={colors.textTertiary}
                 value={accountHolderName}
                 onChangeText={setAccountHolderName}
@@ -225,7 +224,7 @@ const CardDetails = () => {
             </View>
 
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              Email
+              {t("cardDetails.email")}
             </Text>
             <View style={styles.inputWithIconContainer}>
               <MaterialIcons
@@ -243,7 +242,7 @@ const CardDetails = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="Your email"
+                placeholder={t("cardDetails.placeholders.email")}
                 placeholderTextColor={colors.textTertiary}
                 value={email}
                 onChangeText={handleEmailChange}
@@ -253,7 +252,7 @@ const CardDetails = () => {
             </View>
 
             <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-              Card Number
+              {t("cardDetails.cardNumber")}
             </Text>
             <View style={styles.inputWithIconContainer}>
               <FontAwesome
@@ -271,7 +270,7 @@ const CardDetails = () => {
                     backgroundColor: colors.modalBackgroun,
                   },
                 ]}
-                placeholder="1234 5678 9012 3456"
+                placeholder={t("cardDetails.placeholders.cardNumber")}
                 placeholderTextColor={colors.textTertiary}
                 value={cardNumber}
                 onChangeText={handleCardNumberChange}
@@ -283,7 +282,7 @@ const CardDetails = () => {
             <View style={styles.row}>
               <View style={[styles.halfInputContainer, { marginRight: 10 }]}>
                 <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-                  MM/YY
+                  {t("cardDetails.expiryDate")}
                 </Text>
                 <View style={styles.inputWithIconContainer}>
                   <Ionicons
@@ -301,7 +300,7 @@ const CardDetails = () => {
                         backgroundColor: colors.modalBackgroun,
                       },
                     ]}
-                    placeholder="MM/YY"
+                    placeholder={t("cardDetails.placeholders.expiryDate")}
                     placeholderTextColor={colors.textTertiary}
                     value={expiryDate}
                     onChangeText={handleExpiryDateChange}
@@ -313,7 +312,7 @@ const CardDetails = () => {
 
               <View style={styles.halfInputContainer}>
                 <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-                  CVV
+                  {t("cardDetails.cvv")}
                 </Text>
                 <View style={styles.inputWithIconContainer}>
                   <Ionicons
@@ -331,7 +330,7 @@ const CardDetails = () => {
                         backgroundColor: colors.modalBackgroun,
                       },
                     ]}
-                    placeholder="123"
+                    placeholder={t("cardDetails.placeholders.cvv")}
                     placeholderTextColor={colors.textTertiary}
                     value={cvv}
                     onChangeText={(text) => setCvv(text.replace(/[^0-9]/g, ""))}
@@ -350,7 +349,7 @@ const CardDetails = () => {
             ) : (
               <PrimaryButton
                 onPress={handleVerify}
-                text="Verify"
+                text={t("cardDetails.verifyButton")}
                 disabled={
                   !accountHolderName ||
                   !email ||
@@ -366,7 +365,6 @@ const CardDetails = () => {
     </KeyboardAvoidingView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,

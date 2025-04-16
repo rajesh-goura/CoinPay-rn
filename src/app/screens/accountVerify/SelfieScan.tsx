@@ -13,10 +13,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 export default function SelfieScan() {
+  const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const [facing, setFacing] = useState<CameraType>("front");
@@ -35,14 +37,14 @@ export default function SelfieScan() {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={[styles.message, { color: colors.text }]}>
-          We need your permission to show the camera
+          {t("selfieScan.permissionMessage")}
         </Text>
         <TouchableOpacity
           style={[styles.permissionButton, { backgroundColor: colors.primary }]}
           onPress={requestPermission}
         >
           <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
-            Grant Permission
+            {t("selfieScan.grantPermission")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -103,7 +105,7 @@ export default function SelfieScan() {
           {/* Overlay with instructions */}
           <View style={styles.cameraOverlay}>
             <Text style={styles.scanInstruction}>
-              Take a clear selfie for verification
+              {t("selfieScan.instructions")}
             </Text>
             <View style={styles.faceOutline} />
           </View>
@@ -155,14 +157,14 @@ export default function SelfieScan() {
               onPress={retakePicture}
             >
               <Ionicons name="refresh" size={24} color="white" />
-              <Text style={styles.reviewButtonText}>Retake</Text>
+              <Text style={styles.reviewButtonText}>{t("selfieScan.retake")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.reviewButton, { backgroundColor: "#304FFE" }]}
               onPress={savePicture}
             >
               <Ionicons name="checkmark" size={24} color="white" />
-              <Text style={styles.reviewButtonText}>Confirm</Text>
+              <Text style={styles.reviewButtonText}>{t("selfieScan.confirm")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,6 +172,7 @@ export default function SelfieScan() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

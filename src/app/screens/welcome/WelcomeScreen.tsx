@@ -5,13 +5,15 @@ import PrimaryButton from "../../components/PrimaryButton";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
 const currentScreen = 13;
 const progress = currentScreen / totalScreens;
 
-const Signup = () => {
+const WelcomeScreen = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -37,22 +39,20 @@ const Signup = () => {
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Congratulations! , Welcome to Coinpay
+          {t("welcomeScreen.congratulations")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          We are happy to have you , it's time to send, receive and track your expense
+          {t("welcomeScreen.welcomeMessage")}
         </Text>
 
-        <PrimaryButton onPress={() => navigate("Login")} text="Continue" />
-        
-
-        
+        <PrimaryButton onPress={() => navigate("Login")} text={t("welcomeScreen.continue")} />
       </View>
     </View>
   );
 };
 
-export default Signup;
+
+export default WelcomeScreen;
 
 const styles = StyleSheet.create({
   container: {
