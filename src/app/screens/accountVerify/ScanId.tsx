@@ -4,7 +4,8 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
-import RoundButton from "../../components/RoundButton"; // Import the new component
+import RoundButton from "../../components/RoundButton";
+import { useTranslation } from "react-i18next";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -12,6 +13,7 @@ const currentScreen = 8;
 const progress = currentScreen / totalScreens;
 
 const ScanId = () => {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
@@ -21,9 +23,7 @@ const ScanId = () => {
   };
 
   const handleScanPress = () => {
-    // Handle scan functionality here
     console.log("Scan button pressed");
-    // navigate("CreateAccount");
     navigate("DocumentScan");
   };
 
@@ -44,13 +44,12 @@ const ScanId = () => {
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
         <Text style={[styles.headingtext, { color: colors.textPrimary }]}>
-          Scan ID document to verify your identity
+          {t("scanId.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Confirm your identity with a few taps on your phone
+          {t("scanId.subtitle")}
         </Text>
 
-        {/* Replace PrimaryButton with RoundButton */}
         <RoundButton 
           onPress={handleScanPress}
           iconName="qr-code-outline"
@@ -61,6 +60,7 @@ const ScanId = () => {
     </View>
   );
 };
+
 
 export default ScanId;
 
