@@ -11,14 +11,17 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
-import PrimaryButton from "../../components/PrimaryButton";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import { RouteProp } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+
+import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+import PrimaryButton from "../../components/PrimaryButton";
+
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 

@@ -7,7 +7,7 @@ import {
   ScrollView,
   Image,
   Alert,
-  ActivityIndicator,
+  
 } from "react-native";
 import { useTheme, useFocusEffect } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
@@ -17,6 +17,8 @@ import { navigate } from "../../navigation/navigationService";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 type Card = {
   id: string;
@@ -33,7 +35,10 @@ const SelectAccount = ({ navigation, route }: any) => {
   const { recipient, amount, currency, purpose } = route.params;
   const [isProcessing, setIsProcessing] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector((state) => state.auth);
 
   // Mock data for recipient (you can replace with actual data from route.params)
   const recipientData = {
@@ -46,31 +51,31 @@ const SelectAccount = ({ navigation, route }: any) => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        setLoading(false);
+        
         return;
       }
-      
+
       const cardsSnapshot = await firestore()
-        .collection('cards')
+        .collection("cards")
         .doc(user.uid)
-        .collection('userCards')
-        .orderBy('createdAt', 'desc')
+        .collection("userCards")
+        .orderBy("createdAt", "desc")
         .get();
-      
-      const cardsData = cardsSnapshot.docs.map(doc => ({
+
+      const cardsData = cardsSnapshot.docs.map((doc) => ({
         id: doc.id,
         lastFour: doc.data().lastFour,
-        type: doc.data().type || 'other',
+        type: doc.data().type || "other",
         name: doc.data().accountHolderName,
         expiry: doc.data().expiryDate,
       }));
-      
+
       setCards(cardsData);
     } catch (error) {
       console.error("Error fetching cards:", error);
       Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.loadFailed"));
     } finally {
-      setLoading(false);
+      
     }
   };
 
@@ -82,9 +87,9 @@ const SelectAccount = ({ navigation, route }: any) => {
 
   const handlePay = async () => {
     if (!selectedAccount) return;
-    
+
     setIsProcessing(true);
-    
+
     try {
       const user = auth().currentUser;
       if (!user) {
@@ -101,26 +106,31 @@ const SelectAccount = ({ navigation, route }: any) => {
 
       // Deduct amount from user's balance in Firestore
       await firestore()
-        .collection('users')
+        .collection("users")
         .doc(user.uid)
         .update({
           balance: firestore.FieldValue.increment(-paymentAmount),
           updatedAt: firestore.FieldValue.serverTimestamp(),
         });
 
-      const selectedCard = cards.find(card => card.id === selectedAccount);
-      
+      const selectedCard = cards.find((card) => card.id === selectedAccount);
+
       navigate("PaymentCompleted", {
         recipient,
         amount,
         currency,
         purpose,
         account: {
-          type: selectedCard?.type === 'visa' ? 'Visa' : 
-                selectedCard?.type === 'mastercard' ? 'Mastercard' : 
-                selectedCard?.type === 'amex' ? 'Amex' : 'Card',
+          type:
+            selectedCard?.type === "visa"
+              ? "Visa"
+              : selectedCard?.type === "mastercard"
+              ? "Mastercard"
+              : selectedCard?.type === "amex"
+              ? "Amex"
+              : "Card",
           number: `•••• •••• •••• ${selectedCard?.lastFour}`,
-          expiry: selectedCard?.expiry
+          expiry: selectedCard?.expiry,
         },
       });
     } catch (error) {
@@ -134,20 +144,45 @@ const SelectAccount = ({ navigation, route }: any) => {
   const getCardIcon = (type: string) => {
     switch (type) {
       case "visa":
-        return <FontAwesome name="cc-visa" size={24} color={colors.textPrimary} />;
+        return (
+          <FontAwesome name="cc-visa" size={24} color={colors.textPrimary} />
+        );
       case "mastercard":
-        return <FontAwesome name="cc-mastercard" size={24} color={colors.textPrimary} />;
+        return (
+          <FontAwesome
+            name="cc-mastercard"
+            size={24}
+            color={colors.textPrimary}
+          />
+        );
       case "amex":
-        return <FontAwesome name="cc-amex" size={24} color={colors.textPrimary} />;
+        return (
+          <FontAwesome name="cc-amex" size={24} color={colors.textPrimary} />
+        );
       default:
-        return <FontAwesome name="credit-card" size={24} color={colors.textPrimary} />;
+        return (
+          <FontAwesome
+            name="credit-card"
+            size={24}
+            color={colors.textPrimary}
+          />
+        );
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.background,
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        ]}
+      >
+        <ActivityIndicator  />
       </View>
     );
   }
@@ -208,14 +243,19 @@ const SelectAccount = ({ navigation, route }: any) => {
               onPress={() => setSelectedAccount(card.id)}
             >
               <View style={styles.accountLeft}>
-                <View style={styles.cardIcon}>
-                  {getCardIcon(card.type)}
-                </View>
+                <View style={styles.cardIcon}>{getCardIcon(card.type)}</View>
                 <View>
-                  <Text style={[styles.accountType, { color: colors.textPrimary }]}>
-                    {card.type === 'visa' ? 'Visa' : 
-                     card.type === 'mastercard' ? 'Mastercard' : 
-                     card.type === 'amex' ? 'Amex' : 'Card'} •••• {card.lastFour}
+                  <Text
+                    style={[styles.accountType, { color: colors.textPrimary }]}
+                  >
+                    {card.type === "visa"
+                      ? "Visa"
+                      : card.type === "mastercard"
+                      ? "Mastercard"
+                      : card.type === "amex"
+                      ? "Amex"
+                      : "Card"}{" "}
+                    •••• {card.lastFour}
                   </Text>
                   <Text
                     style={[
@@ -234,7 +274,9 @@ const SelectAccount = ({ navigation, route }: any) => {
                   color={colors.primary}
                 />
               ) : (
-                <View style={[styles.checkbox, { borderColor: colors.border }]} />
+                <View
+                  style={[styles.checkbox, { borderColor: colors.border }]}
+                />
               )}
             </TouchableOpacity>
           ))
@@ -347,7 +389,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   noCardsText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 20,
     fontSize: 16,
     fontFamily: "Poppins",

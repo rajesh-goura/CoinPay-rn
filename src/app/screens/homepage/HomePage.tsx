@@ -7,7 +7,7 @@ import {
   TextInput,
   ScrollView,
   Dimensions,
-  ActivityIndicator,
+  
 } from "react-native";
 import { Image } from 'expo-image';
 import { useTheme } from "@react-navigation/native";
@@ -23,6 +23,8 @@ import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const { height } = Dimensions.get("window");
 
@@ -30,14 +32,16 @@ const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
   const [balance, setBalance] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Get loading state from Redux
+  const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   // Fetch user balance from Firestore
   useEffect(() => {
     const user = auth().currentUser;
     
     if (!user) {
-      setLoading(false);
       return;
     }
 
@@ -51,7 +55,6 @@ const HomePage = () => {
         } else {
           setBalance(0);
         }
-        setLoading(false);
       });
 
     return () => unsubscribe();
@@ -103,6 +106,14 @@ const HomePage = () => {
       type: "savings",
     },
   ];
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator/>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.flexContainer}>
@@ -175,13 +186,9 @@ const HomePage = () => {
           </TouchableOpacity>
 
           {/* Available Balance */}
-          {loading ? (
-            <ActivityIndicator size="small" color={colors.textPrimary} />
-          ) : (
-            <Text style={[styles.balanceAmount, { color: colors.textPrimary }]}>
-              {formatBalance(balance)}
-            </Text>
-          )}
+          <Text style={[styles.balanceAmount, { color: colors.textPrimary }]}>
+            {formatBalance(balance)}
+          </Text>
           <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>
             {t("homePage.availableBalance")}
           </Text>
@@ -479,6 +486,9 @@ const styles = StyleSheet.create({
   transactionAmount: {
     fontSize: 14,
     fontWeight: "bold",
+  },
+  container: {
+    flex: 1,
   },
 });
 

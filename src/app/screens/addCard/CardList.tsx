@@ -1,22 +1,39 @@
+// Core React
 import React, { useState, useEffect } from "react";
+
+// React Native Components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-  ActivityIndicator,
   Alert,
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
+
+// Navigation
 import { useTheme, useFocusEffect } from "@react-navigation/native";
+import { navigate } from "../../navigation/navigationService";
+
+// Firebase Services
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+
+// Third-party Libraries
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+
+// Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
+import ActivityIndicator from "../../components/ActivityIndicator";
+
+// Redux Store
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+
+// Theming
 import { CustomTheme } from "../../themes/Theme";
-import { navigate } from "../../navigation/navigationService";
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import { useTranslation } from "react-i18next";
+
 
 type Card = {
   id: string;
@@ -30,15 +47,17 @@ const CardList = () => {
   const { t } = useTranslation();
   const { colors } = useTheme() as CustomTheme;
   const [cards, setCards] = useState<Card[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleteAnimations, setDeleteAnimations] = useState<Record<string, Animated.Value>>({});
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+
+  // Get loading state from Redux
+  const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const fetchCards = async () => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        setLoading(false);
         return;
       }
       
@@ -69,8 +88,6 @@ const CardList = () => {
     } catch (error) {
       console.error("Error fetching cards:", error);
       Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.loadFailed"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -145,10 +162,10 @@ const CardList = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator/>
       </View>
     );
   }
@@ -244,6 +261,7 @@ const CardList = () => {
     </View>
   );
 };
+
 
 
 const styles = StyleSheet.create({

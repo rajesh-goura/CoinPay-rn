@@ -1,3 +1,4 @@
+// React & React Native core
 import React, { useState } from "react";
 import {
   View,
@@ -7,12 +8,21 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
-  ActivityIndicator
+  LogBox,
 } from "react-native";
+
+// Navigation
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
+
+// UI Components & Icons
 import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
-import { LogBox } from "react-native";
+import ActivityIndicator from "../../components/ActivityIndicator";
+
+// Redux
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+
+// Firebase
 import auth from '@react-native-firebase/auth';
 
 LogBox.ignoreLogs([
@@ -26,7 +36,10 @@ const ForgotPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  // Get loading state from Redux
+  const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleResetPassword = async () => {
     if (!email.trim()) {
@@ -41,7 +54,6 @@ const ForgotPassword = () => {
       return;
     }
 
-    setIsLoading(true);
     try {
       await auth().sendPasswordResetEmail(email);
       Alert.alert(
@@ -66,8 +78,6 @@ const ForgotPassword = () => {
       }
       
       Alert.alert("Error", errorMessage);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -115,8 +125,8 @@ const ForgotPassword = () => {
 
         {/* Submit Button */}
         <View style={styles.buttonContainer}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} />
+          {isLoading ? ( 
+            <ActivityIndicator />
           ) : (
             <PrimaryButton
               onPress={handleResetPassword}
