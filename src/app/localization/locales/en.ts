@@ -10,6 +10,7 @@ const en = {
       cancel: "Cancel",
       next: "Next",
       getStarted: "Get Started",
+      ok:"Ok",
       
     },
     onboarding: {
@@ -264,7 +265,7 @@ const en = {
         confirm: {
           title: "Confirm",
           add: "Add {{amount}} to your balance?",
-          deduct: "Deduct ${amount} from your balance?"
+          deduct: "Deduct {{amount}} from your balance?"
         }
       }
       

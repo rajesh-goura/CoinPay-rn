@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +13,7 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;
@@ -95,9 +95,11 @@ export default function DocumentScan() {
           <Text style={[styles.scanInstruction, { color: colors.textPrimary }]}>
             {t("documentScan.scanInstruction")}
           </Text>
-          
+
           <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
-            <View style={[styles.cameraOverlay, { borderColor: colors.primary }]} />
+            <View
+              style={[styles.cameraOverlay, { borderColor: colors.primary }]}
+            />
           </CameraView>
         </View>
 
@@ -108,13 +110,11 @@ export default function DocumentScan() {
               {t("documentScan.statusHeading")}
             </Text>
             {isLoading ? (
-              <ActivityIndicator
-                size="small"
-                color={colors.primary}
-                style={styles.loader}
-              />
+              <ActivityIndicator />
             ) : (
-              <Text style={[styles.statusSubtext, { color: colors.textPrimary }]}>
+              <Text
+                style={[styles.statusSubtext, { color: colors.textPrimary }]}
+              >
                 {t("documentScan.statusSubtext")}
               </Text>
             )}
@@ -123,10 +123,15 @@ export default function DocumentScan() {
           <View style={styles.buttonContainer}>
             {!pictureTaken ? (
               <TouchableOpacity
-                style={[styles.captureButton, { backgroundColor: colors.primary }]}
+                style={[
+                  styles.captureButton,
+                  { backgroundColor: colors.primary },
+                ]}
                 onPress={takePicture}
               >
-                <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
+                <Text
+                  style={[styles.buttonText, { color: colors.textPrimary }]}
+                >
                   {t("documentScan.captureButton")}
                 </Text>
               </TouchableOpacity>
@@ -135,7 +140,9 @@ export default function DocumentScan() {
                 style={[styles.saveButton, { backgroundColor: colors.success }]}
                 onPress={savePicture}
               >
-                <Text style={[styles.buttonText, { color: colors.textPrimary }]}>
+                <Text
+                  style={[styles.buttonText, { color: colors.textPrimary }]}
+                >
                   {t("documentScan.saveButton")}
                 </Text>
               </TouchableOpacity>
@@ -146,7 +153,6 @@ export default function DocumentScan() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

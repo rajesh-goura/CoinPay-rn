@@ -1,28 +1,47 @@
+// Core React
 import React, { useState } from "react";
+
+// React Native Components
 import {
-  View,
-  Text,
+  Alert,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Alert,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform
+  View
 } from "react-native";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { navigate } from "../../navigation/navigationService";
+
+// Firebase Services
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+
+// Third-party Libraries
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
-import PrimaryButton from "../../components/PrimaryButton";
-import { CustomTheme } from "../../themes/Theme";
-import { navigate } from "../../navigation/navigationService";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 import { useTranslation } from "react-i18next";
+
+// Custom Components
+import PrimaryButton from "../../components/PrimaryButton";
+import ActivityIndicator from "../../components/ActivityIndicator";
+
+// Redux Store
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+
+// Theming
+import { CustomTheme } from "../../themes/Theme";
+
+
+
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -31,6 +50,10 @@ const CardDetails = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
 
+  // Get loading state from Redux
+  const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   // Form state
   const [accountHolderName, setAccountHolderName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +61,6 @@ const CardDetails = () => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -70,13 +92,10 @@ const CardDetails = () => {
     }
 
     try {
-      setIsLoading(true);
-
       const currentUser = auth().currentUser;
 
       if (!currentUser) {
         Alert.alert(t("cardDetails.alerts.error"), t("cardDetails.alerts.noUser"));
-        setIsLoading(false);
         return;
       }
 
@@ -92,8 +111,6 @@ const CardDetails = () => {
     } catch (error: any) {
       console.error("Error:", error);
       Alert.alert(t("cardDetails.alerts.error"), error.message || t("cardDetails.alerts.genericError"));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -345,7 +362,7 @@ const CardDetails = () => {
 
           <View style={styles.buttonContainer}>
             {isLoading ? (
-              <ActivityIndicator size="large" color={colors.primary} />
+              <ActivityIndicator  />
             ) : (
               <PrimaryButton
                 onPress={handleVerify}

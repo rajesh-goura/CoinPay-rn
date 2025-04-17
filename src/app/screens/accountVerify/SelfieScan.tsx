@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
   Dimensions,
   Image,
 } from "react-native";
@@ -14,6 +13,7 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -129,7 +129,7 @@ export default function SelfieScan() {
               disabled={isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color="black" />
+                <ActivityIndicator/>
               ) : (
                 <View style={styles.captureButtonInner} />
               )}
