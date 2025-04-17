@@ -36,6 +36,11 @@ import Onboarding from "./screens/onboarding/Onboarding";
 import ScanQr from "./screens/send/ScanQr";
 import SettingsScreen from "./screens/settings/SettingsScreen";
 import UpdateMoney from "./screens/balance/UpdateMoney";
+import QrCode from "./screens/receive/QrCode";
+import RequestRecipient from "./screens/receive/RequestRecipient";
+import RequestPurpose from "./screens/receive/RequestPurpose";
+import RequestAmount from "./screens/receive/RequestAmount";
+import SendRequest from "./screens/receive/SendRequest";
 
 const Stack = createStackNavigator();
 
@@ -94,6 +99,11 @@ const RootNavigator = () => {
             <Stack.Screen name="SelectAccount" component={SelectAccount} />
             <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
             <Stack.Screen name="ScanQr" component={ScanQr} />
+            <Stack.Screen name="QrCode" component={QrCode} />
+            <Stack.Screen name="RequestRecipient" component={RequestRecipient} />
+            <Stack.Screen name="RequestPurpose" component={RequestPurpose} />
+            <Stack.Screen name="RequestAmount" component={RequestAmount} />
+            <Stack.Screen name="SendRequest" component={SendRequest} />
           </>
         )}
       </Stack.Navigator>
