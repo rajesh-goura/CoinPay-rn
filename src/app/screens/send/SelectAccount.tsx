@@ -210,14 +210,14 @@ const SelectAccount = ({ navigation, route }: any) => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          <Image source={recipientData.image} style={styles.recipientImage} />
+          <Image source={recipient.image} style={styles.recipientImage} />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
-            {recipientData.name}
+            {recipient.name}
           </Text>
           <Text
             style={[styles.recipientEmail, { color: colors.textSecondary }]}
           >
-            {recipientData.email}
+            {recipient.email}
           </Text>
         </View>
 
