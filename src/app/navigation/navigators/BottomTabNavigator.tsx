@@ -1,13 +1,14 @@
-// BottomTabNavigator.tsx
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
 import { View, StyleSheet } from "react-native";
 import { Image } from 'expo-image';
+
+import { CustomTheme } from "../../themes/Theme";
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
+
 
 const Tab = createBottomTabNavigator();
 

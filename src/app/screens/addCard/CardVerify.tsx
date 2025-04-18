@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
   Alert,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import auth from "@react-native-firebase/auth";
-import PrimaryButton from "../../components/PrimaryButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
+import auth from "@react-native-firebase/auth";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+
 
 const CardVerify = () => {
   const { colors } = useTheme();

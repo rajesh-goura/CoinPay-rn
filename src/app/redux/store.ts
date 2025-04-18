@@ -1,15 +1,12 @@
-// src/redux/store.ts
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+
 import themeReducer from './slices/themeSlice';
 import authReducer from './slices/authSlice';
-import { 
-  TypedUseSelectorHook, 
-  useDispatch, 
-  useSelector 
-} from 'react-redux';
+
 
 const persistConfig = {
   key: 'root',

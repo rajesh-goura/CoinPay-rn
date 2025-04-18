@@ -1,24 +1,40 @@
 import React, { useState, useEffect } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
   Alert,
-  
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme, useFocusEffect } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import PrimaryButton from "../../components/PrimaryButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+
+// Firebase
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { useTranslation } from "react-i18next";
+
+// Redux
 import { useAppDispatch, useAppSelector } from "../../redux/store";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
 import ActivityIndicator from "../../components/ActivityIndicator";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
+// Translation
+import { useTranslation } from "react-i18next";
+
 
 type Card = {
   id: string;

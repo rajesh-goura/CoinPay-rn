@@ -1,22 +1,35 @@
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Alert,
-  ActivityIndicator,
+  View,
 } from "react-native";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import PrimaryButton from "../../components/PrimaryButton";
-import { LogBox } from "react-native";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
 import { useTranslation } from "react-i18next"; // Translation hook
+import { LogBox } from "react-native";
+
+// Redux
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { login } from "../../redux/slices/authSlice";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",

@@ -1,22 +1,30 @@
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
+
+// Navigation
+import { useNavigation, useTheme } from "@react-navigation/native";
+
+// External libraries
+import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { useTranslation } from "react-i18next";
+
+// Internal components
+import { CustomTheme } from "../../themes/Theme";
+
 
 const UpdateMoney = () => {
   const { colors } = useTheme() as CustomTheme;

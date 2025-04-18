@@ -1,21 +1,34 @@
 import React, { useState, useEffect } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Alert,
-  ActivityIndicator,
+  View,
 } from "react-native";
+
+// Navigation
 import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
+import { navigate } from "../../navigation/navigationService";
+
+// Icons
 import { Ionicons } from "@expo/vector-icons";
+
+// Internal components
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
+
+// Firebase
 import auth from "@react-native-firebase/auth";
-import { navigate } from "../../navigation/navigationService";
+
+// Translation
 import { useTranslation } from "react-i18next";
+
 
 const { width: screenWidth } = Dimensions.get("window");
 const totalScreens = 13;

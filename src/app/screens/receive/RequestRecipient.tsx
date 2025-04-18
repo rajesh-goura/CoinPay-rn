@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Image,
+  Dimensions,
   FlatList,
+  Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
-  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
-import { Ionicons } from "@expo/vector-icons";
-import RoundButton from "../../components/RoundButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// Internal components
+import RoundButton from "../../components/RoundButton";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
 
 const RequestRecipient
  = ({ navigation }: any) => {

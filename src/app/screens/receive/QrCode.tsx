@@ -1,23 +1,35 @@
-// QrCode.tsx
 import React from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
   Dimensions,
+  Image,
   Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
-import { Ionicons } from "@expo/vector-icons";
-import PrimaryButton from "../../components/PrimaryButton";
-import SecondaryButton from "../../components/SecondaryButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
 import QRCode from "react-native-qrcode-svg";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+import SecondaryButton from "../../components/SecondaryButton";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const { width } = Dimensions.get("window");
 
