@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -19,7 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import RoundButton from "../../components/RoundButton";
 import { navigate } from "../../navigation/navigationService";
 
-const SendMoney = ({ navigation }: any) => {
+const RequestRecipient
+ = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const [searchQuery, setSearchQuery] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -86,7 +86,7 @@ const SendMoney = ({ navigation }: any) => {
   const renderRecipientItem = ({ item }: any) => (
     <TouchableOpacity
       style={[styles.recipientItem, { borderBottomColor: colors.border }]}
-      onPress={() => navigate("SendAmount", { recipient: item })}
+      onPress={() => navigate("RequestPurpose", { recipient: item })}
     >
       <View style={styles.recipientLeft}>
         <Image source={item.image} style={styles.recipientImage} />
@@ -300,4 +300,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SendMoney;
+export default RequestRecipient
+;

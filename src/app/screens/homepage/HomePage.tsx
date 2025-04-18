@@ -241,7 +241,7 @@ const HomePage = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.actionButton]}>
+          <TouchableOpacity style={[styles.actionButton]}  onPress={() => navigate("QrCode")}>
             <Image
               source={require("@/assets/icons/dollar-receive-circle.svg")}
               style={[
