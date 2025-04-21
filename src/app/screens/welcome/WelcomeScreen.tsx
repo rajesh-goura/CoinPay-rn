@@ -5,8 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import PrimaryButton from "../../components/PrimaryButton";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+import Header from "../../components/Header";
 import { navigate } from "../../navigation/navigationService";
+
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -28,15 +29,7 @@ const WelcomeScreen = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       
       {/* Header: Back Button (Top) & Progress Bar (Below) */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
-
+      <Header progress={progress}/>
       {/* Content Section */}
       <View style={styles.content}>
         <Image style={styles.img} source={dark ? item.imageDark : item.imageLight} />
@@ -59,21 +52,7 @@ export default WelcomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    right: 20,
-    flexDirection: "column",
-    alignItems: "flex-start",
-  },
-  backButton: {
-    marginBottom: 10,
-  },
-  progressContainer: {
-    width: "100%",
-    alignItems: "center",
+    // paddingHorizontal: 20,
   },
   content: {
     flex: 1,

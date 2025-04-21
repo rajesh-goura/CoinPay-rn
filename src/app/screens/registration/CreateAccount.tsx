@@ -34,6 +34,7 @@ import { useTranslation } from "react-i18next";
 
 // Other
 import { LogBox } from "react-native";
+import Header from "../../components/Header";
 
 
 LogBox.ignoreLogs([
@@ -99,17 +100,7 @@ const CreateAccount = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
+      <Header progress={progress}/>
 
       {/* Content Section */}
       <View style={styles.content}>
@@ -241,7 +232,7 @@ const CreateAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    
   },
   backButton: {
     marginTop: 20,
@@ -255,6 +246,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     marginTop: 20,
+    paddingHorizontal: 20,
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,

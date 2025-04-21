@@ -24,6 +24,7 @@ import SecondaryButton from "../../components/SecondaryButton";
 
 // Translation
 import { useTranslation } from "react-i18next";
+import Header from "../../components/Header";
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -45,14 +46,7 @@ const Signup = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       
       {/* Header: Back Button (Top) & Progress Bar (Below) */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
+      <Header progress={progress}/>
 
       {/* Content Section */}
       <View style={styles.content}>
@@ -91,6 +85,7 @@ export default Signup;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
   header: {
     position: "absolute",
@@ -112,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 100,
+    marginTop: 50,
   },
   img: {
     width: screenWidth * 0.7,

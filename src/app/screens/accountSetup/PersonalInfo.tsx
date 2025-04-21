@@ -33,11 +33,13 @@ import DateTimePicker, {
 import { useTranslation } from "react-i18next";
 
 // Internal components
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+
 import PrimaryButton from "../../components/PrimaryButton";
+import Header from "../../components/Header";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+
 
 
 type PersonalInfoRouteParams = {
@@ -123,17 +125,7 @@ const PersonalInfo = () => {
         keyboardShouldPersistTaps="handled"
       >
         {/* Header with Back Button and Progress Bar */}
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-          </TouchableOpacity>
-          <View style={styles.progressContainer}>
-            <AnimatedProgressBar progress={progress} />
-          </View>
-        </View>
+        <Header progress={progress}/>
 
         {/* Content Section */}
         <View style={styles.content}>
@@ -250,22 +242,15 @@ const PersonalInfo = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  backButton: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  progressContainer: {
-    width: "100%",
-    alignItems: "center",
+    
   },
   content: {
     flex: 1,
     justifyContent: "space-between",
     marginTop: 20,
-    minHeight: screenHeight * 0.7, // Ensure minimum height for smaller screens
+    minHeight: screenHeight * 0.7, 
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,
