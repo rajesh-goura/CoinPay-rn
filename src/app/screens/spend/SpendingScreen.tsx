@@ -511,8 +511,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#e0e0e0",
   },
   tabIcon: {
     width: 24,
@@ -527,17 +528,8 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 12,
     fontWeight: "500",
-    textAlign: 'center',
-  },
-  tabLabelWrapper: {
-    alignItems: 'center',
     width: 50,
-  },
-  activeIndicator: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginTop: 4,
+    textAlign: "center",
   },
   listHeader: {
     flexDirection: "row",

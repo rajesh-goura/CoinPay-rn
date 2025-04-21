@@ -17,18 +17,17 @@ import { navigate } from "../../navigation/navigationService";
 // Camera
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 
-// Icons
-import { Ionicons } from "@expo/vector-icons";
 
 // External libraries
 import { useTranslation } from "react-i18next";
 
 // Internal components
 import ActivityIndicator from "../../components/ActivityIndicator";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+import Header from "../../components/Header";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -92,17 +91,7 @@ export default function DocumentScan() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header with Back Button and Progress Bar */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
+      <Header progress={progress}/>
 
       {/* Main Content */}
       <View style={styles.mainContent}>
@@ -173,18 +162,7 @@ export default function DocumentScan() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backButton: {
-    marginRight: 20,
-  },
-  progressContainer: {
-    flex: 1,
+    // paddingHorizontal: 20,
   },
   mainContent: {
     flex: 1,

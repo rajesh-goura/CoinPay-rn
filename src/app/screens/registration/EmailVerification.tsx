@@ -20,7 +20,7 @@ import { navigate } from "../../navigation/navigationService";
 import { Ionicons } from "@expo/vector-icons";
 
 // Internal components
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+import Header from "../../components/Header";
 import PrimaryButton from "../../components/PrimaryButton";
 
 // Firebase
@@ -28,6 +28,7 @@ import auth from "@react-native-firebase/auth";
 
 // Translation
 import { useTranslation } from "react-i18next";
+
 
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -117,17 +118,7 @@ const EmailVerification = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <AnimatedProgressBar progress={progress} />
-        </View>
-      </View>
+      <Header progress={progress}/>
 
       {/* Content Section */}
       <View style={styles.content}>
@@ -182,22 +173,13 @@ const EmailVerification = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  backButton: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  progressContainer: {
-    width: "100%",
-    alignItems: "center",
+    
   },
   content: {
     flex: 1,
     justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   heading: {
     fontSize: screenWidth < 400 ? 28 : 32,
