@@ -15,6 +15,7 @@ import { CustomTheme } from "../../themes/Theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { BarChart } from "react-native-chart-kit";
+import SecondaryHeader from "../../components/SecondaryHeader";
 
 const { width } = Dimensions.get("window");
 
@@ -91,7 +92,7 @@ const SpendingScreen = ({ navigation }: any) => {
 
   // Render item for the list
   const renderItem = ({ item }: any) => (
-    <View style={[styles.listItem, { backgroundColor: colors.modalBackgroun }]}>
+    <View style={[styles.listItem, { borderBottomColor:colors.border,borderBottomWidth:1.9 }]}>
       <Image source={item.icon} style={styles.listIcon} />
       <View style={styles.listTextContainer}>
         <Text style={[styles.listName, { color: colors.textPrimary }]}>
@@ -101,8 +102,8 @@ const SpendingScreen = ({ navigation }: any) => {
           {item.date}
         </Text>
       </View>
-      <Text style={[styles.listAmount, { color: "#FF3B30" }]}>
-        ${Math.abs(item.amount)}
+      <Text style={[styles.listAmount, { color: "#ed4034" }]}>
+        -${Math.abs(item.amount)}
       </Text>
     </View>
   );
@@ -113,18 +114,7 @@ const SpendingScreen = ({ navigation }: any) => {
       contentContainerStyle={styles.scrollContainer}
     >
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-          Spending
-        </Text>
-        <View style={{ width: 24 }} /> {/* Spacer for alignment */}
-      </View>
+      <SecondaryHeader title="Spending" onBackPress={() => navigation.goBack()} ></SecondaryHeader>
 
       {/* Month Dropdown */}
       <TouchableOpacity
@@ -205,7 +195,7 @@ const SpendingScreen = ({ navigation }: any) => {
           </View>
         </View>
 
-        <View style={[styles.card, { backgroundColor: "#FFF9C4" }]}>
+        <View style={[styles.card, { backgroundColor: "#fbd84a" }]}>
           <View style={styles.cardContent}>
             <Image
               source={require("@/assets/icons/credit-card.svg")}
@@ -225,7 +215,7 @@ const SpendingScreen = ({ navigation }: any) => {
       <View
         style={[
           styles.chartContainer,
-          { backgroundColor: colors.modalBackgroun, borderRadius: 16 },
+          { backgroundColor: colors.modalBackgroun, borderRadius: 16 ,borderBottomWidth:2,borderColor:colors.primary},
         ]}
       >
         <BarChart
@@ -245,8 +235,11 @@ const SpendingScreen = ({ navigation }: any) => {
               },
             ],
           }}
-          width={width - 40}
-          height={220}
+          width={width - 60}
+          height={180}
+          withInnerLines={false}
+          showValuesOnTopOfBars={true}
+          
           yAxisLabel="$"
           yAxisSuffix=""
           fromZero
@@ -254,7 +247,13 @@ const SpendingScreen = ({ navigation }: any) => {
           withCustomBarColorFromData={true}
           flatColor={true}
           chartConfig={{
-            backgroundColor: colors.modalBackgroun,
+            // propsForHorizontalLabels: {
+            //   fontSize: 0, // Set font size to 0
+            //   color: 'transparent',
+              
+            // },
+            paddingRight: 30,
+            backgroundColor:colors.modalBackgroun,
             backgroundGradientFrom: colors.modalBackgroun,
             backgroundGradientTo: colors.modalBackgroun,
             decimalPlaces: 0,
@@ -263,12 +262,16 @@ const SpendingScreen = ({ navigation }: any) => {
             style: {
               borderRadius: 16,
             },
-            barPercentage: 0.5,
+            barPercentage: 0.9,
+            formatTopBarValue: (value) => `$ ${value}`, 
+            
             propsForLabels: {
               fontSize: 10,
             },
+            
           }}
           style={{
+            marginLeft: -10,
             marginVertical: 8,
             borderRadius: 16,
           }}
@@ -276,62 +279,64 @@ const SpendingScreen = ({ navigation }: any) => {
       </View>
 
       {/* Tab Navigation */}
+      <View style={[styles.MaintabContainer, { backgroundColor: colors.modalBackgroun }]}>
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[
             styles.roundTabButton,
-            activeTab === "spending" && { backgroundColor: colors.primary },
+            { backgroundColor:"#eaebfd" },
           ]}
           onPress={() => setActiveTab("spending")}
         >
           <Image
             source={require("@/assets/icons/credit-card-minus.svg")}
-            style={[styles.tabIcon, { tintColor: "#fff" }]}
+            style={[styles.tabIcon, { tintColor:colors.primary }]}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
             styles.roundTabButton,
-            activeTab === "income" && { backgroundColor: "#4CAF50" },
+            { backgroundColor: "#e9f5e9" },
           ]}
           onPress={() => setActiveTab("income")}
         >
           <Image
             source={require("@/assets/icons/coins.svg")}
-            style={[styles.tabIcon, { tintColor: "#fff" }]}
+            style={[styles.tabIcon, { tintColor: "#4CAF50" }]}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
             styles.roundTabButton,
-            activeTab === "bills" && { backgroundColor: "#FFD700" },
+             { backgroundColor: "#fff9c5" },
           ]}
           onPress={() => setActiveTab("bills")}
         >
           <Image
             source={require("@/assets/icons/invoice.svg")}
-            style={[styles.tabIcon, { tintColor: "#000" }]}
+            style={[styles.tabIcon, { tintColor: "#f17e3a" }]}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
             styles.roundTabButton,
-            activeTab === "savings" && { backgroundColor: "#FF9800" },
+            { backgroundColor: "#fdf2e1" },
           ]}
           onPress={() => setActiveTab("savings")}
         >
           <Image
             source={require("@/assets/icons/sack-dollar.svg")}
-            style={[styles.tabIcon, { tintColor: "#fff" }]}
+            style={[styles.tabIcon, { tintColor: "#f39a3e" }]}
           />
         </TouchableOpacity>
       </View>
 
       {/* Tab Labels */}
       <View style={styles.tabLabelContainer}>
+        
         <Text
           style={[
             styles.tabLabel,
@@ -349,7 +354,7 @@ const SpendingScreen = ({ navigation }: any) => {
           style={[
             styles.tabLabel,
             {
-              color: activeTab === "income" ? "#4CAF50" : colors.textSecondary,
+              color: activeTab === "income" ? colors.primary : colors.textSecondary,
             },
           ]}
         >
@@ -358,7 +363,7 @@ const SpendingScreen = ({ navigation }: any) => {
         <Text
           style={[
             styles.tabLabel,
-            { color: activeTab === "bills" ? "#FFD700" : colors.textSecondary },
+            { color: activeTab === "bills" ? colors.primary : colors.textSecondary },
           ]}
         >
           Bills
@@ -367,13 +372,15 @@ const SpendingScreen = ({ navigation }: any) => {
           style={[
             styles.tabLabel,
             {
-              color: activeTab === "savings" ? "#FF9800" : colors.textSecondary,
+              color: activeTab === "savings" ? colors.primary : colors.textSecondary,
             },
           ]}
         >
           Savings
         </Text>
       </View>
+      </View>
+
 
       {/* List Header */}
       <View style={styles.listHeader}>
@@ -425,6 +432,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    width:"49%",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 10,
@@ -489,6 +497,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
   },
+  MaintabContainer:{
+    padding: 10,
+    borderRadius: 16,
+    marginBottom: 10,
+  },
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -498,9 +511,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#e0e0e0",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabIcon: {
     width: 24,
@@ -509,14 +521,23 @@ const styles = StyleSheet.create({
   tabLabelContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 16,
-    paddingHorizontal: 10,
+    marginBottom: 0,
+    paddingHorizontal: 0,
   },
   tabLabel: {
     fontSize: 12,
     fontWeight: "500",
+    textAlign: 'center',
+  },
+  tabLabelWrapper: {
+    alignItems: 'center',
     width: 50,
-    textAlign: "center",
+  },
+  activeIndicator: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginTop: 4,
   },
   listHeader: {
     flexDirection: "row",
@@ -535,7 +556,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 0,
     marginBottom: 8,
   },
   listIcon: {
@@ -557,7 +578,7 @@ const styles = StyleSheet.create({
   },
   listAmount: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight:"400",
   },
 });
 
