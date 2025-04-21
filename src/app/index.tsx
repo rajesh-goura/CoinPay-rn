@@ -1,29 +1,122 @@
-import React from "react";
-import { StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import { StatusBar, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./navigation/navigationService";
-import Onboarding1 from "./screens/onboarding/Onboarding1";
-import Home from "./screens/Home";
+import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
+import { useAppSelector } from "../app/redux/store"; 
+import Signup from "./screens/registration/Signup";
+import CreateAccount from "./screens/registration/CreateAccount";
+import { useColorScheme } from "react-native";
+import CountrySelector from "./screens/accountSetup/CountrySelector";
+import PersonalInfo from "./screens/accountSetup/PersonalInfo";
+import EmailInfo from "./screens/accountSetup/EmailInfo";
+import HomeAddress from "./screens/accountSetup/HomeAddress";
+import ScanId from "./screens/accountVerify/ScanId";
+import DocumentScan from "./screens/accountVerify/DocumentScan";
+import SelfieScreen from "./screens/accountVerify/SelfieScreen";
+import SelfieScan from "./screens/accountVerify/SelfieScan";
+import AccountSetup from "./screens/accountVerify/AccountSetup";
+import pinSetup from "./screens/pinSetup/pinSetup";
+import WelcomeScreen from "./screens/welcome/WelcomeScreen";
+import Login from "./screens/login/Login";
+import AddCard from "./screens/addCard/AddCard";
+import CardDetails from "./screens/addCard/CardDetails";
+import CardVerify from "./screens/addCard/CardVerify";
+import CardList from "./screens/addCard/CardList";
+import EmailVerification from "./screens/registration/EmailVerification";
+import ForgotPassword from "./screens/login/ForgotPassword";
+import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
+import SendMoney from "./screens/send/SendMoney";
+import SendAmount from "./screens/send/SendAmount";
+import Purpose from "./screens/send/Purpose";
+import SelectAccount from "./screens/send/SelectAccount";
+import PaymentCompleted from "./screens/send/PaymentCompleted";
+import Onboarding from "./screens/onboarding/Onboarding";
+import ScanQr from "./screens/send/ScanQr";
+import SettingsScreen from "./screens/settings/SettingsScreen";
+import UpdateMoney from "./screens/balance/UpdateMoney";
+import QrCode from "./screens/receive/QrCode";
+import RequestRecipient from "./screens/receive/RequestRecipient";
+import RequestPurpose from "./screens/receive/RequestPurpose";
+import RequestAmount from "./screens/receive/RequestAmount";
+import SendRequest from "./screens/receive/SendRequest";
+import SpendingScreen from "./screens/spend/SpendingScreen";
 
 const Stack = createStackNavigator();
 
+
+const RootNavigator = () => {
+  const { token, isLoading } = useAppSelector((state) => state.auth);
+  const systemTheme = useColorScheme();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <NavigationContainer
+      ref={navigationRef}
+      theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}
+    >
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!token ? (
+          <>
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="CreateAccount" component={CreateAccount} />
+            <Stack.Screen name="EmailVerification" component={EmailVerification} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+            {/* Setup Screens */}
+            <Stack.Screen name="CountrySelector" component={CountrySelector} />
+            <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+            <Stack.Screen name="EmailInfo" component={EmailInfo} />
+            <Stack.Screen name="HomeAddress" component={HomeAddress} />
+            <Stack.Screen name="ScanId" component={ScanId} />
+            <Stack.Screen name="DocumentScan" component={DocumentScan} />
+            <Stack.Screen name="SelfieScreen" component={SelfieScreen} />
+            <Stack.Screen name="SelfieScan" component={SelfieScan} />
+            <Stack.Screen name="AccountSetup" component={AccountSetup} />
+            <Stack.Screen name="pinSetup" component={pinSetup} />
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
+            <Stack.Screen name="AddCard" component={AddCard} />
+            <Stack.Screen name="CardDetails" component={CardDetails} />
+            <Stack.Screen name="CardVerify" component={CardVerify} />
+            <Stack.Screen name="CardList" component={CardList} />
+            <Stack.Screen name="SendMoney" component={SendMoney} />
+            <Stack.Screen name="SendAmount" component={SendAmount} />
+            <Stack.Screen name="Purpose" component={Purpose} />
+            <Stack.Screen name="SelectAccount" component={SelectAccount} />
+            <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
+            <Stack.Screen name="ScanQr" component={ScanQr} />
+            <Stack.Screen name="QrCode" component={QrCode} />
+            <Stack.Screen name="RequestRecipient" component={RequestRecipient} />
+            <Stack.Screen name="RequestPurpose" component={RequestPurpose} />
+            <Stack.Screen name="RequestAmount" component={RequestAmount} />
+            <Stack.Screen name="SendRequest" component={SendRequest} />
+            <Stack.Screen name="SpendingScreen" component={SpendingScreen} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 const MainNavigation = () => {
   return (
     <>
-      {/* StatusBar Fix */}
       <StatusBar barStyle="light-content" backgroundColor="#304FFE" />
-
-      {/* Navigation Container */}
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Onboarding1"
-        >
-          <Stack.Screen name="Onboarding1" component={Onboarding1} />
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <RootNavigator />
     </>
   );
 };

@@ -1,65 +1,82 @@
 import React, { useState, useRef } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
   Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
+
+// Navigation
 import { navigate } from "../../navigation/navigationService";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/src/app/redux/store";
-import { selectThemeMode } from "@/src/app/redux/slices/themeSlice";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+// Navigation & Theme
+import { useTheme } from "@react-navigation/native";
 
-const slides = [
-    {
-        id: "1",
-        imageLight: require("@/assets/images/Onboarding/Trust.png"),
-        imageDark: require("@/assets/images/Onboarding/darkmode/Trust.png"), // White version
-        text: "Trusted by millions of people, part of one part",
-      },
-      {
-        id: "2",
-        imageLight: require("@/assets/images/Onboarding/Send money abroad.png"),
-        imageDark: require("@/assets/images/Onboarding/darkmode/Send money abroad.png"),
-        text: "Spend money abroad, and track your expense",
-      },
-      {
-        id: "3",
-        imageLight: require("@/assets/images/Onboarding/Receive Money.png"),
-        imageDark: require("@/assets/images/Onboarding/darkmode/Receive Money.png"),
-        text: "Receive Money From Anywhere In The World",
-      },
-];
+// External libraries
+import { useTranslation } from "react-i18next";
 
-const Onboarding1 = () => {
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+import SecondaryButton from "../../components/SecondaryButton";
+
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+
+const Onboarding = () => {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList | null>(null);
-  const themeMode = useSelector(selectThemeMode);
-  const dispatch = useAppDispatch();
+  const { colors, dark } = useTheme();
+
+  const slides = [
+    {
+      id: "1",
+      imageLight: require("@/assets/images/Onboarding/Trust.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Trust.png"),
+      textKey: "onboarding.slide1", // Using translation key instead of hardcoded text
+    },
+    {
+      id: "2",
+      imageLight: require("@/assets/images/Onboarding/Send money abroad.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Send money abroad.png"),
+      textKey: "onboarding.slide2",
+    },
+    {
+      id: "3",
+      imageLight: require("@/assets/images/Onboarding/Receive Money.png"),
+      imageDark: require("@/assets/images/Onboarding/darkmode/Receive Money.png"),
+      textKey: "onboarding.slide3",
+    },
+  ];
 
   const handleNextPress = () => {
     if (currentIndex < slides.length - 1) {
       if (flatListRef.current) {
         try {
-          flatListRef.current.scrollToIndex({ index: currentIndex + 1, animated: true });
+          flatListRef.current.scrollToIndex({
+            index: currentIndex + 1,
+            animated: true,
+          });
           setCurrentIndex(currentIndex + 1);
         } catch (error) {
           console.warn("Error scrolling:", error);
         }
       }
     } else {
-      navigate("Home");
+      navigate("Signup");
     }
   };
 
   const renderItem = ({ item }: any) => (
-    <View style={[styles.content, { backgroundColor: themeMode === 'dark' ? '#121212' : '#FFFFFF' }]}>
-      <Image source={themeMode === 'dark' ? item.imageDark : item.imageLight}  style={styles.img} />
+    <View style={[styles.content, { backgroundColor: colors.background }]}>
+      <Image
+        source={dark ? item.imageDark : item.imageLight}
+        style={styles.img}
+      />
       <View style={styles.row}>
         <View style={styles.indicatorContainer}>
           {slides.map((_, index) => (
@@ -69,21 +86,21 @@ const Onboarding1 = () => {
                 styles.indicatorDot,
                 index === currentIndex && [
                   styles.activeDot,
-                  { backgroundColor: themeMode === 'dark' ? '#304FFE' : '#304FFE' }
-                ]
+                  { backgroundColor: colors.primary },
+                ],
               ]}
             />
           ))}
         </View>
-        <Text style={[styles.text, { color: themeMode === 'dark' ? '#FFFFFF' : '#000000' }]}>
-          {item.text}
+        <Text style={[styles.text, { color: colors.textPrimary }]}>
+          {t(item.textKey)} {/* Using the translation function here */}
         </Text>
       </View>
     </View>
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: themeMode === 'dark' ? '#121212' : '#FFFFFF' }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         ref={flatListRef}
         data={slides}
@@ -103,17 +120,11 @@ const Onboarding1 = () => {
         scrollEventThrottle={16}
       />
 
-      <TouchableOpacity 
-        style={[
-          styles.nextBtn, 
-          { backgroundColor: themeMode === 'dark' ? '#304FFE' : '#304FFE' }
-        ]} 
+      <PrimaryButton
         onPress={handleNextPress}
-      >
-        <Text style={styles.btntxt}>
-          {currentIndex === slides.length - 1 ? "Get Started" : "Next"}
-        </Text>
-      </TouchableOpacity>
+        text={currentIndex === slides.length - 1 ? t("common.getStarted") : t("common.next")}
+      />
+      <SecondaryButton onPress={()=>navigate("SettingsScreen")} text="go to settings"></SecondaryButton>
     </View>
   );
 };
@@ -136,10 +147,10 @@ const styles = StyleSheet.create({
     maxWidth: 260,
     maxHeight: 300,
     borderRadius: 12,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   row: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
     justifyContent: "center",
     alignItems: "center",
@@ -151,6 +162,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     marginTop: 20,
+    paddingTop:15,
     lineHeight: screenWidth < 400 ? 30 : 40,
   },
   indicatorContainer: {
@@ -168,7 +180,7 @@ const styles = StyleSheet.create({
     width: 20,
   },
   nextBtn: {
-    width: '90%',
+    width: "90%",
     maxWidth: 360,
     height: 56,
     borderRadius: 50,
@@ -180,8 +192,8 @@ const styles = StyleSheet.create({
   btntxt: {
     fontSize: 16,
     color: "#FFFFFF",
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 
-export default Onboarding1;
+export default Onboarding;

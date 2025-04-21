@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "233938846543",
+    "project_id": "coinpay-afd4a",
+    "storage_bucket": "coinpay-afd4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233938846543:android:0f199dd42a028d18eabb3a",
+        "android_client_info": {
+          "package_name": "com.anonymous.CoinPay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233938846543-43rmu06bf1rc8q1kj6628e424uh7bt04.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.CoinPay",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "233938846543-brp4bg05oabovjtpcss3fs0cm9pffm60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSgY9-mLQa8tkamdyjX66dp5zvVfBIOVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233938846543-brp4bg05oabovjtpcss3fs0cm9pffm60.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
