@@ -41,6 +41,7 @@ import RequestRecipient from "./screens/receive/RequestRecipient";
 import RequestPurpose from "./screens/receive/RequestPurpose";
 import RequestAmount from "./screens/receive/RequestAmount";
 import SendRequest from "./screens/receive/SendRequest";
+import SpendingScreen from "./screens/spend/SpendingScreen";
 
 const Stack = createStackNavigator();
 
@@ -104,6 +105,7 @@ const RootNavigator = () => {
             <Stack.Screen name="RequestPurpose" component={RequestPurpose} />
             <Stack.Screen name="RequestAmount" component={RequestAmount} />
             <Stack.Screen name="SendRequest" component={SendRequest} />
+            <Stack.Screen name="SpendingScreen" component={SpendingScreen} />
           </>
         )}
       </Stack.Navigator>
