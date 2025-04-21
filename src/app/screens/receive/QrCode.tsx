@@ -1,6 +1,4 @@
-import React from "react";
-
-// React Native components
+import React, { useRef } from "react";
 import {
   Dimensions,
   Image,
@@ -10,32 +8,22 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Navigation
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
-
-// Icons
 import { Ionicons } from "@expo/vector-icons";
-
-// External libraries
 import QRCode from "react-native-qrcode-svg";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-
-// Internal components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-
-// Theme
 import { CustomTheme } from "../../themes/Theme";
-
 
 const { width } = Dimensions.get("window");
 
 const QrCode = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const [userData, setUserData] = React.useState<any>(null);
+  const qrCodeRef = useRef<any>(null);
 
   React.useEffect(() => {
     const fetchUserData = async () => {
@@ -60,15 +48,28 @@ const QrCode = ({ navigation }: any) => {
       id: auth().currentUser?.uid,
       name: userData.personalInfo?.fullName || "User",
       email: userData.personalInfo?.email || "",
-      image: require("@/assets/images/user.png"), // Default image
+      image: require("@/assets/images/user.png"),
     });
   };
 
   const handleShare = async () => {
     try {
+      if (!qrCodeRef.current) return;
+
+      // Generate base64 image from QR code
+      const qrCodeBase64 = await new Promise((resolve, reject) => {
+        qrCodeRef.current?.toDataURL((data: string) => {
+          resolve(data);
+        });
+      });
+
+      const message = `Send me money via ${userData?.personalInfo?.fullName}'s QR code`;
+      const url = `data:image/png;base64,${qrCodeBase64}`;
+      
       await Share.share({
-        message: `Send me money via ${userData?.personalInfo?.fullName}'s QR code`,
-        // You could also include a deep link to your app here
+        message: `${message}\n\n`,
+        url: url,
+        title: 'Share QR Code',
       });
     } catch (error) {
       console.error("Error sharing:", error);
@@ -76,7 +77,6 @@ const QrCode = ({ navigation }: any) => {
   };
 
   const handleRequestPayment = () => {
-    // This would navigate to a screen where they can enter an amount to request
     navigate("SendAmount", {
       recipient: {
         id: auth().currentUser?.uid,
@@ -84,7 +84,7 @@ const QrCode = ({ navigation }: any) => {
         email: userData?.personalInfo?.email || "",
         image: require("@/assets/images/user.png"),
       },
-      isRequest: true, // Flag to indicate this is a request
+      isRequest: true,
     });
   };
 
@@ -106,12 +106,6 @@ const QrCode = ({ navigation }: any) => {
         >
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
-        <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          My QR Code
-        </Text>
-        <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Scan this code to receive money
-        </Text>
       </View>
 
       {/* QR Code Section */}
@@ -134,12 +128,13 @@ const QrCode = ({ navigation }: any) => {
             {userData.personalInfo?.email}
           </Text>
 
-          {/* QR Code */}
+          {/* QR Code with ref */}
           <View style={styles.qrCodeWrapper}>
             <QRCode
+              getRef={(ref) => (qrCodeRef.current = ref)}
               value={generateQrData()}
               size={width * 0.6}
-              color={colors.textPrimary}
+              color="#324cf5"
               backgroundColor={colors.modalBackgroun}
             />
           </View>
@@ -150,12 +145,11 @@ const QrCode = ({ navigation }: any) => {
       <View style={styles.buttonsContainer}>
         <PrimaryButton
           text="Request for Payment"
-          onPress={()=>navigate("RequestRecipient")}
+          onPress={() => navigate("RequestRecipient")}
         />
         <SecondaryButton
           text="Share to Receive Money"
           onPress={handleShare}
-          
         />
       </View>
     </View>
@@ -173,17 +167,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginBottom: 10,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-    fontFamily: "Poppins",
-  },
-  subtext: {
-    fontSize: 14,
-    marginBottom: 10,
-    fontFamily: "Poppins",
   },
   qrContainer: {
     flex: 1,
