@@ -8,6 +8,7 @@ import { CustomTheme } from "../../themes/Theme";
 import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
+import SpendingScreen from "../../screens/spend/SpendingScreen";
 
 
 const Tab = createBottomTabNavigator();
@@ -59,7 +60,7 @@ const BottomTabNavigator = () => {
       {/* Charts Tab */}
       <Tab.Screen
         name="Charts"
-        component={SampleScreen}
+        component={SpendingScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
