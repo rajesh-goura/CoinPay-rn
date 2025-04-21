@@ -1,13 +1,14 @@
-// App.tsx
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from './app/redux/store';
 import { Appearance } from 'react-native';
+
+import { store, persistor } from './app/redux/store';
 import { updateSystemTheme } from './app/redux/slices/themeSlice';
-import MainNavigator from './app/index';
 import { loadToken } from './app/redux/slices/authSlice';
+import MainNavigator from './app/index';
 import "./app/localization/i18n";
+
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {

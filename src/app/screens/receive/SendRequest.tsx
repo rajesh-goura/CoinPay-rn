@@ -1,21 +1,31 @@
-// SendRequest.tsx
 import React from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
   Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
-import { Ionicons } from "@expo/vector-icons";
-import PrimaryButton from "../../components/PrimaryButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const { height } = Dimensions.get("window");
 

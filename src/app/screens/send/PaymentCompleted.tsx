@@ -1,20 +1,30 @@
-// PaymentCompleted.tsx
 import React from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
-  Image,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
+  Image,
   Linking,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
+import { navigate } from "../../navigation/navigationService";
+
+// Icons
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
+
+// Internal components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-import { navigate } from "../../navigation/navigationService";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const PaymentCompleted = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;

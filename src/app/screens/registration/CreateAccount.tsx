@@ -1,25 +1,40 @@
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  Modal,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Modal,
-  Image,
-  Alert,
-  ActivityIndicator,
+  View,
 } from "react-native";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { navigate } from "../../navigation/navigationService";
+
+// Icons
 import { Ionicons } from "@expo/vector-icons";
+
+// Internal components
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-import { LogBox } from "react-native";
-import { navigate } from "../../navigation/navigationService";
+
+// Firebase
 import auth from "@react-native-firebase/auth";
+
+// Translation
 import { useTranslation } from "react-i18next";
+
+// Other
+import { LogBox } from "react-native";
+
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",

@@ -1,25 +1,35 @@
-// SendAmount.tsx
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
+  Dimensions,
+  FlatList,
   Image,
-  ScrollView,
-  Platform,
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
-  FlatList,
-  Dimensions,
-  Keyboard,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
-import { Ionicons } from "@expo/vector-icons";
-import PrimaryButton from "../../components/PrimaryButton";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const { height } = Dimensions.get("window");
 

@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./navigation/navigationService";
 import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
-import { useAppSelector } from "../app/redux/store"; // Add this import
+import { useAppSelector } from "../app/redux/store"; 
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
 import { useColorScheme } from "react-native";

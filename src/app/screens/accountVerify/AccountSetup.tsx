@@ -1,11 +1,29 @@
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
 import React from "react";
+
+// React Native components
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
-import PrimaryButton from "../../components/PrimaryButton";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
-import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
 import { useTranslation } from "react-i18next";
+
+// Internal components
+import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+import PrimaryButton from "../../components/PrimaryButton";
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;

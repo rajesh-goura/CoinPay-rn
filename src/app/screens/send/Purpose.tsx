@@ -1,21 +1,31 @@
-// Purpose.tsx
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+// Navigation
 import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
+import { navigate } from "../../navigation/navigationService";
+
+// Icons
 import {
   Ionicons,
   MaterialCommunityIcons,
   FontAwesome,
 } from "@expo/vector-icons";
+
+// Internal components
 import PrimaryButton from "../../components/PrimaryButton";
-import { navigate } from "../../navigation/navigationService";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const Purpose = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;

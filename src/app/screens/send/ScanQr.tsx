@@ -1,21 +1,33 @@
-// ScanQr.tsx
 import React, { useState, useEffect } from 'react';
+
+// React Native components
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  PermissionsAndroid,
-  Platform,
   Alert,
   Linking,
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+
+// Navigation
 import { useTheme } from '@react-navigation/native';
-import { CustomTheme } from '../../themes/Theme';
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Ionicons } from '@expo/vector-icons';
-import RoundButton from '../../components/RoundButton';
 import { navigate } from '../../navigation/navigationService';
+
+// Icons
+import { Ionicons } from '@expo/vector-icons';
+
+// Expo
+import { BarCodeScanner } from 'expo-barcode-scanner';
+
+// Internal components
+import RoundButton from '../../components/RoundButton';
+
+// Theme
+import { CustomTheme } from '../../themes/Theme';
+
 
 const ScanQr = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;

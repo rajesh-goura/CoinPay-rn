@@ -1,18 +1,29 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
 import React from "react";
+
+// React Native components
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
-import PrimaryButton from "../../components/PrimaryButton";
-import { Ionicons } from "@expo/vector-icons";
 import { navigate } from "../../navigation/navigationService";
-import SecondaryButton from "../../components/SecondaryButton";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
 import { useTranslation } from "react-i18next";
+
+// Internal components
+import PrimaryButton from "../../components/PrimaryButton";
+import SecondaryButton from "../../components/SecondaryButton";
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 

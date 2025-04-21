@@ -1,19 +1,35 @@
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useState, useRef } from "react";
+// React & hooks
+import { useRef, useState } from "react";
+
+// React Native components
 import {
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+
+// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+
+// Camera
+import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
+
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
 import { useTranslation } from "react-i18next";
+
+// Internal components
 import ActivityIndicator from "../../components/ActivityIndicator";
+import AnimatedProgressBar from "@/src/app/components/ProgressBar";
+
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const totalScreens = 13;

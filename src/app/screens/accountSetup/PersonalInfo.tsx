@@ -1,24 +1,44 @@
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Platform,
-  KeyboardAvoidingView,
-  ScrollView,
-  Keyboard,
+  View,
 } from "react-native";
-import { RouteProp, useNavigation, useRoute, useTheme } from "@react-navigation/native";
+
+// Navigation
+import {
+  RouteProp,
+  useNavigation,
+  useRoute,
+  useTheme,
+} from "@react-navigation/native";
+import { navigate } from "../../navigation/navigationService";
+
+// Icons
 import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { useTranslation } from "react-i18next";
+
+// Internal components
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+
+// Theme
 import { CustomTheme } from "../../themes/Theme";
-import { navigate } from "../../navigation/navigationService";
-import { useTranslation } from "react-i18next";
+
 
 type PersonalInfoRouteParams = {
   countryName: string;

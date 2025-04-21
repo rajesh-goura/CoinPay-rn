@@ -1,29 +1,43 @@
 import React, { useState } from "react";
+
+// React Native components
 import {
-  View,
-  Text,
+  Alert,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Alert,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
+  View,
 } from "react-native";
 
-import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { CustomTheme } from "../../themes/Theme";
+// Navigation
+import {
+  RouteProp,
+  useNavigation,
+  useRoute,
+  useTheme,
+} from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
-import { RouteProp } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
 
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
+// External libraries
+import { useTranslation } from "react-i18next";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+
+// Internal components
 import AnimatedProgressBar from "@/src/app/components/ProgressBar";
 import PrimaryButton from "../../components/PrimaryButton";
 
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+// Theme
+import { CustomTheme } from "../../themes/Theme";
+
 
 type HomeAddressRouteParams = {
   countryName: string;
