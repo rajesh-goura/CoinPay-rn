@@ -8,6 +8,7 @@ import { updateSystemTheme } from './app/redux/slices/themeSlice';
 import { loadToken } from './app/redux/slices/authSlice';
 import MainNavigator from './app/index';
 import "./app/localization/i18n";
+import { ThemeProvider } from '@react-navigation/native';
 
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
@@ -41,7 +42,9 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <AuthInitializer>
           <ThemeListener>
+            
             <MainNavigator />
+            
           </ThemeListener>
         </AuthInitializer>
       </PersistGate>

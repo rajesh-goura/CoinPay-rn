@@ -42,13 +42,18 @@ import RequestPurpose from "./screens/receive/RequestPurpose";
 import RequestAmount from "./screens/receive/RequestAmount";
 import SendRequest from "./screens/receive/SendRequest";
 import SpendingScreen from "./screens/spend/SpendingScreen";
+import ProfileScreen from "./screens/profile/ProfileScreen";
+import ToggleScreen from "./screens/toggle/ToggleScreen";
+import { selectThemeMode } from "./redux/slices/themeSlice";
+import SampleScreen from "./navigation/navigators/SampleScreen";
 
 const Stack = createStackNavigator();
 
 
 const RootNavigator = () => {
   const { token, isLoading } = useAppSelector((state) => state.auth);
-  const systemTheme = useColorScheme();
+  // const systemTheme = useColorScheme();
+  const themeMode = useAppSelector(selectThemeMode);
 
   if (isLoading) {
     return (
@@ -61,7 +66,7 @@ const RootNavigator = () => {
   return (
     <NavigationContainer
       ref={navigationRef}
-      theme={systemTheme === "dark" ? DarkThemeCustom : LightThemeCustom}
+      theme={themeMode === "dark" ? DarkThemeCustom : LightThemeCustom}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!token ? (
@@ -72,7 +77,7 @@ const RootNavigator = () => {
             <Stack.Screen name="EmailVerification" component={EmailVerification} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+            
             {/* Setup Screens */}
             <Stack.Screen name="CountrySelector" component={CountrySelector} />
             <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
@@ -89,6 +94,7 @@ const RootNavigator = () => {
         ) : (
           <>
             <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
             <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
             <Stack.Screen name="AddCard" component={AddCard} />
             <Stack.Screen name="CardDetails" component={CardDetails} />
@@ -106,6 +112,9 @@ const RootNavigator = () => {
             <Stack.Screen name="RequestAmount" component={RequestAmount} />
             <Stack.Screen name="SendRequest" component={SendRequest} />
             <Stack.Screen name="SpendingScreen" component={SpendingScreen} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="ToggleScreen" component={ToggleScreen} />
+            <Stack.Screen name="SampleScreen" component={SampleScreen} />
           </>
         )}
       </Stack.Navigator>
