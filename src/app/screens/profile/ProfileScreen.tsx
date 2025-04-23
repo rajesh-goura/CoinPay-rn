@@ -36,8 +36,12 @@ const ProfileScreen = () => {
   );
 
   const [userData, setUserData] = useState<any>(null);
-  const iconColorAnim = useRef(new Animated.Value(themeMode === "dark" ? 1 : 0)).current;
-  const iconTintAnim = useRef(new Animated.Value(themeMode === "dark" ? 1 : 0)).current;
+  const iconColorAnim = useRef(
+    new Animated.Value(themeMode === "dark" ? 1 : 0)
+  ).current;
+  const iconTintAnim = useRef(
+    new Animated.Value(themeMode === "dark" ? 1 : 0)
+  ).current;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -68,7 +72,7 @@ const ProfileScreen = () => {
         toValue: themeMode === "dark" ? 1 : 0,
         duration: 300,
         useNativeDriver: false,
-      })
+      }),
     ]).start();
   }, [themeMode]);
 
@@ -105,9 +109,14 @@ const ProfileScreen = () => {
         activeOpacity={0.7}
       >
         <View style={styles.optionLeft}>
-          <Animated.View style={[styles.iconContainer, { 
-            backgroundColor: iconBgColor 
-          }]}>
+          <Animated.View
+            style={[
+              styles.iconContainer,
+              {
+                backgroundColor: iconBgColor,
+              },
+            ]}
+          >
             <Image
               source={icon}
               style={[styles.icon]}
@@ -126,7 +135,7 @@ const ProfileScreen = () => {
             thumbColor={themeMode === "dark" ? colors.primary : colors.border}
             trackColor={{
               true: colors.primary,
-              false: colors.border
+              false: colors.border,
             }}
           />
         ) : (
@@ -163,7 +172,12 @@ const ProfileScreen = () => {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* User Profile Section */}
-        <View style={[styles.profileContainer, { backgroundColor: colors.modalBackgroun }]}>
+        <View
+          style={[
+            styles.profileContainer,
+            { backgroundColor: colors.modalBackgroun },
+          ]}
+        >
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => navigate("EditProfile")}
@@ -182,14 +196,23 @@ const ProfileScreen = () => {
             contentFit="cover"
           />
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
+            {userData.personalInfo?.fullName}
+          </Text>
+          <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
             {userData.personalInfo?.email}
           </Text>
+          
         </View>
 
         {/* Profile Options Section */}
-        <View style={[styles.optionsContainer, { backgroundColor: colors.modalBackgroun }]}>
+        <View
+          style={[
+            styles.optionsContainer,
+            { backgroundColor: colors.modalBackgroun },
+          ]}
+        >
           {renderProfileOption(
-            themeMode === "dark" 
+            themeMode === "dark"
               ? require("@/assets/icons/profile/moon.svg")
               : require("@/assets/icons/profile/sun.svg"),
             themeMode === "dark" ? "Dark Mode" : "Light Mode",
@@ -239,6 +262,14 @@ const ProfileScreen = () => {
             "#e9f5e9",
             "#8bc58a"
           )}
+
+          {renderProfileOption(
+            require("@/assets/icons/profile/user.svg"),
+            "Logout",
+            () => navigate("SampleScreen"),
+            "#e9f5e9",
+            "#8bc58a"
+          )}
         </View>
       </ScrollView>
     </View>
@@ -246,80 +277,79 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    scrollContainer: {
-      paddingBottom: 20,
-    },
-    profileContainer: {
-      margin: 16,
-      borderRadius: 12,
-      padding: 20,
-      alignItems: "center",
-      position: "relative",
-    },
-    editButton: {
-      position: "absolute",
-      top: 16,
-      right: 16,
-      padding: 8,
-    },
-    editIcon: {
-      width: 20,
-      height: 20,
-      tintColor: "#324cf5", 
-    },
-    profileImage: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      marginBottom: 16,
-    },
-    userEmail: {
-      fontSize: 16,
-      textAlign: "center",
-    },
-    optionsContainer: {
-      marginHorizontal: 16,
-      borderRadius: 12,
-      overflow: "hidden",
-      paddingHorizontal:10,
-      paddingBottom: 10,
-    },
-    optionContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderBottomWidth: 1,
-      
-    },
-    optionLeft: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    iconContainer: {
-      width: 46,
-      height: 46,
-      borderRadius: 28,
-      justifyContent: "center",
-      alignItems: "center",
-      marginRight: 12,
-    },
-    icon: {
-      width: 30,
-      height: 30,
-    },
-    chevron: {
-      width: 16,
-      height: 16,
-      tintColor: "#fff", 
-    },
-    optionText: {
-      fontSize: 16,
-    },
+  container: {
+    flex: 1,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  profileContainer: {
+    margin: 16,
+    borderRadius: 12,
+    padding: 20,
+    alignItems: "center",
+    position: "relative",
+  },
+  editButton: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+    padding: 8,
+  },
+  editIcon: {
+    width: 20,
+    height: 20,
+    tintColor: "#324cf5",
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 16,
+  },
+  userEmail: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  optionsContainer: {
+    marginHorizontal: 16,
+    borderRadius: 12,
+    overflow: "hidden",
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  optionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+  },
+  optionLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconContainer: {
+    width: 46,
+    height: 46,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  chevron: {
+    width: 16,
+    height: 16,
+    tintColor: "#fff",
+  },
+  optionText: {
+    fontSize: 16,
+  },
 });
 
 export default ProfileScreen;

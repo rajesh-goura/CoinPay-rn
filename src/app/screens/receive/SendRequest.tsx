@@ -35,7 +35,7 @@ const SendRequest = ({ navigation, route }: any) => {
 
   const handleConfirmRequest = () => {
     // Handle the request confirmation logic here
-    navigate("RequestConfirmation", {
+    navigate("MainApp", {
       recipient,
       amount,
       currency,
