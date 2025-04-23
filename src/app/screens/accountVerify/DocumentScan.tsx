@@ -85,7 +85,7 @@ export default function DocumentScan() {
 
   const savePicture = () => {
     console.log("Picture saved:", imageUri);
-    navigate("SelfieScreen");
+    navigate("SelfieScan",{ documentUri: imageUri });
   };
 
   return (

@@ -104,7 +104,7 @@ const BottomTabNavigator = () => {
       {/* Chat Tab */}
       <Tab.Screen
         name="Chat"
-        component={ToggleScreen}
+        component={SampleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image

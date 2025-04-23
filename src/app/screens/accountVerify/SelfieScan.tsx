@@ -12,8 +12,9 @@ import {
 } from "react-native";
 
 // Navigation
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme, useRoute ,RouteProp} from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
+
 
 // Camera
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
@@ -32,9 +33,13 @@ import { CustomTheme } from "../../themes/Theme";
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+type SelfieScanRouteParams = {
+  documentUri: string;
+};
 
 export default function SelfieScan() {
   const { t } = useTranslation();
+  const route = useRoute<RouteProp<{ params: SelfieScanRouteParams }, "params">>();
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const [facing, setFacing] = useState<CameraType>("front");
@@ -97,7 +102,10 @@ export default function SelfieScan() {
 
   const savePicture = () => {
     console.log("Picture saved:", imageUri);
-    navigate("AccountSetup");
+    navigate("AccountSetup",{ 
+      documentUri: route.params?.documentUri,
+      selfieUri: imageUri 
+    });
   };
 
   return (

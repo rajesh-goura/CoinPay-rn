@@ -2,6 +2,7 @@ import React from "react";
 
 // React Native components
 import {
+  Alert,
   Dimensions,
   Image,
   StyleSheet,
@@ -11,7 +12,7 @@ import {
 } from "react-native";
 
 // Navigation
-import { useNavigation, useTheme } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
 
 // Icons
@@ -20,6 +21,14 @@ import { Ionicons } from "@expo/vector-icons";
 // External libraries
 import { useTranslation } from "react-i18next";
 
+//firebase
+import { uploadImage, saveImageReference } from '../../utils/firebaseUploads';
+import auth from "@react-native-firebase/auth";
+
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+
+
 // Internal components
 
 import PrimaryButton from "../../components/PrimaryButton";
@@ -27,6 +36,10 @@ import Header from "../../components/Header";
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+type AccountSetupRouteParams = {
+  documentUri: string;
+  selfieUri: string;
+};
 const totalScreens = 13;
 const currentScreen = 8;
 const progress = currentScreen / totalScreens;
@@ -35,6 +48,8 @@ const AccountSetup = () => {
   const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<{ params: AccountSetupRouteParams }, "params">>();
+  const user = auth().currentUser;
 
   // Mock states - in a real app these would come from your verification process
   const [phoneVerified, setPhoneVerified] = React.useState(true);
@@ -48,13 +63,52 @@ const AccountSetup = () => {
   };
 
   // Simulate photo verification (in real app this would be from Firestore)
-  const handlePhotoUpload = () => {
-    setPhotoUploading(true);
-    setTimeout(() => {
-      setPhotoUploading(false);
+  // const handlePhotoUpload = () => {
+  //   setPhotoUploading(true);
+  //   setTimeout(() => {
+  //     setPhotoUploading(false);
+  //     setPhotoVerified(true);
+  //   }, 2000);
+  // };
+  const handlePhotoUpload = async () => {
+    try {
+      setPhotoUploading(true);
+      
+      const user = auth().currentUser;
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      if (!route.params?.documentUri || !route.params?.selfieUri) {
+        throw new Error("Missing document or selfie URI");
+      }
+
+      // Upload document scan
+      const docUrl = await uploadImage(
+        route.params.documentUri, 
+        `verifications/${user.uid}/document_${Date.now()}.jpg`
+      );
+      
+      // Upload selfie
+      const selfieUrl = await uploadImage(
+        route.params.selfieUri, 
+        `verifications/${user.uid}/selfie_${Date.now()}.jpg`
+      );
+      
+      // Save both references to Firestore
+      await saveImageReference(user.uid, 'document', docUrl);
+      await saveImageReference(user.uid, 'selfie', selfieUrl);
+      
       setPhotoVerified(true);
-    }, 2000);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      // Show error to user
+      
+    } finally {
+      setPhotoUploading(false);
+    }
   };
+
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
