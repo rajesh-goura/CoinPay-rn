@@ -124,7 +124,7 @@ const Onboarding = () => {
         onPress={handleNextPress}
         text={currentIndex === slides.length - 1 ? t("common.getStarted") : t("common.next")}
       />
-      <SecondaryButton onPress={()=>navigate("SettingsScreen")} text="go to settings"></SecondaryButton>
+      
     </View>
   );
 };

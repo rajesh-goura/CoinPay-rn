@@ -1,6 +1,4 @@
-import React from "react";
-
-// React Native components
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -9,26 +7,27 @@ import {
   View,
   Image,
   Linking,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
-
-// Navigation
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
-
-// Icons
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
-
-// Internal components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-
-// Theme
 import { CustomTheme } from "../../themes/Theme";
 
+// Firebase imports
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 const PaymentCompleted = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const { recipient, amount, currency, purpose, account } = route.params;
+  const [recipientData, setRecipientData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   // Get formatted date and time
   const currentDate = new Date();
@@ -43,20 +42,60 @@ const PaymentCompleted = ({ navigation, route }: any) => {
     hour12: true,
   });
 
-  // Mock data for recipient
-  const recipientData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    image: require("@/assets/images/user.png"),
-  };
-
   // Selected account data
   const selectedAccountData = {
     id: account.id,
     type: account.type,
     icon: account.icon,
-    number: account.number, // Use account.number directly since it's already masked
+    number: account.number,
   };
+
+  useEffect(() => {
+    // Get current authenticated user
+    const user = auth().currentUser;
+    setCurrentUser(user);
+
+    const fetchAndUpdateRecipient = async () => {
+      try {
+        // 1. Fetch recipient data
+        const recipientRef = firestore().collection("users").doc(recipient.id);
+        const recipientSnap = await recipientRef.get();
+
+        if (!recipientSnap.exists) {
+          throw new Error("Recipient not found");
+        }
+
+        const recipientData = recipientSnap.data();
+        if (!recipientData) {
+          throw new Error("Recipient data is undefined");
+        }
+        setRecipientData(recipientData);
+
+        // 2. Update recipient's balance
+        setUpdating(true);
+        const currentBalance = recipientData?.balance || 0;
+        const newBalance = currentBalance + parseFloat(amount);
+
+        await recipientRef.update({
+          balance: newBalance,
+          updatedAt: firestore.FieldValue.serverTimestamp(),
+        });
+
+
+      } catch (error) {
+        console.error("Error processing payment:", error);
+        Alert.alert(
+          "Error",
+          "Failed to complete transaction. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+        setUpdating(false);
+      }
+    };
+
+    fetchAndUpdateRecipient();
+  }, [recipient.id, amount]);
 
   const handleAnotherPayment = () => {
     navigate("SendMoney");
@@ -66,8 +105,19 @@ const PaymentCompleted = ({ navigation, route }: any) => {
     Linking.openURL("mailto:support@yourapp.com");
   };
 
+  if (loading || updating || !recipientData) {
+    return (
+      <View style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={[styles.loadingText, { color: colors.textPrimary }]}>
+          {updating ? "Completing transaction..." : "Processing payment..."}
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Back Button */}
       <TouchableOpacity
         style={styles.backButton}
@@ -100,15 +150,23 @@ const PaymentCompleted = ({ navigation, route }: any) => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          <Image source={recipientData.image} style={styles.recipientImage} />
+          <Image
+            source={
+              recipientData.photoURL
+                ? { uri: recipientData.photoURL }
+                : require("@/assets/images/user.png")
+            }
+            style={styles.recipientImage}
+          />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
-            {recipientData.name}
+            { recipient.name}
           </Text>
           <Text
             style={[styles.recipientEmail, { color: colors.textSecondary }]}
           >
-            {recipientData.email}
+            {recipient.email}
           </Text>
+          
         </View>
 
         {/* Selected Account */}
@@ -194,16 +252,28 @@ const PaymentCompleted = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
+  container2:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 16,
+    fontFamily: "Poppins",
+  },
+  
   backButton: {
     position: "absolute",
     top: 20,
     left: 20,
   },
   successContainer: {
-    marginHorizontal: 20,
-    marginTop: 50,
-    borderRadius: 12,
+    marginHorizontal: 15,
+    marginTop: 55,
+    borderRadius: 10,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -224,17 +294,14 @@ const styles = StyleSheet.create({
     marginTop: 0,
     fontFamily: "Poppins",
   },
-  dateTimeText: {
-    textAlign: "center",
-    paddingVertical: 12,
-    fontSize: 14,
-    fontFamily: "Poppins",
-  },
   scrollContent: {
+    width: "100%",
+    
     paddingHorizontal: 20,
     paddingBottom: 150,
   },
   recipientCard: {
+    
     borderRadius: 12,
     padding: 10,
     alignItems: "center",

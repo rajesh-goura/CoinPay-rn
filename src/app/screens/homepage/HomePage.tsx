@@ -69,7 +69,8 @@ const HomePage = () => {
       amount: -500,
       icon: require("@/assets/icons/credit-card-minus.svg"),
       iconBg: "#007AFF",
-      type: "expense",
+      type: "spending",
+      onPress: () => navigate("SpendingScreen", { initialTab: "spending" }) // Add this
     },
     {
       id: 2,
@@ -78,6 +79,7 @@ const HomePage = () => {
       icon: require("@/assets/icons/coins.svg"),
       iconBg: "#34C759",
       type: "income",
+      onPress: () => navigate("SpendingScreen", { initialTab: "income" }) // Add this
     },
     {
       id: 3,
@@ -85,7 +87,8 @@ const HomePage = () => {
       amount: -800,
       icon: require("@/assets/icons/invoice.svg"),
       iconBg: "#FFCC00",
-      type: "expense",
+      type: "bills",
+      onPress: () => navigate("SpendingScreen", { initialTab: "bills" }) // Add this
     },
     {
       id: 4,
@@ -94,19 +97,20 @@ const HomePage = () => {
       icon: require("@/assets/icons/sack-dollar.svg"),
       iconBg: "#FF9500",
       type: "savings",
+      onPress: () => navigate("SpendingScreen", { initialTab: "savings" }) // Add this
     },
   ];
 
   if (isLoading) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp, justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator/>
       </View>
     );
   }
 
   return (
-    <View style={styles.flexContainer}>
+    <View style={[styles.flexContainer,{backgroundColor: colors.backgroundinApp}]}>
       {/* Background Image - Behind all content */}
       <ImageBackground 
         source={require('@/assets/images/bluebg3.png')} 
@@ -282,6 +286,7 @@ const HomePage = () => {
                 styles.transactionItem,
                 { backgroundColor: colors.modalBackgroun },
               ]}
+              onPress={transaction.onPress}
             >
               <View style={styles.transactionLeft}>
                 <View
@@ -304,7 +309,8 @@ const HomePage = () => {
               <Text
                 style={[
                   styles.transactionAmount,
-                  transaction.type === "expense" && { color: "#FF3B30" },
+                  transaction.type === "spending" && { color: "#b82925" },
+                  transaction.type === "bills" && { color: "#b82925" },
                   transaction.type === "income" && { color: "#34C759" },
                   transaction.type === "savings" && { color: "#FFD700" },
                 ]}

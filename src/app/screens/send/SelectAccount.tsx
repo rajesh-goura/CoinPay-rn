@@ -192,7 +192,7 @@ const SelectAccount = ({ navigation, route }: any) => {
         style={[
           styles.container,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.backgroundinApp,
             justifyContent: "center",
             alignItems: "center",
           },
@@ -204,7 +204,7 @@ const SelectAccount = ({ navigation, route }: any) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity

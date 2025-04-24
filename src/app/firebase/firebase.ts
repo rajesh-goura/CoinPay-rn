@@ -1,16 +1,29 @@
-// import { initializeApp } from 'firebase/app';
-// import auth from '@react-native-firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth, initializeAuth, browserLocalPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeFirestore } from "firebase/firestore";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCSgY9-mLQa8tkamdyjX66dp5zvVfBIOVk",
-//   authDomain: "YOUR_AUTH_DOMAIN",
-//   projectId: "coinpay-afd4a",
-//   storageBucket: "YOUR_STORAGE_BUCKET",
-//   messagingSenderId: "YOUR_SENDER_ID",
-//   appId: "YOUR_APP_ID"
-// };
+const firebaseConfig = {
+  apiKey: "AIzaSyCSgY9-mLQa8tkamdyjX66dp5zvVfBIOVk",
+  authDomain: "xxx.firebaseapp.com",
+  projectId: "coinpay-afd4a",
+  storageBucket: "xxx.appspot.com",
+  messagingSenderId: "xxx",
+  appId: "1:233938846543:android:0f199dd42a028d18eabb3a",
+};
 
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
+// Initialize Firebase App
+export const firebaseApp = initializeApp(firebaseConfig);
 
-// export { auth };
+// Initialize Firestore
+const db = initializeFirestore(firebaseApp, {
+  experimentalForceLongPolling: true, // Required for React Native
+});
+
+// Initialize Auth with AsyncStorage persistence
+const auth = initializeAuth(firebaseApp, {
+  persistence: browserLocalPersistence,
+});
+
+export { auth, db };

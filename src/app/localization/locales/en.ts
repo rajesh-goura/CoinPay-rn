@@ -266,6 +266,14 @@ const en = {
           title: "Confirm",
           add: "Add {{amount}} to your balance?",
           deduct: "Deduct {{amount}} from your balance?"
+        },
+        settings: {
+          title: "Settings",
+          language: "Language",
+          theme: "Appearance",
+          themeDescription: "Change between light and dark mode",
+          account: "Account",
+          logout: "Log Out"
         }
       }
       

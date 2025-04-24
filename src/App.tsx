@@ -1,25 +1,33 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { Appearance } from 'react-native';
+import React, { useEffect } from "react";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { Appearance } from "react-native";
 
-import { store, persistor } from './app/redux/store';
-import { updateSystemTheme } from './app/redux/slices/themeSlice';
-import { loadToken } from './app/redux/slices/authSlice';
-import MainNavigator from './app/index';
+import { store, persistor } from "./app/redux/store";
+import { updateSystemTheme } from "./app/redux/slices/themeSlice";
+import { loadToken } from "./app/redux/slices/authSlice";
+import MainNavigator from "./app/index";
 import "./app/localization/i18n";
-import { ThemeProvider } from '@react-navigation/native';
-
+import { LogBox } from "react-native";
+import { ThemeProvider } from "@react-navigation/native";
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set initial theme
     store.dispatch(updateSystemTheme(Appearance.getColorScheme()));
-    
+
     // Listen for theme changes
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       store.dispatch(updateSystemTheme(colorScheme));
     });
+
+    LogBox.ignoreLogs([
+      /deprecated/i, // Ignore all deprecation warnings
+      /React Native Firebase namespaced API/i,
+      /Method called was `collection`/i,
+      /Method called was `doc`/i,
+      /Please use `getApp\(\)` instead/i,
+    ]);
 
     return () => subscription.remove();
   }, []);
@@ -42,9 +50,7 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <AuthInitializer>
           <ThemeListener>
-            
             <MainNavigator />
-            
           </ThemeListener>
         </AuthInitializer>
       </PersistGate>

@@ -90,14 +90,14 @@ const QrCode = ({ navigation }: any) => {
 
   if (!userData) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <Text style={{ color: colors.textPrimary }}>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity

@@ -11,6 +11,7 @@ import ScanQr from "../../screens/send/ScanQr";
 import SpendingScreen from "../../screens/spend/SpendingScreen";
 import ProfileScreen from "../../screens/profile/ProfileScreen";
 import ToggleScreen from "../../screens/toggle/ToggleScreen";
+import ChatScreen from "../../screens/chat/ChatScreen";
 
 
 

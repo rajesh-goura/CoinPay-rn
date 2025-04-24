@@ -151,7 +151,7 @@ const ProfileScreen = () => {
 
   if (!userData) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <SecondaryHeader
           title="My Profile"
           onBackPress={() => navigation.goBack()}
@@ -164,7 +164,7 @@ const ProfileScreen = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       <SecondaryHeader
         title="My Profile"
         onBackPress={() => navigation.goBack()}

@@ -90,7 +90,7 @@ const RequestAmount = ({ navigation, route }: any) => {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -233,7 +233,7 @@ const RequestAmount = ({ navigation, route }: any) => {
         style={[
           styles.buttonContainer,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.backgroundinApp,
             paddingBottom:
               Platform.OS === "ios"
                 ? keyboardHeight > 0

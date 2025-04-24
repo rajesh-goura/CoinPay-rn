@@ -139,7 +139,7 @@ const ScanQr = ({ navigation }: any) => {
 
   if (hasPermission === null) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <Text style={[styles.permissionText, { color: colors.textPrimary }]}>
           Requesting for camera permission...
         </Text>
@@ -149,7 +149,7 @@ const ScanQr = ({ navigation }: any) => {
 
   if (hasPermission === false) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -204,7 +204,7 @@ const ScanQr = ({ navigation }: any) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity

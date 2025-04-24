@@ -44,7 +44,7 @@ const SendRequest = ({ navigation, route }: any) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section - Same as SendAmount */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -119,7 +119,7 @@ const SendRequest = ({ navigation, route }: any) => {
       </KeyboardAvoidingView>
 
       {/* Fixed Request Button at Bottom */}
-      <View style={[styles.buttonContainer, { backgroundColor: colors.background }]}>
+      <View style={[styles.buttonContainer, { backgroundColor: colors.backgroundinApp }]}>
         <PrimaryButton
           text={`Request ${amount} ${currency}`}
           onPress={handleConfirmRequest}
