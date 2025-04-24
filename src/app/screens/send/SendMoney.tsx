@@ -110,14 +110,14 @@ const SendMoney = ({ navigation }: any) => {
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.backgroundinApp }]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity

@@ -123,7 +123,7 @@ const UpdateMoney = () => {
       <ScrollView
         contentContainerStyle={[
           styles.container,
-          { backgroundColor: colors.background },
+          { backgroundColor: colors.backgroundinApp },
         ]}
         keyboardShouldPersistTaps="handled"
       >

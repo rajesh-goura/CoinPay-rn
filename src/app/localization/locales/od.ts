@@ -233,6 +233,14 @@ const od = {
           error: "ତ୍ରୁଟି",
           loadFailed: "କାର୍ଡଗୁଡିକୁ ଲୋଡ୍ କରିବାରେ ବିଫଳ",
           deleteFailed: "କାର୍ଡ ଡିଲିଟ୍ କରିବାରେ ବିଫଳ"
+        },
+        settings: {
+          title: "ସଂଯୋଜନା",
+          language: "ଭାଷା",
+          theme: "ଦୃଶ୍ୟ",
+          themeDescription: "ଆଲୋକ ଏବଂ ଅନ୍ଧକାର ମୋଡ୍ ମଧ୍ୟରେ ପରିବର୍ତ୍ତନ କରନ୍ତୁ",
+          account: "ଖାତା",
+          logout: "ପ୍ରସ୍ଥାନ କରନ୍ତୁ"
         }
       }
       

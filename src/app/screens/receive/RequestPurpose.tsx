@@ -56,7 +56,7 @@ const RequestPurpose = ({ navigation, route }: any) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity

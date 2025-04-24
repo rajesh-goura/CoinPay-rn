@@ -107,7 +107,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
 
   if (loading || updating || !recipientData) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={[styles.loadingText, { color: colors.textPrimary }]}>
           {updating ? "Completing transaction..." : "Processing payment..."}
@@ -117,7 +117,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Back Button */}
       <TouchableOpacity
         style={styles.backButton}
@@ -252,6 +252,12 @@ const PaymentCompleted = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
+  },
+  container2:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 20,
@@ -266,7 +272,7 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     marginHorizontal: 15,
-    marginTop: 50,
+    marginTop: 55,
     borderRadius: 10,
     overflow: "hidden",
     shadowColor: "#000",
@@ -289,10 +295,13 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
   },
   scrollContent: {
+    width: "100%",
+    
     paddingHorizontal: 20,
     paddingBottom: 150,
   },
   recipientCard: {
+    
     borderRadius: 12,
     padding: 10,
     alignItems: "center",

@@ -232,6 +232,14 @@ const hi ={
           error: "त्रुटि",
           loadFailed: "कार्ड लोड करने में विफल",
           deleteFailed: "कार्ड हटाने में विफल"
+        },
+        settings: {
+          title: "सेटिंग्स",
+          language: "भाषा",
+          theme: "प्रकटन",
+          themeDescription: "लाइट और डार्क मोड के बीच बदलें",
+          account: "खाता",
+          logout: "लॉग आउट करें"
         }
       }
       
