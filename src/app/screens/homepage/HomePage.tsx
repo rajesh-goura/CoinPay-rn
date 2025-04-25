@@ -68,38 +68,42 @@ const HomePage = () => {
       title: t("homePage.transactions.spending"),
       amount: -500,
       icon: require("@/assets/icons/credit-card-minus.svg"),
-      iconBg: "#007AFF",
+      iconBg: "rgba(0, 122, 255, 0.5)", // 50% opacity
+      tintColor: "#007AFF",
       type: "spending",
-      onPress: () => navigate("SpendingScreen", { initialTab: "spending" }) // Add this
+      onPress: () => navigate("SpendingScreen", { initialTab: "spending" })
     },
     {
       id: 2,
       title: t("homePage.transactions.income"),
       amount: 3000,
       icon: require("@/assets/icons/coins.svg"),
-      iconBg: "#34C759",
+      iconBg: "rgba(52, 199, 89, 0.5)", // 50% opacity
+      tintColor: "#34C759",
       type: "income",
-      onPress: () => navigate("SpendingScreen", { initialTab: "income" }) // Add this
+      onPress: () => navigate("SpendingScreen", { initialTab: "income" })
     },
     {
       id: 3,
       title: t("homePage.transactions.bills"),
       amount: -800,
       icon: require("@/assets/icons/invoice.svg"),
-      iconBg: "#FFCC00",
+      iconBg: "rgba(255, 204, 0, 0.5)", // 50% opacity
+      tintColor: "#FFCC00",
       type: "bills",
-      onPress: () => navigate("SpendingScreen", { initialTab: "bills" }) // Add this
+      onPress: () => navigate("SpendingScreen", { initialTab: "bills" })
     },
     {
       id: 4,
       title: t("homePage.transactions.savings"),
       amount: 1000,
       icon: require("@/assets/icons/sack-dollar.svg"),
-      iconBg: "#FF9500",
+      iconBg: "rgba(255, 149, 0, 0.5)", // 50% opacity
+      tintColor: "#FF9500",
       type: "savings",
-      onPress: () => navigate("SpendingScreen", { initialTab: "savings" }) // Add this
+      onPress: () => navigate("SpendingScreen", { initialTab: "savings" })
     },
-  ];
+];
 
   if (isLoading) {
     return (
@@ -292,12 +296,15 @@ const HomePage = () => {
                 <View
                   style={[
                     styles.transactionIconContainer,
-                    { backgroundColor: transaction.iconBg },
+                    { backgroundColor: transaction.iconBg ,
+                      
+                    },
                   ]}
                 >
                   <Image
                     source={transaction.icon}
-                    style={styles.transactionIcon}
+                    style={[styles.transactionIcon,{tintColor: transaction.tintColor}]}
+                    
                   />
                 </View>
                 <Text
@@ -309,7 +316,7 @@ const HomePage = () => {
               <Text
                 style={[
                   styles.transactionAmount,
-                  transaction.type === "spending" && { color: "#b82925" },
+                  transaction.type === "spending" && { color: "#b82925"},
                   transaction.type === "bills" && { color: "#b82925" },
                   transaction.type === "income" && { color: "#34C759" },
                   transaction.type === "savings" && { color: "#FFD700" },
