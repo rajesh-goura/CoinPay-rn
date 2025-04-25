@@ -556,7 +556,10 @@ const SpendingScreen = ({ navigation ,route}: any) => {
           {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} List
         </Text>
         <TouchableOpacity>
-          <Ionicons name="filter" size={20} color={colors.textPrimary} />
+        <Image
+              source={require("@/assets/icons/slider.svg")}
+              style={[styles.tabIcon, { tintColor: "#ffffff" }]}
+            />
         </TouchableOpacity>
       </View>
 

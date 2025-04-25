@@ -5,14 +5,12 @@ import { View, StyleSheet } from "react-native";
 import { Image } from 'expo-image';
 
 import { CustomTheme } from "../../themes/Theme";
-import SampleScreen from "./SampleScreen";
+
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
 import SpendingScreen from "../../screens/spend/SpendingScreen";
 import ProfileScreen from "../../screens/profile/ProfileScreen";
 import ToggleScreen from "../../screens/toggle/ToggleScreen";
-import ChatScreen from "../../screens/chat/ChatScreen";
-
 
 
 const Tab = createBottomTabNavigator();
@@ -50,13 +48,16 @@ const BottomTabNavigator = () => {
         component={HomePage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/home.svg")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
-            />
+            <View style={styles.tabIconContainer}>
+              <Image
+                source={require("@/assets/icons/home.svg")}
+                style={[
+                  styles.tabIcon,
+                  { tintColor: focused ? colors.primary : colors.textSecondary },
+                ]}
+              />
+              {focused && <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />}
+            </View>
           ),
         }}
       />
@@ -67,13 +68,16 @@ const BottomTabNavigator = () => {
         component={SpendingScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/chart-pie.svg")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
-            />
+            <View style={styles.tabIconContainer}>
+              <Image
+                source={require("@/assets/icons/chart-pie.svg")}
+                style={[
+                  styles.tabIcon,
+                  { tintColor: focused ? colors.primary : colors.textSecondary },
+                ]}
+              />
+              {focused && <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />}
+            </View>
           ),
         }}
       />
@@ -108,13 +112,16 @@ const BottomTabNavigator = () => {
         component={ToggleScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/chat.svg")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
-            />
+            <View style={styles.tabIconContainer}>
+              <Image
+                source={require("@/assets/icons/chat.svg")}
+                style={[
+                  styles.tabIcon,
+                  { tintColor: focused ? colors.primary : colors.textSecondary },
+                ]}
+              />
+              {focused && <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />}
+            </View>
           ),
         }}
       />
@@ -125,13 +132,16 @@ const BottomTabNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("@/assets/icons/user.svg")}
-              style={[
-                styles.tabIcon,
-                { tintColor: focused ? colors.primary : colors.textSecondary },
-              ]}
-            />
+            <View style={styles.tabIconContainer}>
+              <Image
+                source={require("@/assets/icons/user.svg")}
+                style={[
+                  styles.tabIcon,
+                  { tintColor: focused ? colors.primary : colors.textSecondary },
+                ]}
+              />
+              {focused && <View style={[styles.activeIndicator, { backgroundColor: colors.primary }]} />}
+            </View>
           ),
         }}
       />
@@ -140,6 +150,10 @@ const BottomTabNavigator = () => {
 };
 
 const styles = StyleSheet.create({
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   tabIcon: {
     width: 24,
     height: 24,
@@ -157,7 +171,12 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  activeIndicator: {
+    width: 4,
+    height: 4,
+    borderRadius: 3,
+    marginTop: 2,
+  },
 });
 
 export default BottomTabNavigator;
-

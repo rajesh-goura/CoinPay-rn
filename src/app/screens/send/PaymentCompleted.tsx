@@ -54,39 +54,99 @@ const PaymentCompleted = ({ navigation, route }: any) => {
     // Get current authenticated user
     const user = auth().currentUser;
     setCurrentUser(user);
+    // Inside the fetchAndUpdateRecipient function in PaymentCompleted.tsx
 
     const fetchAndUpdateRecipient = async () => {
       try {
-        // 1. Fetch recipient data
+        // 1. Get current authenticated user
+        const user = auth().currentUser;
+        if (!user) {
+          throw new Error("User not authenticated");
+        }
+        setCurrentUser(user);
+    
+        // 2. Fetch recipient data
         const recipientRef = firestore().collection("users").doc(recipient.id);
         const recipientSnap = await recipientRef.get();
-
+    
         if (!recipientSnap.exists) {
           throw new Error("Recipient not found");
         }
-
+    
         const recipientData = recipientSnap.data();
         if (!recipientData) {
           throw new Error("Recipient data is undefined");
         }
         setRecipientData(recipientData);
-
-        // 2. Update recipient's balance
+    
+        // 3. Update recipient's balance and sender's data
         setUpdating(true);
         const currentBalance = recipientData?.balance || 0;
         const newBalance = currentBalance + parseFloat(amount);
-
-        await recipientRef.update({
+    
+        // 4. Get or create sender's document
+        const senderRef = firestore().collection("users").doc(user.uid);
+        const senderSnap = await senderRef.get();
+    
+        // Create transaction object with current date
+        const newTransaction = {
+          amount: parseFloat(amount),
+          currency,
+          recipient: {
+            id: recipient.id,
+            name: recipient.name,
+            email: recipient.email,
+          },
+          purpose,
+          date: new Date().toISOString(), // Using regular Date instead of serverTimestamp
+          type: "sent",
+          status: "completed",
+        };
+    
+        // Batch update both recipient and sender
+        const batch = firestore().batch();
+    
+        // Update recipient's balance
+        batch.update(recipientRef, {
           balance: newBalance,
-          updatedAt: firestore.FieldValue.serverTimestamp(),
+          updatedAt: new Date().toISOString(),
         });
-
-
+    
+        if (senderSnap.exists) {
+          // Update existing sender document
+          const currentSpending = senderSnap.data()?.spending || 0;
+          const newSpending = currentSpending + parseFloat(amount);
+          
+          batch.update(senderRef, {
+            spending: newSpending,
+            transactions: firestore.FieldValue.arrayUnion(newTransaction),
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          // Create new sender document with initial values
+          batch.set(senderRef, {
+            balance: 0,
+            spending: parseFloat(amount),
+            transactions: [newTransaction],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            // Include any other required fields from your user document structure
+            personalInfo: {
+              // Add default personal info if needed
+            },
+            address: {
+              // Add default address if needed
+            }
+          });
+        }
+    
+        await batch.commit();
+    
       } catch (error) {
         console.error("Error processing payment:", error);
         Alert.alert(
           "Error",
-          "Failed to complete transaction. Please try again later."
+          error instanceof Error ? error.message : "Failed to complete transaction. Please try again later."
         );
       } finally {
         setLoading(false);
@@ -107,7 +167,9 @@ const PaymentCompleted = ({ navigation, route }: any) => {
 
   if (loading || updating || !recipientData) {
     return (
-      <View style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}>
+      <View
+        style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={[styles.loadingText, { color: colors.textPrimary }]}>
           {updating ? "Completing transaction..." : "Processing payment..."}
@@ -117,7 +179,9 @@ const PaymentCompleted = ({ navigation, route }: any) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors.backgroundinApp }]}
+    >
       {/* Back Button */}
       <TouchableOpacity
         style={styles.backButton}
@@ -159,14 +223,13 @@ const PaymentCompleted = ({ navigation, route }: any) => {
             style={styles.recipientImage}
           />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
-            { recipient.name}
+            {recipient.name}
           </Text>
           <Text
             style={[styles.recipientEmail, { color: colors.textSecondary }]}
           >
             {recipient.email}
           </Text>
-          
         </View>
 
         {/* Selected Account */}
@@ -252,9 +315,8 @@ const PaymentCompleted = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
-  container2:{
+  container2: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -264,7 +326,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Poppins",
   },
-  
+
   backButton: {
     position: "absolute",
     top: 20,
@@ -296,12 +358,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     width: "100%",
-    
+
     paddingHorizontal: 20,
     paddingBottom: 150,
   },
   recipientCard: {
-    
     borderRadius: 12,
     padding: 10,
     alignItems: "center",

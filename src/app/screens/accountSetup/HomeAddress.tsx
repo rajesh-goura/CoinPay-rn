@@ -96,6 +96,8 @@ const HomeAddress = () => {
           postCode,
         },
         balance:0,
+        spending:0,
+        transactions: [],
         createdAt: firestore.FieldValue.serverTimestamp(),
         updatedAt: firestore.FieldValue.serverTimestamp(),
       };

@@ -257,11 +257,15 @@ const HomePage = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>
-            <FontAwesome 
-              name="bank" 
-              size={24} 
-              color= "#f5a841" 
-              style={{ opacity: 0.7 }}
+          <Image
+              source={require("@/assets/icons/bank.svg")}
+              style={[
+                styles.actionIcon,
+                { 
+                  backgroundColor: "transparent", 
+                  tintColor: "#f5a841" 
+                },
+              ]}
             />
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
@@ -381,6 +385,7 @@ const styles = StyleSheet.create({
   balanceCard: {
     marginHorizontal: 0,
     borderRadius: 10,
+    borderColor:"transparent",
     padding: 5,
     marginTop: 5,
     justifyContent: "center",
@@ -392,7 +397,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: "transparent",
     marginBottom: 15,
   },
   currencyText: {
