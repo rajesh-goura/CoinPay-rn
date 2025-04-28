@@ -33,6 +33,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 // Theming
 import { CustomTheme } from "../../themes/Theme";
+import { completeCardSetup } from "../../redux/slices/authSlice";
 
 
 type Card = {
@@ -142,11 +143,21 @@ const CardList = () => {
   };
 
   const handleAddCard = () => {
+    
     navigate("CardDetails");
   };
 
-  const handleContinue = () => {
-    navigate("MainApp");
+  const handleContinue = async () => {
+    try {
+      // Only mark setup as complete if it's the first time (cards exist)
+      if (cards.length > 0) {
+        await dispatch(completeCardSetup()).unwrap();
+      }
+      navigate("MainApp");
+    } catch (error) {
+      console.error("Failed to complete card setup:", error);
+      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.setupCompleteError"));
+    }
   };
 
   const getCardIcon = (type: string) => {

@@ -7,21 +7,27 @@ interface AuthState {
   token: string | null;
   isLoading: boolean;
   error: string | null;
+  hasCompletedCardSetup: boolean;
 }
 
 const initialState: AuthState = {
   token: null,
   isLoading: true, // Start with true to check auth state on app launch
-  error: null
+  error: null,
+  hasCompletedCardSetup: false
 };
 
-// Async thunk to load token on app start
+// Async thunk to load token and card setup status on app start
 export const loadToken = createAsyncThunk(
   'auth/loadToken',
   async () => {
     try {
       const token = await SecureStore.getItemAsync('userToken');
-      return token;
+      const hasCompletedCardSetup = await SecureStore.getItemAsync('hasCompletedCardSetup');
+      return {
+        token,
+        hasCompletedCardSetup: hasCompletedCardSetup === 'true'
+      };
     } catch (error) {
       throw new Error('Failed to load token');
     }
@@ -46,7 +52,14 @@ export const login = createAsyncThunk(
 
       const token = await user?.getIdToken() || user?.uid || 'custom-token';
       await SecureStore.setItemAsync('userToken', token);
-      return token;
+      
+      // Check if user has completed card setup
+      const hasCompletedCardSetup = await SecureStore.getItemAsync('hasCompletedCardSetup');
+      
+      return {
+        token,
+        hasCompletedCardSetup: hasCompletedCardSetup === 'true'
+      };
     } catch (error: any) {
       let errorMessage = 'Login failed';
       
@@ -68,8 +81,22 @@ export const logout = createAsyncThunk(
     try {
       await auth().signOut();
       await SecureStore.deleteItemAsync('userToken');
+      // Note: We don't clear hasCompletedCardSetup here so it persists between sessions
     } catch (error) {
       throw new Error('Logout failed');
+    }
+  }
+);
+
+// Async thunk to mark card setup as complete
+export const completeCardSetup = createAsyncThunk(
+  'auth/completeCardSetup',
+  async () => {
+    try {
+      await SecureStore.setItemAsync('hasCompletedCardSetup', 'true');
+      return true;
+    } catch (error) {
+      throw new Error('Failed to save card setup status');
     }
   }
 );
@@ -85,7 +112,8 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(loadToken.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.hasCompletedCardSetup = action.payload.hasCompletedCardSetup;
         state.isLoading = false;
       })
       .addCase(loadToken.rejected, (state) => {
@@ -98,7 +126,8 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.hasCompletedCardSetup = action.payload.hasCompletedCardSetup;
         state.isLoading = false;
       })
       .addCase(login.rejected, (state, action) => {
@@ -113,14 +142,24 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.token = null;
         state.isLoading = false;
+        // Note: We keep hasCompletedCardSetup even after logout
       })
       .addCase(logout.rejected, (state) => {
+        state.isLoading = false;
+      })
+      
+      // Complete Card Setup cases
+      .addCase(completeCardSetup.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(completeCardSetup.fulfilled, (state) => {
+        state.hasCompletedCardSetup = true;
+        state.isLoading = false;
+      })
+      .addCase(completeCardSetup.rejected, (state) => {
         state.isLoading = false;
       });
   }
 });
 
 export default authSlice.reducer;
-
-
-
