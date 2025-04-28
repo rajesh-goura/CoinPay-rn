@@ -81,8 +81,11 @@ const EmailVerification = () => {
         return;
       }
   
+      // Force refresh the user object
       await user.reload();
-      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Add a longer delay to ensure the update is processed
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
       
       if (user.emailVerified) {
         navigate("CountrySelector");

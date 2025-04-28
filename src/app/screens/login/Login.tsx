@@ -57,7 +57,7 @@ const Login = () => {
     try {
       const result = await dispatch(login({ email, password }));
       if (login.fulfilled.match(result)) {
-        navigate("AddCard");
+        // navigate("AddCard");
       } else if (login.rejected.match(result)) {
         if (result.payload === "EMAIL_NOT_VERIFIED") {
           Alert.alert(t("login.error.title"), t("login.error.emailNotVerified"));

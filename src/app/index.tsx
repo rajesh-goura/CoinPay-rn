@@ -1,13 +1,22 @@
-import React, { useEffect } from "react";
+// src/app/index.tsx
+import React from "react";
 import { StatusBar, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./navigation/navigationService";
 import { DarkThemeCustom, LightThemeCustom } from "../app/themes/Theme";
-import { useAppSelector } from "../app/redux/store"; 
+import { useAppSelector, useAppDispatch } from "../app/redux/store";
+import { loadToken } from "../app/redux/slices/authSlice";
+
+// Auth Screens
+import Onboarding from "./screens/onboarding/Onboarding";
 import Signup from "./screens/registration/Signup";
 import CreateAccount from "./screens/registration/CreateAccount";
-import { useColorScheme } from "react-native";
+import EmailVerification from "./screens/registration/EmailVerification";
+import Login from "./screens/login/Login";
+import ForgotPassword from "./screens/login/ForgotPassword";
+
+// Setup Screens
 import CountrySelector from "./screens/accountSetup/CountrySelector";
 import PersonalInfo from "./screens/accountSetup/PersonalInfo";
 import EmailInfo from "./screens/accountSetup/EmailInfo";
@@ -19,20 +28,18 @@ import SelfieScan from "./screens/accountVerify/SelfieScan";
 import AccountSetup from "./screens/accountVerify/AccountSetup";
 import pinSetup from "./screens/pinSetup/pinSetup";
 import WelcomeScreen from "./screens/welcome/WelcomeScreen";
-import Login from "./screens/login/Login";
+
+// Main App Screens
 import AddCard from "./screens/addCard/AddCard";
+import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
 import CardDetails from "./screens/addCard/CardDetails";
 import CardVerify from "./screens/addCard/CardVerify";
 import CardList from "./screens/addCard/CardList";
-import EmailVerification from "./screens/registration/EmailVerification";
-import ForgotPassword from "./screens/login/ForgotPassword";
-import BottomTabNavigator from "./navigation/navigators/BottomTabNavigator";
 import SendMoney from "./screens/send/SendMoney";
 import SendAmount from "./screens/send/SendAmount";
 import Purpose from "./screens/send/Purpose";
 import SelectAccount from "./screens/send/SelectAccount";
 import PaymentCompleted from "./screens/send/PaymentCompleted";
-import Onboarding from "./screens/onboarding/Onboarding";
 import ScanQr from "./screens/send/ScanQr";
 import SettingsScreen from "./screens/settings/SettingsScreen";
 import UpdateMoney from "./screens/balance/UpdateMoney";
@@ -49,11 +56,15 @@ import SampleScreen from "./navigation/navigators/SampleScreen";
 
 const Stack = createStackNavigator();
 
-
 const RootNavigator = () => {
-  const { token, isLoading } = useAppSelector((state) => state.auth);
-  // const systemTheme = useColorScheme();
+  const dispatch = useAppDispatch();
+  const { token, isLoading, hasCompletedCardSetup } = useAppSelector((state) => state.auth);
   const themeMode = useAppSelector(selectThemeMode);
+
+  // Load token and card setup status on initial render
+  React.useEffect(() => {
+    dispatch(loadToken());
+  }, [dispatch]);
 
   if (isLoading) {
     return (
@@ -70,6 +81,7 @@ const RootNavigator = () => {
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!token ? (
+          // Auth Stack
           <>
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="Signup" component={Signup} />
@@ -92,11 +104,23 @@ const RootNavigator = () => {
             <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
           </>
         ) : (
+          // Main App Stack
           <>
-            <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            {!hasCompletedCardSetup ? (
+              // First-time user flow
+              <>
+              <Stack.Screen name="AddCard" component={AddCard} />
+              
+              </>
+            ) : (
+              // Returning user flow
+              <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+            )}
+            
+            {/* Shared Screens */}
+            
             <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
             <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
-            <Stack.Screen name="AddCard" component={AddCard} />
             <Stack.Screen name="CardDetails" component={CardDetails} />
             <Stack.Screen name="CardVerify" component={CardVerify} />
             <Stack.Screen name="CardList" component={CardList} />
@@ -115,12 +139,14 @@ const RootNavigator = () => {
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="ToggleScreen" component={ToggleScreen} />
             <Stack.Screen name="SampleScreen" component={SampleScreen} />
+            <Stack.Screen name="AddCard" component={AddCard} />
           </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
+
 const MainNavigation = () => {
   return (
     <>
