@@ -51,37 +51,77 @@ const PaymentCompleted = ({ navigation, route }: any) => {
   };
 
   useEffect(() => {
-    // Get current authenticated user
     const user = auth().currentUser;
     setCurrentUser(user);
-
+  
     const fetchAndUpdateRecipient = async () => {
       try {
         // 1. Fetch recipient data
         const recipientRef = firestore().collection("users").doc(recipient.id);
         const recipientSnap = await recipientRef.get();
-
+  
         if (!recipientSnap.exists) {
           throw new Error("Recipient not found");
         }
-
+  
         const recipientData = recipientSnap.data();
         if (!recipientData) {
           throw new Error("Recipient data is undefined");
         }
         setRecipientData(recipientData);
-
-        // 2. Update recipient's balance
+  
+        // 2. Update recipient's balance and record transaction
         setUpdating(true);
         const currentBalance = recipientData?.balance || 0;
         const newBalance = currentBalance + parseFloat(amount);
-
-        await recipientRef.update({
+  
+        // Get current timestamp
+        const timestamp = new Date();
+  
+        // Create transaction record for recipient
+        const recipientTransaction = {
+          amount: parseFloat(amount),
+          currency: currency,
+          fromUserId: user?.uid,
+          fromUserName: user?.displayName || "Unknown",
+          purpose: purpose,
+          timestamp: timestamp, // Use Date object instead of FieldValue
+          type: "received",
+          status: "completed"
+        };
+  
+        // Batch update for atomic operation
+        const batch = firestore().batch();
+        
+        // Update recipient
+        batch.update(recipientRef, {
           balance: newBalance,
-          updatedAt: firestore.FieldValue.serverTimestamp(),
+          updatedAt: firestore.FieldValue.serverTimestamp(), // This is fine here
+          received: firestore.FieldValue.arrayUnion(recipientTransaction)
         });
-
-
+  
+        // Update sender if exists
+        if (user) {
+          const senderRef = firestore().collection("users").doc(user.uid);
+          const senderTransaction = {
+            amount: parseFloat(amount),
+            currency: currency,
+            toUserId: recipient.id,
+            toUserName: recipient.name,
+            purpose: purpose,
+            timestamp: timestamp, // Use the same Date object
+            type: "sent",
+            status: "completed",
+            accountUsed: selectedAccountData.type
+          };
+  
+          batch.update(senderRef, {
+            sent: firestore.FieldValue.arrayUnion(senderTransaction)
+          });
+        }
+  
+        await batch.commit();
+  
       } catch (error) {
         console.error("Error processing payment:", error);
         Alert.alert(
@@ -93,7 +133,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
         setUpdating(false);
       }
     };
-
+  
     fetchAndUpdateRecipient();
   }, [recipient.id, amount]);
 
