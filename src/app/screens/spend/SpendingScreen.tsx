@@ -32,6 +32,17 @@ interface Transaction {
   icon: any;
   type: TabType;
 }
+interface FirestoreTransaction {
+  amount: number;
+  timestamp: any; // Firestore Timestamp or Date
+  // Add other fields you have in your transactions
+}
+
+interface ProcessedChartData {
+  labels: string[];
+  datasets: { data: number[] }[];
+}
+
 
 const SpendingScreen = ({ navigation ,route}: any) => {
   const { colors } = useTheme() as CustomTheme;
@@ -182,24 +193,25 @@ const SpendingScreen = ({ navigation ,route}: any) => {
   ];
 
   // Chart data for each tab
-  const chartData = {
-    spending: {
-      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-      datasets: [{ data: [500, 300, 500, 100, 200] }],
-    },
-    income: {
-      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-      datasets: [{ data: [1000, 1500, 1200, 1800, 900] }],
-    },
-    bills: {
-      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-      datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
-    },
-    savings: {
-      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-      datasets: [{ data: [300, 500, 400, 600, 200] }],
-    },
-  };
+  const [chartData, setChartData] = useState({
+  spending: {
+    labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+    datasets: [{ data: [0, 0, 0, 0, 0] }],
+  },
+  income: {
+    labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+    datasets: [{ data: [0, 0, 0, 0, 0] }],
+  },
+  bills: {
+    labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+    datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
+  },
+  savings: {
+    labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+    datasets: [{ data: [300, 500, 400, 600, 200] }],
+  },
+});
+
 
   // Titles for each tab
   const tabTitles = {
@@ -209,35 +221,100 @@ const SpendingScreen = ({ navigation ,route}: any) => {
     savings: "Total Savings",
   };
 
-  useEffect(() => {
-    const user = auth().currentUser;
-    
-    if (!user) {
+ useEffect(() => {
+  const user = auth().currentUser;
+  
+  if (!user) {
+    setLoading(false);
+    return;
+  }
+
+  const unsubscribe = firestore()
+    .collection('users')
+    .doc(user.uid)
+    .onSnapshot(async (documentSnapshot) => {
+      if (documentSnapshot.exists) {
+        const userData = documentSnapshot.data();
+        setBalance(userData?.balance || 0);
+        setTotalAmount(userData?.totalSpending || 0);
+
+        // Fetch transactions for chart data
+        const sentTransactions: FirestoreTransaction[] = userData?.sent || [];
+        const receivedTransactions: FirestoreTransaction[] = userData?.received || [];
+
+        // Process transactions for charts
+        const spendingData = processTransactionsForChart(sentTransactions);
+        const incomeData = processTransactionsForChart(receivedTransactions);
+
+        // Update chartData state
+        setChartData({
+          spending: spendingData,
+          income: incomeData,
+          // Keep bills and savings as dummy data
+          bills: {
+            labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+            datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
+          },
+          savings: {
+            labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+            datasets: [{ data: [300, 500, 400, 600, 200] }],
+          },
+        });
+      } else {
+        setBalance(0);
+        setTotalAmount(0);
+      }
       setLoading(false);
-      return;
+    });
+
+  // Keep sample data for the list view
+  setTransactions(sampleData);
+
+  return () => unsubscribe();
+}, []);
+
+
+const processTransactionsForChart = (transactions: FirestoreTransaction[]): ProcessedChartData => {
+  // Group transactions by week of the month
+  const weeklyGroups: {[key: string]: number} = {
+    '1-7': 0,
+    '8-14': 0,
+    '15-21': 0,
+    '22-28': 0,
+    '29-31': 0
+  };
+
+  transactions.forEach(transaction => {
+    let date: Date;
+    
+    // Handle both Firestore Timestamp and JavaScript Date
+    if (transaction.timestamp?.toDate) {
+      date = transaction.timestamp.toDate();
+    } else if (transaction.timestamp instanceof Date) {
+      date = transaction.timestamp;
+    } else {
+      return; // Skip if no valid date
     }
 
-    const unsubscribe = firestore()
-      .collection('users')
-      .doc(user.uid)
-      .onSnapshot(documentSnapshot => {
-        if (documentSnapshot.exists) {
-          const userData = documentSnapshot.data();
-          setBalance(userData?.balance || 0);
-          // You might want to store separate totals for each category in Firestore
-          setTotalAmount(userData?.totalSpending || 0);
-        } else {
-          setBalance(0);
-          setTotalAmount(0);
-        }
-        setLoading(false);
-      });
+    const day = date.getDate();
+    let weekRange: string;
 
-    // In a real app, you would fetch transactions from Firestore here
-    setTransactions(sampleData);
+    if (day <= 7) weekRange = '1-7';
+    else if (day <= 14) weekRange = '8-14';
+    else if (day <= 21) weekRange = '15-21';
+    else if (day <= 28) weekRange = '22-28';
+    else weekRange = '29-31';
 
-    return () => unsubscribe();
-  }, []);
+    weeklyGroups[weekRange] += Math.abs(transaction.amount);
+  });
+
+  return {
+    labels: Object.keys(weeklyGroups),
+    datasets: [{
+      data: Object.values(weeklyGroups)
+    }]
+  };
+};
 
   const formatBalance = (amount: number | null) => {
     if (amount === null) return "$0";
