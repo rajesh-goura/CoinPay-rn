@@ -53,11 +53,11 @@ const en = {
       },
       emailVerification: {
         title: "Verify your email",
-        sentEmail: "We sent a verification email to {email}",
+        sentEmail: "We sent a verification email to {{email}}",
         instructions: "Please check your inbox and click the verification link to continue.",
         didNotReceive: "Didn't receive email?",
         resend: "Resend",
-        resendIn: "Resend in {seconds}s",
+        resendIn: "Resend in {{seconds}}s",
         verifiedButton: "I've Verified My Email",
         success: "Success",
         resendSuccess: "Verification email has been resent",
