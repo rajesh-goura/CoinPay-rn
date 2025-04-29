@@ -1,15 +1,23 @@
 import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { Appearance } from "react-native";
+import { Appearance, LogBox } from "react-native";
 
 import { store, persistor } from "./app/redux/store";
 import { updateSystemTheme } from "./app/redux/slices/themeSlice";
 import { loadToken } from "./app/redux/slices/authSlice";
 import MainNavigator from "./app/index";
 import "./app/localization/i18n";
-import { LogBox } from "react-native";
-import { ThemeProvider } from "@react-navigation/native";
+
+// Ignore all Firebase deprecation warnings
+LogBox.ignoreLogs([
+  /\[react-native-firebase\]/,
+  /deprecated/i,
+  /React Native Firebase namespaced API/i,
+  /Method called was `.*`/i,
+  /Please use `.*` instead/i,
+  /NOBRIDGE/,
+]);
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
@@ -20,14 +28,6 @@ const ThemeListener = ({ children }: { children: React.ReactNode }) => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       store.dispatch(updateSystemTheme(colorScheme));
     });
-
-    LogBox.ignoreLogs([
-      /deprecated/i, // Ignore all deprecation warnings
-      /React Native Firebase namespaced API/i,
-      /Method called was `collection`/i,
-      /Method called was `doc`/i,
-      /Please use `getApp\(\)` instead/i,
-    ]);
 
     return () => subscription.remove();
   }, []);
