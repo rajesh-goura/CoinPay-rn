@@ -131,7 +131,7 @@ const RootNavigator = () => {
                 <Stack.Screen name="AddCard" component={AddCard} />
                 <Stack.Screen name="CardDetails" component={CardDetails} />
                 <Stack.Screen name="CardVerify" component={CardVerify} />
-                <Stack.Screen name="CardLirst" component={CardList} />
+                <Stack.Screen name="CardList" component={CardList} />
               </>
             )}
             
