@@ -7,14 +7,14 @@ interface AuthState {
   token: string | null;
   isLoading: boolean;
   error: string | null;
-  hasCompletedCardSetup: boolean;
+  
 }
 
 const initialState: AuthState = {
   token: null,
   isLoading: true, // Start with true to check auth state on app launch
   error: null,
-  hasCompletedCardSetup: false
+  
 };
 
 // Async thunk to load token and card setup status on app start
@@ -88,18 +88,6 @@ export const logout = createAsyncThunk(
   }
 );
 
-// Async thunk to mark card setup as complete
-export const completeCardSetup = createAsyncThunk(
-  'auth/completeCardSetup',
-  async () => {
-    try {
-      await SecureStore.setItemAsync('hasCompletedCardSetup', 'true');
-      return true;
-    } catch (error) {
-      throw new Error('Failed to save card setup status');
-    }
-  }
-);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -113,7 +101,7 @@ const authSlice = createSlice({
       })
       .addCase(loadToken.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.hasCompletedCardSetup = action.payload.hasCompletedCardSetup;
+        
         state.isLoading = false;
       })
       .addCase(loadToken.rejected, (state) => {
@@ -127,7 +115,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.hasCompletedCardSetup = action.payload.hasCompletedCardSetup;
+       
         state.isLoading = false;
       })
       .addCase(login.rejected, (state, action) => {
@@ -148,17 +136,6 @@ const authSlice = createSlice({
         state.isLoading = false;
       })
       
-      // Complete Card Setup cases
-      .addCase(completeCardSetup.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(completeCardSetup.fulfilled, (state) => {
-        state.hasCompletedCardSetup = true;
-        state.isLoading = false;
-      })
-      .addCase(completeCardSetup.rejected, (state) => {
-        state.isLoading = false;
-      });
   }
 });
 

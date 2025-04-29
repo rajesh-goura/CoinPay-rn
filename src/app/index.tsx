@@ -1,5 +1,5 @@
 // src/app/index.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusBar, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -53,22 +53,31 @@ import ProfileScreen from "./screens/profile/ProfileScreen";
 import ToggleScreen from "./screens/toggle/ToggleScreen";
 import { selectThemeMode } from "./redux/slices/themeSlice";
 import SampleScreen from "./navigation/navigators/SampleScreen";
+import { fetchCards } from "../app/redux/slices/cardSlice";
 
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {
   const dispatch = useAppDispatch();
-  const { token, isLoading, hasCompletedCardSetup } = useAppSelector((state) => state.auth);
+  const { token, isLoading: isAuthLoading } = useAppSelector((state) => state.auth);
+  const { cards, isLoading: isCardsLoading } = useAppSelector((state) => state.cards);
   const themeMode = useAppSelector(selectThemeMode);
 
-  // Load token and card setup status on initial render
-  React.useEffect(() => {
+  // Load token and cards when token changes
+  useEffect(() => {
     dispatch(loadToken());
   }, [dispatch]);
 
-  if (isLoading) {
+  // Fetch cards when token is available
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchCards());
+    }
+  }, [dispatch, token]);
+
+  if (isAuthLoading || (token && isCardsLoading)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' },{backgroundColor: themeMode === "dark" ? "#000" : "#fff"}]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -106,40 +115,46 @@ const RootNavigator = () => {
         ) : (
           // Main App Stack
           <>
-            {!hasCompletedCardSetup ? (
-              // First-time user flow
-              <>
-              <Stack.Screen name="AddCard" component={AddCard} />
-              
-              </>
+            {cards.length === 0 ? (
+              // Mandatory first-time card flow
+              <Stack.Group>
+                <Stack.Screen name="AddCard" component={AddCard} />
+                <Stack.Screen name="CardDetails" component={CardDetails} />
+                <Stack.Screen name="CardVerify" component={CardVerify} />
+                <Stack.Screen name="CardList" component={CardList} />
+                <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+              </Stack.Group>
             ) : (
-              // Returning user flow
-              <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+              // Main app with optional add card flow
+              <>
+                <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+                <Stack.Screen name="AddCard" component={AddCard} />
+                <Stack.Screen name="CardDetails" component={CardDetails} />
+                <Stack.Screen name="CardVerify" component={CardVerify} />
+                <Stack.Screen name="CardLirst" component={CardList} />
+              </>
             )}
             
-            {/* Shared Screens */}
-            
-            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-            <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
-            <Stack.Screen name="CardDetails" component={CardDetails} />
-            <Stack.Screen name="CardVerify" component={CardVerify} />
-            <Stack.Screen name="CardList" component={CardList} />
-            <Stack.Screen name="SendMoney" component={SendMoney} />
-            <Stack.Screen name="SendAmount" component={SendAmount} />
-            <Stack.Screen name="Purpose" component={Purpose} />
-            <Stack.Screen name="SelectAccount" component={SelectAccount} />
-            <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
-            <Stack.Screen name="ScanQr" component={ScanQr} />
-            <Stack.Screen name="QrCode" component={QrCode} />
-            <Stack.Screen name="RequestRecipient" component={RequestRecipient} />
-            <Stack.Screen name="RequestPurpose" component={RequestPurpose} />
-            <Stack.Screen name="RequestAmount" component={RequestAmount} />
-            <Stack.Screen name="SendRequest" component={SendRequest} />
-            <Stack.Screen name="SpendingScreen" component={SpendingScreen} />
-            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <Stack.Screen name="ToggleScreen" component={ToggleScreen} />
-            <Stack.Screen name="SampleScreen" component={SampleScreen} />
-            <Stack.Screen name="AddCard" component={AddCard} />
+            {/* Shared screens available everywhere */}
+            <Stack.Group>
+              <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+              <Stack.Screen name="UpdateMoney" component={UpdateMoney} />
+              <Stack.Screen name="SendMoney" component={SendMoney} />
+              <Stack.Screen name="SendAmount" component={SendAmount} />
+              <Stack.Screen name="Purpose" component={Purpose} />
+              <Stack.Screen name="SelectAccount" component={SelectAccount} />
+              <Stack.Screen name="PaymentCompleted" component={PaymentCompleted} />
+              <Stack.Screen name="ScanQr" component={ScanQr} />
+              <Stack.Screen name="QrCode" component={QrCode} />
+              <Stack.Screen name="RequestRecipient" component={RequestRecipient} />
+              <Stack.Screen name="RequestPurpose" component={RequestPurpose} />
+              <Stack.Screen name="RequestAmount" component={RequestAmount} />
+              <Stack.Screen name="SendRequest" component={SendRequest} />
+              <Stack.Screen name="SpendingScreen" component={SpendingScreen} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              <Stack.Screen name="ToggleScreen" component={ToggleScreen} />
+              <Stack.Screen name="SampleScreen" component={SampleScreen} />
+            </Stack.Group>
           </>
         )}
       </Stack.Navigator>

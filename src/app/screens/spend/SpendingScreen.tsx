@@ -43,12 +43,11 @@ interface ProcessedChartData {
   datasets: { data: number[] }[];
 }
 
-
-const SpendingScreen = ({ navigation ,route}: any) => {
+const SpendingScreen = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const [selectedMonth, setSelectedMonth] = useState("January");
   const [activeTab, setActiveTab] = useState<TabType>(
-    route.params?.initialTab || "spending" 
+    route.params?.initialTab || "spending"
   );
   const [showMonthDropdown, setShowMonthDropdown] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
@@ -138,7 +137,7 @@ const SpendingScreen = ({ navigation ,route}: any) => {
       icon: require("@/assets/images/spendicons/investment.jpg"),
       type: "income",
     },
-  
+
     // Bill transactions
     {
       id: "9",
@@ -164,7 +163,7 @@ const SpendingScreen = ({ navigation ,route}: any) => {
       icon: require("@/assets/images/spendicons/water.svg"),
       type: "bills",
     },
-  
+
     // Savings transactions
     {
       id: "12",
@@ -194,24 +193,23 @@ const SpendingScreen = ({ navigation ,route}: any) => {
 
   // Chart data for each tab
   const [chartData, setChartData] = useState({
-  spending: {
-    labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
-    datasets: [{ data: [0, 0, 0, 0, 0] }],
-  },
-  income: {
-    labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
-    datasets: [{ data: [0, 0, 0, 0, 0] }],
-  },
-  bills: {
-    labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-    datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
-  },
-  savings: {
-    labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-    datasets: [{ data: [300, 500, 400, 600, 200] }],
-  },
-});
-
+    spending: {
+      labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+      datasets: [{ data: [0, 0, 0, 0, 0] }],
+    },
+    income: {
+      labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+      datasets: [{ data: [0, 0, 0, 0, 0] }],
+    },
+    bills: {
+      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+      datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
+    },
+    savings: {
+      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+      datasets: [{ data: [300, 500, 400, 600, 200] }],
+    },
+  });
 
   // Titles for each tab
   const tabTitles = {
@@ -221,106 +219,125 @@ const SpendingScreen = ({ navigation ,route}: any) => {
     savings: "Total Savings",
   };
 
- useEffect(() => {
-  const user = auth().currentUser;
-  
-  if (!user) {
-    setLoading(false);
-    return;
-  }
+  useEffect(() => {
+    const user = auth().currentUser;
 
-  const unsubscribe = firestore()
-    .collection('users')
-    .doc(user.uid)
-    .onSnapshot(async (documentSnapshot) => {
-      if (documentSnapshot.exists) {
-        const userData = documentSnapshot.data();
-        setBalance(userData?.balance || 0);
-        setTotalAmount(userData?.totalSpending || 0);
-
-        // Fetch transactions for chart data
-        const sentTransactions: FirestoreTransaction[] = userData?.sent || [];
-        const receivedTransactions: FirestoreTransaction[] = userData?.received || [];
-
-        // Process transactions for charts
-        const spendingData = processTransactionsForChart(sentTransactions);
-        const incomeData = processTransactionsForChart(receivedTransactions);
-
-        // Update chartData state
-        setChartData({
-          spending: spendingData,
-          income: incomeData,
-          // Keep bills and savings as dummy data
-          bills: {
-            labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-            datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
-          },
-          savings: {
-            labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-            datasets: [{ data: [300, 500, 400, 600, 200] }],
-          },
-        });
-      } else {
-        setBalance(0);
-        setTotalAmount(0);
-      }
+    if (!user) {
       setLoading(false);
-    });
-
-  // Keep sample data for the list view
-  setTransactions(sampleData);
-
-  return () => unsubscribe();
-}, []);
-
-
-const processTransactionsForChart = (transactions: FirestoreTransaction[]): ProcessedChartData => {
-  // Group transactions by week of the month
-  const weeklyGroups: {[key: string]: number} = {
-    '1-7': 0,
-    '8-14': 0,
-    '15-21': 0,
-    '22-28': 0,
-    '29-31': 0
-  };
-
-  transactions.forEach(transaction => {
-    let date: Date;
-    
-    // Handle both Firestore Timestamp and JavaScript Date
-    if (transaction.timestamp?.toDate) {
-      date = transaction.timestamp.toDate();
-    } else if (transaction.timestamp instanceof Date) {
-      date = transaction.timestamp;
-    } else {
-      return; // Skip if no valid date
+      return;
     }
 
-    const day = date.getDate();
-    let weekRange: string;
+    const unsubscribe = firestore()
+      .collection("users")
+      .doc(user.uid)
+      .onSnapshot(async (documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          const userData = documentSnapshot.data();
+          setBalance(userData?.balance || 0);
+          setTotalAmount(userData?.totalSpending || 0);
 
-    if (day <= 7) weekRange = '1-7';
-    else if (day <= 14) weekRange = '8-14';
-    else if (day <= 21) weekRange = '15-21';
-    else if (day <= 28) weekRange = '22-28';
-    else weekRange = '29-31';
+          // Fetch transactions for chart data
+          const sentTransactions: FirestoreTransaction[] = userData?.sent || [];
+          const receivedTransactions: FirestoreTransaction[] =
+            userData?.received || [];
 
-    weeklyGroups[weekRange] += Math.abs(transaction.amount);
-  });
+          // Process transactions for charts with selected month
+          const spendingData = processTransactionsForChart(
+            sentTransactions,
+            selectedMonth
+          );
+          const incomeData = processTransactionsForChart(
+            receivedTransactions,
+            selectedMonth
+          );
 
-  return {
-    labels: Object.keys(weeklyGroups),
-    datasets: [{
-      data: Object.values(weeklyGroups)
-    }]
+          // Update chartData state
+          setChartData({
+            spending: spendingData,
+            income: incomeData,
+            // Keep bills and savings as dummy data
+            bills: {
+              labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+              datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
+            },
+            savings: {
+              labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+              datasets: [{ data: [300, 500, 400, 600, 200] }],
+            },
+          });
+        } else {
+          setBalance(0);
+          setTotalAmount(0);
+        }
+        setLoading(false);
+      });
+
+    // Keep sample data for the list view
+    setTransactions(sampleData);
+
+    return () => unsubscribe();
+  }, [selectedMonth]);
+
+  const processTransactionsForChart = (
+    transactions: FirestoreTransaction[],
+    selectedMonth: string
+  ): ProcessedChartData => {
+    // Get the month index (0-11) from the selected month name
+    const monthIndex = months.indexOf(selectedMonth);
+
+    // Group transactions by week of the month
+    const weeklyGroups: { [key: string]: number } = {
+      "1-7": 0,
+      "8-14": 0,
+      "15-21": 0,
+      "22-28": 0,
+      "29-31": 0,
+    };
+
+    transactions.forEach((transaction) => {
+      let date: Date;
+
+      // Handle both Firestore Timestamp and JavaScript Date
+      if (transaction.timestamp?.toDate) {
+        date = transaction.timestamp.toDate();
+      } else if (transaction.timestamp instanceof Date) {
+        date = transaction.timestamp;
+      } else {
+        return; // Skip if no valid date
+      }
+
+      // Only process transactions from the selected month
+      if (date.getMonth() !== monthIndex) {
+        return;
+      }
+
+      const day = date.getDate();
+      let weekRange: string;
+
+      if (day <= 7) weekRange = "1-7";
+      else if (day <= 14) weekRange = "8-14";
+      else if (day <= 21) weekRange = "15-21";
+      else if (day <= 28) weekRange = "22-28";
+      else weekRange = "29-31";
+
+      weeklyGroups[weekRange] += Math.abs(transaction.amount);
+    });
+
+    return {
+      labels: Object.keys(weeklyGroups),
+      datasets: [
+        {
+          data: Object.values(weeklyGroups),
+        },
+      ],
+    };
   };
-};
 
   const formatBalance = (amount: number | null) => {
     if (amount === null) return "$0";
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -328,7 +345,7 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
 
   // Filter transactions by active tab
   const filteredTransactions = transactions.filter(
-    transaction => transaction.type === activeTab
+    (transaction) => transaction.type === activeTab
   );
 
   // Calculate total for active tab
@@ -341,7 +358,12 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
 
   // Render item for the list
   const renderItem = ({ item }: { item: Transaction }) => (
-    <View style={[styles.listItem, { borderBottomColor: colors.border, borderBottomWidth: 1.9 }]}>
+    <View
+      style={[
+        styles.listItem,
+        { borderBottomColor: colors.border, borderBottomWidth: 1.9 },
+      ]}
+    >
       <Image source={item.icon} style={styles.listIcon} />
       <View style={styles.listTextContainer}>
         <Text style={[styles.listName, { color: colors.textPrimary }]}>
@@ -351,7 +373,12 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
           {item.date}
         </Text>
       </View>
-      <Text style={[styles.listAmount, { color: item.amount < 0 ? "#ed4034" : "#4CAF50" }]}>
+      <Text
+        style={[
+          styles.listAmount,
+          { color: item.amount < 0 ? "#ed4034" : "#4CAF50" },
+        ]}
+      >
         {item.amount < 0 ? "-" : "+"}${Math.abs(item.amount)}
       </Text>
     </View>
@@ -359,7 +386,12 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: colors.backgroundinApp }]}>
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: colors.backgroundinApp },
+        ]}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -371,9 +403,10 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
       contentContainerStyle={styles.scrollContainer}
     >
       {/* Header */}
-      <SecondaryHeader title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} 
-        onBackPress={() => navigation.goBack()} />
-
+      <SecondaryHeader
+        title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+        onBackPress={() => navigation.goBack()}
+      />
       {/* Month Dropdown */}
       <TouchableOpacity
         style={[
@@ -396,7 +429,6 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
         />
       </TouchableOpacity>
 
-      {/* Month Dropdown Modal */}
       <Modal
         visible={showMonthDropdown}
         transparent={true}
@@ -420,6 +452,8 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
                 onPress={() => {
                   setSelectedMonth(month);
                   setShowMonthDropdown(false);
+                  // Reset loading state to show spinner while data updates
+                  setLoading(true);
                 }}
               >
                 <Text
@@ -477,7 +511,12 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
       <View
         style={[
           styles.chartContainer,
-          { backgroundColor: colors.modalBackgroun, borderRadius: 16, borderBottomWidth: 2, borderColor: colors.primary },
+          {
+            backgroundColor: colors.modalBackgroun,
+            borderRadius: 16,
+            borderBottomWidth: 2,
+            borderColor: colors.primary,
+          },
         ]}
       >
         <BarChart
@@ -487,8 +526,9 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
             datasets: [
               {
                 ...chartData[activeTab].datasets[0],
-                colors: chartData[activeTab].datasets[0].data.map((_, index) => 
-                  () => index % 2 === 0 ? colors.primary : "#FFD700"
+                colors: chartData[activeTab].datasets[0].data.map(
+                  (_, index) => () =>
+                    index % 2 === 0 ? colors.primary : "#FFD700"
                 ),
               },
             ],
@@ -529,13 +569,15 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
       </View>
 
       {/* Tab Navigation */}
-      <View style={[styles.MaintabContainer, { backgroundColor: colors.modalBackgroun }]}>
+      <View
+        style={[
+          styles.MaintabContainer,
+          { backgroundColor: colors.modalBackgroun },
+        ]}
+      >
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[
-              styles.roundTabButton,
-              { backgroundColor: "#eaebfd" },
-            ]}
+            style={[styles.roundTabButton, { backgroundColor: "#eaebfd" }]}
             onPress={() => setActiveTab("spending")}
           >
             <Image
@@ -545,10 +587,7 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.roundTabButton,
-              { backgroundColor: "#e9f5e9" },
-            ]}
+            style={[styles.roundTabButton, { backgroundColor: "#e9f5e9" }]}
             onPress={() => setActiveTab("income")}
           >
             <Image
@@ -558,10 +597,7 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.roundTabButton,
-              { backgroundColor: "#fff9c5" },
-            ]}
+            style={[styles.roundTabButton, { backgroundColor: "#fff9c5" }]}
             onPress={() => setActiveTab("bills")}
           >
             <Image
@@ -571,10 +607,7 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.roundTabButton,
-              { backgroundColor: "#fdf2e1" },
-            ]}
+            style={[styles.roundTabButton, { backgroundColor: "#fdf2e1" }]}
             onPress={() => setActiveTab("savings")}
           >
             <Image
@@ -590,7 +623,10 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
             style={[
               styles.tabLabel,
               {
-                color: activeTab === "spending" ? colors.primary : colors.textSecondary,
+                color:
+                  activeTab === "spending"
+                    ? colors.primary
+                    : colors.textSecondary,
               },
             ]}
           >
@@ -600,7 +636,10 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
             style={[
               styles.tabLabel,
               {
-                color: activeTab === "income" ? colors.primary : colors.textSecondary,
+                color:
+                  activeTab === "income"
+                    ? colors.primary
+                    : colors.textSecondary,
               },
             ]}
           >
@@ -609,7 +648,10 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
           <Text
             style={[
               styles.tabLabel,
-              { color: activeTab === "bills" ? colors.primary : colors.textSecondary },
+              {
+                color:
+                  activeTab === "bills" ? colors.primary : colors.textSecondary,
+              },
             ]}
           >
             Bills
@@ -618,7 +660,10 @@ const processTransactionsForChart = (transactions: FirestoreTransaction[]): Proc
             style={[
               styles.tabLabel,
               {
-                color: activeTab === "savings" ? colors.primary : colors.textSecondary,
+                color:
+                  activeTab === "savings"
+                    ? colors.primary
+                    : colors.textSecondary,
               },
             ]}
           >

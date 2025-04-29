@@ -77,23 +77,10 @@ const Onboarding = () => {
         source={dark ? item.imageDark : item.imageLight}
         style={styles.img}
       />
+      {/* Remove the indicator from here */}
       <View style={styles.row}>
-        <View style={styles.indicatorContainer}>
-          {slides.map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.indicatorDot,
-                index === currentIndex && [
-                  styles.activeDot,
-                  { backgroundColor: colors.primary },
-                ],
-              ]}
-            />
-          ))}
-        </View>
         <Text style={[styles.text, { color: colors.textPrimary }]}>
-          {t(item.textKey)} {/* Using the translation function here */}
+          {t(item.textKey)}
         </Text>
       </View>
     </View>
@@ -120,11 +107,28 @@ const Onboarding = () => {
         scrollEventThrottle={16}
       />
 
+      {/* Add the indicator container here, positioned absolutely */}
+      <View style={styles.indicatorAbsoluteContainer}>
+        <View style={styles.indicatorContainer}>
+          {slides.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.indicatorDot,
+                index === currentIndex && [
+                  styles.activeDot,
+                  { backgroundColor: colors.primary },
+                ],
+              ]}
+            />
+          ))}
+        </View>
+      </View>
+
       <PrimaryButton
         onPress={handleNextPress}
         text={currentIndex === slides.length - 1 ? t("common.getStarted") : t("common.next")}
       />
-      
     </View>
   );
 };
@@ -162,13 +166,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600",
     marginTop: 20,
-    paddingTop:15,
+    paddingTop:35,
     lineHeight: screenWidth < 400 ? 30 : 40,
   },
   indicatorContainer: {
     flexDirection: "row",
     marginVertical: 20,
   },
+  indicatorAbsoluteContainer: {
+    position: 'absolute',
+    top: screenHeight * 0.5 + 12, // Position below the image (image height + margin)
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  
   indicatorDot: {
     width: 30,
     height: 8,
