@@ -257,11 +257,15 @@ const HomePage = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>
-            <FontAwesome 
-              name="bank" 
-              size={24} 
-              color= "#f5a841" 
-              style={{ opacity: 0.7 }}
+          <Image
+              source={require("@/assets/icons/bank.svg")}
+              style={[
+                styles.actionIcon,
+                { 
+                  backgroundColor: "transparent", 
+                  tintColor: "#FFD700" 
+                },
+              ]}
             />
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
