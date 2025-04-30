@@ -1,23 +1,38 @@
+// Core React
 import React, { useEffect, useState } from "react";
+
+// React Native Components
 import {
   Dimensions,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  ImageBackground,
 } from "react-native";
+
+// Expo Libraries
 import { Image } from 'expo-image';
+import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
+import { CustomTheme } from "../../themes/Theme";
+
+// Internationalization
 import { useTranslation } from "react-i18next";
-import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+
+// Firebase Services
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+
+// Redux Toolkit
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { CustomTheme } from "../../themes/Theme";
+
+// Custom Components
 import ActivityIndicator from "../../components/ActivityIndicator";
 
 const { height } = Dimensions.get("window");
