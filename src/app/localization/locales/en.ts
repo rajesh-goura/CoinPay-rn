@@ -11,6 +11,7 @@ const en = {
       next: "Next",
       getStarted: "Get Started",
       ok:"Ok",
+      Loading: "Loading..."
       
     },
     onboarding: {
@@ -274,7 +275,18 @@ const en = {
           themeDescription: "Change between light and dark mode",
           account: "Account",
           logout: "Log Out"
-        }
+        }, 
+        profileScreen: {
+          title: "My Profile",
+          lightMode: "Light Mode",
+          darkMode: "Dark Mode",
+          personalInfo: "Personal Info",
+          bankCards: "Bank & Cards",
+          transactions: "Transactions",
+          settings: "Settings",
+          dataPrivacy: "Data Privacy",
+          logout: "Logout"
+        },
       }
       
     
