@@ -1,21 +1,30 @@
+// Core React
 import React, { useEffect, useState } from "react";
+
+// React Native Components
 import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  Linking,
-  ActivityIndicator,
-  Alert,
 } from "react-native";
+
+// Third-Party Libraries
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
+import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+
+// Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-import { CustomTheme } from "../../themes/Theme";
 
 // Firebase imports
 import auth from "@react-native-firebase/auth";

@@ -1,4 +1,7 @@
+// Core React
 import React, { useRef } from "react";
+
+// React Native Components
 import {
   Dimensions,
   Image,
@@ -8,15 +11,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// Third-Party Libraries
+import QRCode from "react-native-qrcode-svg";
+import { Ionicons } from "@expo/vector-icons";
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
-import { Ionicons } from "@expo/vector-icons";
-import QRCode from "react-native-qrcode-svg";
+import { CustomTheme } from "../../themes/Theme";
+
+// Firebase Services
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+
+// Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-import { CustomTheme } from "../../themes/Theme";
 
 const { width } = Dimensions.get("window");
 

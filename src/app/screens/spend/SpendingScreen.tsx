@@ -1,24 +1,32 @@
-// SpendingScreen.tsx
-import React, { useState, useEffect } from "react";
+// Core Libraries
+import React, { useEffect, useState } from "react";
+
+// React Native Components (alphabetical)
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Dimensions,
-  Modal,
   ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
-import { CustomTheme } from "../../themes/Theme";
+
+// Third-Party Libraries
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { BarChart } from "react-native-chart-kit";
-import SecondaryHeader from "../../components/SecondaryHeader";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+
+// Theming & Navigation
+import { useTheme } from "@react-navigation/native";
+import { CustomTheme } from "../../themes/Theme";
+
+// Custom Components
+import SecondaryHeader from "../../components/SecondaryHeader";
 
 const { width } = Dimensions.get("window");
 

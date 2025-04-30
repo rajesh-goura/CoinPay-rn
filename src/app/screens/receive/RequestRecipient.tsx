@@ -1,5 +1,9 @@
+// Core React
 import React, { useState, useEffect } from "react";
+
+// React Native Components
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -11,14 +15,19 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  ActivityIndicator
 } from "react-native";
+
+// Third-Party Libraries
+import { Ionicons } from "@expo/vector-icons";
+import firestore from '@react-native-firebase/firestore';
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
-import { Ionicons } from "@expo/vector-icons";
-import RoundButton from "../../components/RoundButton";
 import { CustomTheme } from "../../themes/Theme";
-import firestore from '@react-native-firebase/firestore';
+
+// Custom Components
+import RoundButton from "../../components/RoundButton";
 
 interface Recipient {
   id: string;

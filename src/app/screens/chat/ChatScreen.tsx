@@ -3,23 +3,19 @@ import React, { useState, useRef } from 'react';
 import runChat from './config';
 import SecondaryHeader from '../../components/SecondaryHeader';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { CustomTheme } from '../../themes/Theme';
+import { CustomTheme } from '../../themes/Theme'; // Adjust path as needed
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store'; // Adjust path as needed
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([
     { text: "Hello, I am CoinPay Helper Bot. How can I help you today?", isUser: false }
   ]);
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
-  const { colors } = useTheme() as CustomTheme;
-  
-  // Get loading state from authSlice
-  const { isLoading } = useSelector((state: RootState) => state.auth);
+  const { colors } = useTheme() as CustomTheme;// Get theme colors
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -28,6 +24,7 @@ const ChatScreen = () => {
     const userMessage = { text: input, isUser: true };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
+    setLoading(true);
     
     try {
       // Get AI response
@@ -38,10 +35,12 @@ const ChatScreen = () => {
     } catch (error) {
       console.error("Error getting AI response:", error);
       setMessages(prev => [...prev, { text: "Sorry, I encountered an error. Please try again.", isUser: false }]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const currentDateTime = format(new Date(), "EEEE 'at' h:mm a");
+  const currentDateTime = format(new Date(), "EEEE 'at' h:mm a"); // e.g. "Tuesday at 2:48 PM"
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -79,7 +78,7 @@ const ChatScreen = () => {
             {!message.isUser && (
               <View style={styles.botIconContainer}>
                 <Image 
-                  source={require('@/assets/icons/chatbott.png')}
+                  source={require('@/assets/icons/chatbott.png')} // Adjust path to your bot icon
                   style={styles.botIcon}
                 />
               </View>
@@ -104,7 +103,7 @@ const ChatScreen = () => {
             {message.isUser && (
               <View style={styles.userIconContainer}>
                 <Image 
-                  source={require('@/assets/images/user.png')}
+                  source={require('@/assets/images/user.png')} // Adjust path to your user icon
                   style={styles.userIcon}
                 />
               </View>
@@ -112,11 +111,11 @@ const ChatScreen = () => {
           </View>
         ))}
         
-        {isLoading && (
+        {loading && (
           <View style={[styles.messageContainer, styles.aiContainer]}>
             <View style={styles.botIconContainer}>
               <Image 
-                source={require('@/assets/icons/chatbott.png')}
+                source={require('@/assets/icons/chatbott.png')} // Adjust path to your bot icon
                 style={styles.botIcon}
               />
             </View>
@@ -147,19 +146,15 @@ const ChatScreen = () => {
         <TouchableOpacity 
           style={[styles.sendButton, { backgroundColor: colors.primary }]} 
           onPress={handleSend}
-          disabled={isLoading}
         >
           <Image 
-            source={require('@/assets/icons/send-right.svg')}
-            style={[styles.sendButtonIcon]}
-          />
+            source={require('@/assets/icons/send-right.svg')} // Adjust path to your send icon
+            style={[styles.sendButtonIcon]}/>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {

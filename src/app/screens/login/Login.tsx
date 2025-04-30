@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 // React Native components
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   StyleSheet,
@@ -29,6 +28,7 @@ import { login } from "../../redux/slices/authSlice";
 
 // Internal components
 import PrimaryButton from "../../components/PrimaryButton";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 
 LogBox.ignoreLogs([
@@ -172,7 +172,7 @@ const Login = () => {
         {/* Login Button */}
         <View style={styles.buttonContainer}>
           {authState.isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} />
+            <ActivityIndicator />
           ) : (
             <PrimaryButton
               onPress={handleLogin}

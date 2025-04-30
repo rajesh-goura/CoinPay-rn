@@ -1,12 +1,18 @@
+// Core Libraries
 import React, { useEffect } from "react";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
 import { Appearance, LogBox } from "react-native";
 
+// State Management
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./app/redux/store";
 import { updateSystemTheme } from "./app/redux/slices/themeSlice";
 import { loadToken } from "./app/redux/slices/authSlice";
+
+// App Components
 import MainNavigator from "./app/index";
+
+// Localization
 import "./app/localization/i18n";
 
 // Ignore all Firebase deprecation warnings
