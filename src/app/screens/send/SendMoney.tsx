@@ -20,6 +20,7 @@ import {
 // Third-Party Libraries
 import { Ionicons } from "@expo/vector-icons";
 import firestore from "@react-native-firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 // Navigation & Theming
 import { useTheme } from "@react-navigation/native";
@@ -39,6 +40,7 @@ interface Recipient {
 
 const SendMoney = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [recipients, setRecipients] = useState<Recipient[]>([]);
@@ -46,7 +48,6 @@ const SendMoney = ({ navigation }: any) => {
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
-    // Fetch users from Firestore with nested personalInfo
     const unsubscribe = firestore()
       .collection('users')
       .onSnapshot(querySnapshot => {
@@ -57,10 +58,10 @@ const SendMoney = ({ navigation }: any) => {
           
           users.push({
             id: documentSnapshot.id,
-            name: personalInfo.fullName || 'No name',
-            email: personalInfo.email || '', // Assuming email is at the root level
-            amount: -100, // Default amount or remove if not needed
-            image: require("@/assets/images/user.png") // Default image
+            name: personalInfo.fullName || t('sendMoney.noName'),
+            email: personalInfo.email || '',
+            amount: -100,
+            image: require("@/assets/images/user.png")
           });
         });
         setRecipients(users);
@@ -136,10 +137,10 @@ const SendMoney = ({ navigation }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Choose Recipient
+        {t("sendMoney.chooseRecipient")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Please select your recipient to send your money
+          {t('sendMoney.selectRecipientMessage')}
         </Text>
       </View>
 
@@ -173,7 +174,7 @@ const SendMoney = ({ navigation }: any) => {
               style={styles.searchIcon}
             />
             <TextInput
-              placeholder="Search Recipient"
+              placeholder={t('sendMoney.searchPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
               value={searchQuery}
@@ -184,7 +185,7 @@ const SendMoney = ({ navigation }: any) => {
           <Text
             style={[styles.mostRecentText, { color: colors.textSecondary }]}
           >
-            Most Recent
+            {t('sendMoney.mostRecent')}
           </Text>
 
           {filteredRecipients.length > 0 ? (
@@ -198,7 +199,9 @@ const SendMoney = ({ navigation }: any) => {
           ) : (
             <View style={styles.noResultsContainer}>
               <Text style={{ color: colors.textSecondary }}>
-                {recipients.length === 0 ? "No recipients available" : "No matching recipients found"}
+                {recipients.length === 0 
+                  ? t('sendMoney.noRecipientsAvailable') 
+                  : t('sendMoney.noMatchingRecipients')}
               </Text>
             </View>
           )}

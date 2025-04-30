@@ -35,12 +35,19 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 // Custom Components
 import ActivityIndicator from "../../components/ActivityIndicator";
 
+
 const { height } = Dimensions.get("window");
 
 const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
   const [balance, setBalance] = useState<number | null>(null);
+  const [transactionTotals, setTransactionTotals] = useState({
+    spending: 0,
+    income: 0,
+    bills: 0,
+    savings: 0
+  });
   
   const { isLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -51,21 +58,57 @@ const HomePage = () => {
     if (!user) {
       return;
     }
-
+  
     const unsubscribe = firestore()
       .collection('users')
       .doc(user.uid)
-      .onSnapshot(documentSnapshot => {
+      .onSnapshot(async (documentSnapshot) => {
         if (documentSnapshot.exists) {
           const userData = documentSnapshot.data();
           setBalance(userData?.balance || 0);
+          
+          // Calculate transaction totals
+          const sentTransactions = userData?.sent || [];
+          const receivedTransactions = userData?.received || [];
+          
+          // Calculate totals (simplified approach)
+          const spendingTotal = sentTransactions.reduce(
+            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
+          
+          const incomeTotal = receivedTransactions.reduce(
+            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
+  
+    
+          const billsTotal = 7500;
+          const savingsTotal = 33000;
+  
+          console.log("Calculated totals:", {
+            spending: spendingTotal,
+            income: incomeTotal,
+            bills: billsTotal,
+            savings: savingsTotal
+          });
+  
+          setTransactionTotals({
+            spending: spendingTotal,
+            income: incomeTotal,
+            bills: billsTotal,
+            savings: savingsTotal
+          });
         } else {
           setBalance(0);
+          setTransactionTotals({
+            spending: 0,
+            income: 0,
+            bills: 0,
+            savings: 0
+          });
         }
       });
-
+  
     return () => unsubscribe();
   }, []);
+
 
   const formatBalance = (amount: number | null) => {
     if (amount === null) return "$0";
@@ -81,9 +124,9 @@ const HomePage = () => {
     {
       id: 1,
       title: t("homePage.transactions.spending"),
-      amount: -500,
+      amount: -transactionTotals.spending, // Use dynamic value
       icon: require("@/assets/icons/credit-card-minus.svg"),
-      iconBg: "rgba(0, 122, 255, 0.5)", // 50% opacity
+      iconBg: "rgba(0, 122, 255, 0.5)",
       tintColor: "#007AFF",
       type: "spending",
       onPress: () => navigate("SpendingScreen", { initialTab: "spending" })
@@ -91,9 +134,9 @@ const HomePage = () => {
     {
       id: 2,
       title: t("homePage.transactions.income"),
-      amount: 3000,
+      amount: transactionTotals.income, // Use dynamic value
       icon: require("@/assets/icons/coins.svg"),
-      iconBg: "rgba(52, 199, 89, 0.5)", // 50% opacity
+      iconBg: "rgba(52, 199, 89, 0.5)",
       tintColor: "#34C759",
       type: "income",
       onPress: () => navigate("SpendingScreen", { initialTab: "income" })
@@ -101,9 +144,9 @@ const HomePage = () => {
     {
       id: 3,
       title: t("homePage.transactions.bills"),
-      amount: -800,
+      amount: -transactionTotals.bills, // Use dynamic value
       icon: require("@/assets/icons/invoice.svg"),
-      iconBg: "rgba(255, 204, 0, 0.5)", // 50% opacity
+      iconBg: "rgba(255, 204, 0, 0.5)",
       tintColor: "#FFCC00",
       type: "bills",
       onPress: () => navigate("SpendingScreen", { initialTab: "bills" })
@@ -111,14 +154,14 @@ const HomePage = () => {
     {
       id: 4,
       title: t("homePage.transactions.savings"),
-      amount: 1000,
+      amount: transactionTotals.savings, // Use dynamic value
       icon: require("@/assets/icons/sack-dollar.svg"),
-      iconBg: "rgba(255, 149, 0, 0.5)", // 50% opacity
+      iconBg: "rgba(255, 149, 0, 0.5)",
       tintColor: "#FF9500",
       type: "savings",
       onPress: () => navigate("SpendingScreen", { initialTab: "savings" })
     },
-];
+  ];
 
   if (isLoading) {
     return (
@@ -514,4 +557,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomePage;
+export default HomePage;     

@@ -16,6 +16,7 @@ import {
 
 // Third-Party Libraries
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 // Navigation & Theming
 import { useTheme } from "@react-navigation/native";
@@ -32,6 +33,7 @@ import firestore from "@react-native-firebase/firestore";
 
 const PaymentCompleted = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const { recipient, amount, currency, purpose, account } = route.params;
   const [recipientData, setRecipientData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -92,9 +94,9 @@ const PaymentCompleted = ({ navigation, route }: any) => {
           amount: parseFloat(amount),
           currency: currency,
           fromUserId: user?.uid,
-          fromUserName: user?.displayName || "Unknown",
+          fromUserName: user?.displayName || t("common.unknown"),
           purpose: purpose,
-          timestamp: timestamp, // Use Date object instead of FieldValue
+          timestamp: timestamp,
           type: "received",
           status: "completed"
         };
@@ -105,7 +107,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
         // Update recipient
         batch.update(recipientRef, {
           balance: newBalance,
-          updatedAt: firestore.FieldValue.serverTimestamp(), // This is fine here
+          updatedAt: firestore.FieldValue.serverTimestamp(),
           received: firestore.FieldValue.arrayUnion(recipientTransaction)
         });
   
@@ -118,7 +120,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
             toUserId: recipient.id,
             toUserName: recipient.name,
             purpose: purpose,
-            timestamp: timestamp, // Use the same Date object
+            timestamp: timestamp,
             type: "sent",
             status: "completed",
             accountUsed: selectedAccountData.type
@@ -134,8 +136,8 @@ const PaymentCompleted = ({ navigation, route }: any) => {
       } catch (error) {
         console.error("Error processing payment:", error);
         Alert.alert(
-          "Error",
-          "Failed to complete transaction. Please try again later."
+          t("common.error"),
+          t("paymentCompleted.errors.transactionFailed")
         );
       } finally {
         setLoading(false);
@@ -151,7 +153,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
   };
 
   const handleContactUs = () => {
-    Linking.openURL("mailto:support@yourapp.com");
+    Linking.openURL(`mailto:${t("paymentCompleted.contactEmail")}`);
   };
 
   if (loading || updating || !recipientData) {
@@ -159,7 +161,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
       <View style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={[styles.loadingText, { color: colors.textPrimary }]}>
-          {updating ? "Completing transaction..." : "Processing payment..."}
+          {updating ? t("paymentCompleted.updating") : t("paymentCompleted.processing")}
         </Text>
       </View>
     );
@@ -186,7 +188,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
           style={[styles.successHeader, { backgroundColor: colors.success }]}
         >
           <Text style={styles.successText}>
-            Transaction completed {formattedDate} at {formattedTime}
+            {t("paymentCompleted.successMessage", { date: formattedDate, time: formattedTime })}
           </Text>
         </View>
       </View>
@@ -208,19 +210,18 @@ const PaymentCompleted = ({ navigation, route }: any) => {
             style={styles.recipientImage}
           />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
-            { recipient.name}
+            {recipient.name}
           </Text>
           <Text
             style={[styles.recipientEmail, { color: colors.textSecondary }]}
           >
             {recipient.email}
           </Text>
-          
         </View>
 
         {/* Selected Account */}
         <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-          Payment Method
+          {t("paymentCompleted.paymentMethod")}
         </Text>
 
         <View
@@ -259,7 +260,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
         >
           <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-              Amount:
+              {t("paymentCompleted.amount")}:
             </Text>
             <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
               {currency} {amount}
@@ -267,7 +268,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
           </View>
           <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-              Purpose:
+              {t("paymentCompleted.purpose")}:
             </Text>
             <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
               {purpose}
@@ -279,24 +280,24 @@ const PaymentCompleted = ({ navigation, route }: any) => {
       {/* Buttons Container */}
       <View style={styles.buttonsContainer}>
         <PrimaryButton
-          text="Back to Homepage"
+          text={t("paymentCompleted.backToHome")}
           onPress={() => navigate("MainApp")}
         />
         <SecondaryButton
-          text="Make Another Payment"
+          text={t("paymentCompleted.anotherPayment")}
           onPress={handleAnotherPayment}
         />
         <TouchableOpacity onPress={handleContactUs}>
           <Text style={[styles.contactText, { color: colors.textSecondary }]}>
-            Thank you for using our app to send money. If you have any questions
-            or concerns, please
-            <Text style={{ color: colors.primary }}> contact us</Text>
+            {t("paymentCompleted.thankYouMessage")}
+            <Text style={{ color: colors.primary }}> {t("paymentCompleted.contactUs")}</Text>
           </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

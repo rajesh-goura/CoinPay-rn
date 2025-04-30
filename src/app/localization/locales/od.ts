@@ -241,6 +241,17 @@ const od = {
           themeDescription: "ଆଲୋକ ଏବଂ ଅନ୍ଧକାର ମୋଡ୍ ମଧ୍ୟରେ ପରିବର୍ତ୍ତନ କରନ୍ତୁ",
           account: "ଖାତା",
           logout: "ପ୍ରସ୍ଥାନ କରନ୍ତୁ"
+        },
+        profileScreen: {
+          title: "ମୋର ପ୍ରୋଫାଇଲ୍",
+          lightMode: "ଆଲୋକ ମୋଡ୍",
+          darkMode: "ଅନ୍ଧକାର ମୋଡ୍",
+          personalInfo: "ବ୍ୟକ୍ତିଗତ ତଥ୍ୟ",
+          bankCards: "ବ୍ୟାଙ୍କ ଏବଂ କାର୍ଡଗୁଡିକ",
+          transactions: "ବ୍ୟବସ୍ଥାପନା",
+          settings: "ସେଟିଂସ୍",
+          dataPrivacy: "ଡାଟା ଗୋପନୀୟତା",
+          logout: "ଲଗଆଉଟ୍"
         }
       }
       

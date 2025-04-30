@@ -18,6 +18,7 @@ import { toggleTheme, setTheme } from "../../redux/slices/themeSlice";
 import SecondaryHeader from "../../components/SecondaryHeader";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
+import { useTranslation } from "react-i18next";
 
 const ProfileScreen = () => {
   type ThemeState = {
@@ -26,6 +27,7 @@ const ProfileScreen = () => {
   };
 
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const themeMode = useSelector(
@@ -153,11 +155,11 @@ const ProfileScreen = () => {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <SecondaryHeader
-          title="My Profile"
+          title={t("profile.title")}
           onBackPress={() => navigation.goBack()}
         />
         <Text style={{ color: colors.textPrimary, textAlign: "center" }}>
-          Loading...
+          {t("common.loading")}
         </Text>
       </View>
     );
@@ -166,7 +168,7 @@ const ProfileScreen = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       <SecondaryHeader
-        title="My Profile"
+        title={t("profile.title")}
         onBackPress={() => navigation.goBack()}
       />
 
@@ -201,7 +203,6 @@ const ProfileScreen = () => {
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
             {userData.personalInfo?.email}
           </Text>
-          
         </View>
 
         {/* Profile Options Section */}
@@ -215,17 +216,18 @@ const ProfileScreen = () => {
             themeMode === "dark"
               ? require("@/assets/icons/profile/moon.svg")
               : require("@/assets/icons/profile/sun.svg"),
-            themeMode === "dark" ? "Dark Mode" : "Light Mode",
+            themeMode === "dark" 
+              ? t("profile.options.darkMode") 
+              : t("profile.options.lightMode"),
             () => {},
             iconBgColor,
             iconTintColor,
             true
           )}
 
-          {/* Rest of your options */}
           {renderProfileOption(
             require("@/assets/icons/profile/user.svg"),
-            "Personal Info",
+            t("profile.options.personalInfo"),
             () => navigate("QrCode"),
             "#eaebfd",
             "#7a8ef9"
@@ -233,7 +235,7 @@ const ProfileScreen = () => {
 
           {renderProfileOption(
             require("@/assets/icons/profile/bank.svg"),
-            "Bank & Cards",
+            t("profile.options.bankCards"),
             () => navigate("AddCard"),
             "#fff9c5",
             "#f1803a"
@@ -241,7 +243,7 @@ const ProfileScreen = () => {
 
           {renderProfileOption(
             require("@/assets/icons/profile/credit-card-change.svg"),
-            "Transactions",
+            t("profile.options.transactions"),
             () => navigate("MainApp"),
             "#fcebed",
             "#ed4133"
@@ -249,7 +251,7 @@ const ProfileScreen = () => {
 
           {renderProfileOption(
             require("@/assets/icons/profile/settings.svg"),
-            "Settings",
+            t("profile.options.settings"),
             () => navigate("SettingsScreen"),
             "#eaebfd",
             "#7a8ef9"
@@ -257,7 +259,7 @@ const ProfileScreen = () => {
 
           {renderProfileOption(
             require("@/assets/icons/profile/database.svg"),
-            "Data Privacy",
+            t("profile.options.dataPrivacy"),
             () => navigate("SampleScreen"),
             "#e9f5e9",
             "#8bc58a"
@@ -265,16 +267,17 @@ const ProfileScreen = () => {
 
           {renderProfileOption(
             require("@/assets/icons/profile/user.svg"),
-            "Logout",
+            t("profile.options.logout"),
             () => navigate("SampleScreen"),
-            "#e9f5e9",
-            "#8bc58a"
+            "#fcebed",
+            "#ed4133"
           )}
         </View>
       </ScrollView>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
