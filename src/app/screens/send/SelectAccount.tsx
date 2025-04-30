@@ -52,22 +52,13 @@ const SelectAccount = ({ navigation, route }: any) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
   
-
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.auth);
-
-  // Mock data for recipient (you can replace with actual data from route.params)
-  const recipientData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    image: require("@/assets/images/user.png"),
-  };
 
   const fetchCards = async () => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        
         return;
       }
 
@@ -89,9 +80,7 @@ const SelectAccount = ({ navigation, route }: any) => {
       setCards(cardsData);
     } catch (error) {
       console.error("Error fetching cards:", error);
-      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.loadFailed"));
-    } finally {
-      
+      Alert.alert(t("common.error"), t("cardList.alerts.loadFailed"));
     }
   };
 
@@ -109,18 +98,16 @@ const SelectAccount = ({ navigation, route }: any) => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        Alert.alert("Error", "You must be logged in to make payments");
+        Alert.alert(t("common.error"), t("selectAccount.errors.notLoggedIn"));
         return;
       }
 
-      // Convert amount to number
       const paymentAmount = parseFloat(amount);
       if (isNaN(paymentAmount)) {
-        Alert.alert("Error", "Invalid amount");
+        Alert.alert(t("common.error"), t("selectAccount.errors.invalidAmount"));
         return;
       }
 
-      // Deduct amount from user's balance in Firestore
       await firestore()
         .collection("users")
         .doc(user.uid)
@@ -137,21 +124,14 @@ const SelectAccount = ({ navigation, route }: any) => {
         currency,
         purpose,
         account: {
-          type:
-            selectedCard?.type === "visa"
-              ? "Visa"
-              : selectedCard?.type === "mastercard"
-              ? "Mastercard"
-              : selectedCard?.type === "amex"
-              ? "Amex"
-              : "Card",
-          number: `•••• •••• •••• ${selectedCard?.lastFour}`,
+          type: t(`selectAccount.cardTypes.${selectedCard?.type || 'other'}`),
+          number: t('selectAccount.cardNumber', { lastFour: selectedCard?.lastFour }),
           expiry: selectedCard?.expiry,
         },
       });
     } catch (error) {
       console.error("Payment error:", error);
-      Alert.alert("Error", "Failed to process payment");
+      Alert.alert(t("common.error"), t("selectAccount.errors.paymentFailed"));
     } finally {
       setIsProcessing(false);
     }
@@ -160,45 +140,24 @@ const SelectAccount = ({ navigation, route }: any) => {
   const getCardIcon = (type: string) => {
     switch (type) {
       case "visa":
-        return (
-          <FontAwesome name="cc-visa" size={24} color={colors.textPrimary} />
-        );
+        return <FontAwesome name="cc-visa" size={24} color={colors.textPrimary} />;
       case "mastercard":
-        return (
-          <FontAwesome
-            name="cc-mastercard"
-            size={24}
-            color={colors.textPrimary}
-          />
-        );
+        return <FontAwesome name="cc-mastercard" size={24} color={colors.textPrimary} />;
       case "amex":
-        return (
-          <FontAwesome name="cc-amex" size={24} color={colors.textPrimary} />
-        );
+        return <FontAwesome name="cc-amex" size={24} color={colors.textPrimary} />;
       default:
-        return (
-          <FontAwesome
-            name="credit-card"
-            size={24}
-            color={colors.textPrimary}
-          />
-        );
+        return <FontAwesome name="credit-card" size={24} color={colors.textPrimary} />;
     }
   };
 
   if (isLoading) {
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: colors.backgroundinApp,
-            justifyContent: "center",
-            alignItems: "center",
-          },
-        ]}
-      >
-        <ActivityIndicator  />
+      <View style={[styles.container, {
+        backgroundColor: colors.backgroundinApp,
+        justifyContent: "center",
+        alignItems: "center",
+      }]}>
+        <ActivityIndicator />
       </View>
     );
   }
@@ -207,45 +166,35 @@ const SelectAccount = ({ navigation, route }: any) => {
     <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Select Account
+          {t('selectAccount.title')}
         </Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Recipient Card */}
-        <View
-          style={[
-            styles.recipientCard,
-            { backgroundColor: colors.modalBackgroun },
-          ]}
-        >
+        <View style={[styles.recipientCard, { backgroundColor: colors.modalBackgroun }]}>
           <Image source={recipient.image} style={styles.recipientImage} />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
             {recipient.name}
           </Text>
-          <Text
-            style={[styles.recipientEmail, { color: colors.textSecondary }]}
-          >
+          <Text style={[styles.recipientEmail, { color: colors.textSecondary }]}>
             {recipient.email}
           </Text>
         </View>
 
         {/* Choose Account Text */}
         <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-          Choose Account
+          {t('selectAccount.chooseAccount')}
         </Text>
 
         {/* Account Options */}
         {cards.length === 0 ? (
           <Text style={[styles.noCardsText, { color: colors.textSecondary }]}>
-            No cards available. Please add a card first.
+            {t('selectAccount.noCards')}
           </Text>
         ) : (
           cards.map((card) => (
@@ -261,38 +210,18 @@ const SelectAccount = ({ navigation, route }: any) => {
               <View style={styles.accountLeft}>
                 <View style={styles.cardIcon}>{getCardIcon(card.type)}</View>
                 <View>
-                  <Text
-                    style={[styles.accountType, { color: colors.textPrimary }]}
-                  >
-                    {card.type === "visa"
-                      ? "Visa"
-                      : card.type === "mastercard"
-                      ? "Mastercard"
-                      : card.type === "amex"
-                      ? "Amex"
-                      : "Card"}{" "}
-                    •••• {card.lastFour}
+                  <Text style={[styles.accountType, { color: colors.textPrimary }]}>
+                    {t(`selectAccount.cardTypes.${card.type}`)} •••• {card.lastFour}
                   </Text>
-                  <Text
-                    style={[
-                      styles.accountNumber,
-                      { color: colors.textSecondary },
-                    ]}
-                  >
-                    {card.name} • Expires {card.expiry}
+                  <Text style={[styles.accountNumber, { color: colors.textSecondary }]}>
+                    {t('selectAccount.cardDetails', { name: card.name, expiry: card.expiry })}
                   </Text>
                 </View>
               </View>
               {selectedAccount === card.id ? (
-                <Ionicons
-                  name="checkmark-circle"
-                  size={24}
-                  color={colors.primary}
-                />
+                <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
               ) : (
-                <View
-                  style={[styles.checkbox, { borderColor: colors.border }]}
-                />
+                <View style={[styles.checkbox, { borderColor: colors.border }]} />
               )}
             </TouchableOpacity>
           ))
@@ -302,7 +231,7 @@ const SelectAccount = ({ navigation, route }: any) => {
       {/* Pay Button */}
       <View style={styles.buttonContainer}>
         <PrimaryButton
-          text={isProcessing ? "Processing..." : `Pay ${currency} ${amount}`}
+          text={isProcessing ? t('selectAccount.processing') : t('selectAccount.payButton', { amount, currency })}
           onPress={handlePay}
           disabled={!selectedAccount || isProcessing || cards.length === 0}
         />
@@ -310,7 +239,6 @@ const SelectAccount = ({ navigation, route }: any) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

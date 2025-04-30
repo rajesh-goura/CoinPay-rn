@@ -25,34 +25,45 @@ import PrimaryButton from "../../components/PrimaryButton";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+import { useTranslation } from "react-i18next";
 
+
+interface PurposeOption {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: any;
+  color: string;
+  iconComponent: React.ComponentType<any>;
+}
 
 const Purpose = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   const { recipient, amount, currency } = route.params;
 
-  const purposes = [
+  const purposes: PurposeOption[] = [
     {
       id: "personal",
-      title: "Personal",
-      subtitle: "Pay to friends and family",
-      icon: "person" as any,
+      title: t("purposeScreen.purposes.personal.title"),
+      subtitle: t("purposeScreen.purposes.personal.subtitle"),
+      icon: "person",
       color: "#007AFF",
       iconComponent: Ionicons,
     },
     {
       id: "business",
-      title: "Business",
-      subtitle: "Pay to employees",
+      title: t("purposeScreen.purposes.business.title"),
+      subtitle: t("purposeScreen.purposes.business.subtitle"),
       icon: "laptop",
       color: "#FFCC00",
       iconComponent: MaterialCommunityIcons,
     },
     {
       id: "payment",
-      title: "Payment",
-      subtitle: "Pay for bills",
+      title: t("purposeScreen.purposes.payment.title"),
+      subtitle: t("purposeScreen.purposes.payment.subtitle"),
       icon: "file",
       color: "#FF9500",
       iconComponent: FontAwesome,
@@ -79,10 +90,10 @@ const Purpose = ({ navigation, route }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Select Purpose
+          {t("purposeScreen.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Choose the purpose of your payment
+          {t("purposeScreen.subtitle")}
         </Text>
       </View>
 
@@ -143,7 +154,7 @@ const Purpose = ({ navigation, route }: any) => {
       {/* Continue Button */}
       <View style={styles.buttonContainer}>
         <PrimaryButton
-          text="Continue"
+          text={t("common.continue")}
           onPress={handleContinue}
           disabled={!selectedPurpose}
         />
