@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+// Core Libraries
+import React, { useEffect, useState } from "react";
 
-// React Native components
+// React Native Components (alphabetical)
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -15,27 +17,60 @@ import {
   View,
 } from "react-native";
 
-// Navigation
+// Third-Party Libraries
+import { Ionicons } from "@expo/vector-icons";
+import firestore from "@react-native-firebase/firestore";
+import { useTranslation } from "react-i18next";
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
+import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 
-// Icons
-import { Ionicons } from "@expo/vector-icons";
-
-// Internal components
+// Custom Components
 import RoundButton from "../../components/RoundButton";
 
-// Theme
-import { CustomTheme } from "../../themes/Theme";
-
+interface Recipient {
+  id: string;
+  name: string;
+  email: string;
+  amount?: number;
+  image?: any;
+}
 
 const SendMoney = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
+  const [loading, setLoading] = useState(true);
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('users')
+      .onSnapshot(querySnapshot => {
+        const users: Recipient[] = [];
+        querySnapshot.forEach(documentSnapshot => {
+          const userData = documentSnapshot.data();
+          const personalInfo = userData.personalInfo || {};
+          
+          users.push({
+            id: documentSnapshot.id,
+            name: personalInfo.fullName || t('sendMoney.noName'),
+            email: personalInfo.email || '',
+            amount: -100,
+            image: require("@/assets/images/user.png")
+          });
+        });
+        setRecipients(users);
+        setLoading(false);
+      }, error => {
+        console.error("Error fetching users:", error);
+        setLoading(false);
+      });
+
     const keyboardDidShowListener = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       () => setKeyboardVisible(true)
@@ -46,54 +81,18 @@ const SendMoney = ({ navigation }: any) => {
     );
 
     return () => {
+      unsubscribe();
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
   }, []);
 
-  const recipients = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      amount: -100,
-      image: require("@/assets/images/user.png"),
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      amount: -50,
-      image: require("@/assets/images/user.png"),
-    },
-    {
-      id: "3",
-      name: "Robert Johnson",
-      email: "robert@example.com",
-      amount: -200,
-      image: require("@/assets/images/user.png"),
-    },
-    {
-      id: "4",
-      name: "Emily Davis",
-      email: "emily@example.com",
-      amount: -75,
-      image: require("@/assets/images/user.png"),
-    },
-    {
-      id: "5",
-      name: "Michael Wilson",
-      email: "michael@example.com",
-      amount: -150,
-      image: require("@/assets/images/user.png"),
-    },
-  ];
-
   const filteredRecipients = recipients.filter((recipient) =>
-    recipient.email.toLowerCase().includes(searchQuery.toLowerCase())
+    recipient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    recipient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderRecipientItem = ({ item }: any) => (
+  const renderRecipientItem = ({ item }: { item: Recipient }) => (
     <TouchableOpacity
       style={[styles.recipientItem, { borderBottomColor: colors.border }]}
       onPress={() => navigate("SendAmount", { recipient: item })}
@@ -111,14 +110,24 @@ const SendMoney = ({ navigation }: any) => {
           </Text>
         </View>
       </View>
-      <Text style={[styles.recipientAmount, { color: "#FF3B30" }]}>
-        ${Math.abs(item.amount)}
-      </Text>
+      {item.amount && (
+        <Text style={[styles.recipientAmount, { color: "#FF3B30" }]}>
+          ${Math.abs(item.amount)}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: colors.backgroundinApp }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -128,10 +137,10 @@ const SendMoney = ({ navigation }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Choose Recipient
+        {t("sendMoney.chooseRecipient")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Please select your recipient to send your money
+          {t('sendMoney.selectRecipientMessage')}
         </Text>
       </View>
 
@@ -141,13 +150,13 @@ const SendMoney = ({ navigation }: any) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
-        {/* Modal Container - Now with fixed height */}
+        {/* Modal Container */}
         <View
           style={[
             styles.modalContainer,
             {
               backgroundColor: colors.modalBackgroun,
-              maxHeight: screenHeight * 0.6, // Takes 60% of screen height
+              maxHeight: screenHeight * 0.6,
             },
           ]}
         >
@@ -165,7 +174,7 @@ const SendMoney = ({ navigation }: any) => {
               style={styles.searchIcon}
             />
             <TextInput
-              placeholder="Search Recipient Email"
+              placeholder={t('sendMoney.searchPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
               value={searchQuery}
@@ -176,20 +185,30 @@ const SendMoney = ({ navigation }: any) => {
           <Text
             style={[styles.mostRecentText, { color: colors.textSecondary }]}
           >
-            Most Recent
+            {t('sendMoney.mostRecent')}
           </Text>
 
-          <FlatList
-            data={filteredRecipients}
-            renderItem={renderRecipientItem}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={true}
-            contentContainerStyle={styles.listContent}
-          />
+          {filteredRecipients.length > 0 ? (
+            <FlatList
+              data={filteredRecipients}
+              renderItem={renderRecipientItem}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={true}
+              contentContainerStyle={styles.listContent}
+            />
+          ) : (
+            <View style={styles.noResultsContainer}>
+              <Text style={{ color: colors.textSecondary }}>
+                {recipients.length === 0 
+                  ? t('sendMoney.noRecipientsAvailable') 
+                  : t('sendMoney.noMatchingRecipients')}
+              </Text>
+            </View>
+          )}
         </View>
       </KeyboardAvoidingView>
 
-      {/* Scan Button - Hidden when keyboard is visible */}
+      {/* Scan Button */}
       {!isKeyboardVisible && (
         <View style={styles.scanButtonContainer}>
           <RoundButton
@@ -207,6 +226,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   header: {
     marginTop: 20,
@@ -229,13 +259,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     width: "100%",
-  },
-  scrollContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  scrollContent: {
-    paddingBottom: 20,
   },
   modalContainer: {
     borderRadius: 20,
@@ -300,7 +323,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   recipientEmail: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: "Poppins",
   },
   recipientAmount: {

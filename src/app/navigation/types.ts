@@ -6,6 +6,7 @@ export type RootStackParamList = {
       phoneNumber: string;
       callingCode: string;
     };
+    
     // Add other screens as needed
   };
   

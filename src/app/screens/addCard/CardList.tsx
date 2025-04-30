@@ -35,6 +35,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { CustomTheme } from "../../themes/Theme";
 
 
+
 type Card = {
   id: string;
   lastFour: string;
@@ -142,11 +143,17 @@ const CardList = () => {
   };
 
   const handleAddCard = () => {
+    
     navigate("CardDetails");
   };
 
-  const handleContinue = () => {
-    navigate("MainApp");
+  const handleContinue = async () => {
+    try {
+      navigate("MainApp");
+    } catch (error) {
+      console.error("Failed to complete card setup:", error);
+      Alert.alert(t("cardList.alerts.error"), t("cardList.alerts.setupCompleteError"));
+    }
   };
 
   const getCardIcon = (type: string) => {

@@ -1,34 +1,44 @@
-import React from "react";
+// Core React
+import React, { useEffect, useState } from "react";
 
-// React Native components
+// React Native Components
 import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
-  Linking,
 } from "react-native";
 
-// Navigation
+// Third-Party Libraries
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
+import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 
-// Icons
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-
-// Internal components
+// Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
 
-// Theme
-import { CustomTheme } from "../../themes/Theme";
-
+// Firebase imports
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 const PaymentCompleted = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const { recipient, amount, currency, purpose, account } = route.params;
+  const [recipientData, setRecipientData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   // Get formatted date and time
   const currentDate = new Date();
@@ -43,31 +53,122 @@ const PaymentCompleted = ({ navigation, route }: any) => {
     hour12: true,
   });
 
-  // Mock data for recipient
-  const recipientData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    image: require("@/assets/images/user.png"),
-  };
-
   // Selected account data
   const selectedAccountData = {
     id: account.id,
     type: account.type,
     icon: account.icon,
-    number: account.number, // Use account.number directly since it's already masked
+    number: account.number,
   };
+
+  useEffect(() => {
+    const user = auth().currentUser;
+    setCurrentUser(user);
+  
+    const fetchAndUpdateRecipient = async () => {
+      try {
+        // 1. Fetch recipient data
+        const recipientRef = firestore().collection("users").doc(recipient.id);
+        const recipientSnap = await recipientRef.get();
+  
+        if (!recipientSnap.exists) {
+          throw new Error("Recipient not found");
+        }
+  
+        const recipientData = recipientSnap.data();
+        if (!recipientData) {
+          throw new Error("Recipient data is undefined");
+        }
+        setRecipientData(recipientData);
+  
+        // 2. Update recipient's balance and record transaction
+        setUpdating(true);
+        const currentBalance = recipientData?.balance || 0;
+        const newBalance = currentBalance + parseFloat(amount);
+  
+        // Get current timestamp
+        const timestamp = new Date();
+  
+        // Create transaction record for recipient
+        const recipientTransaction = {
+          amount: parseFloat(amount),
+          currency: currency,
+          fromUserId: user?.uid,
+          fromUserName: user?.displayName || t("common.unknown"),
+          purpose: purpose,
+          timestamp: timestamp,
+          type: "received",
+          status: "completed"
+        };
+  
+        // Batch update for atomic operation
+        const batch = firestore().batch();
+        
+        // Update recipient
+        batch.update(recipientRef, {
+          balance: newBalance,
+          updatedAt: firestore.FieldValue.serverTimestamp(),
+          received: firestore.FieldValue.arrayUnion(recipientTransaction)
+        });
+  
+        // Update sender if exists
+        if (user) {
+          const senderRef = firestore().collection("users").doc(user.uid);
+          const senderTransaction = {
+            amount: parseFloat(amount),
+            currency: currency,
+            toUserId: recipient.id,
+            toUserName: recipient.name,
+            purpose: purpose,
+            timestamp: timestamp,
+            type: "sent",
+            status: "completed",
+            accountUsed: selectedAccountData.type
+          };
+  
+          batch.update(senderRef, {
+            sent: firestore.FieldValue.arrayUnion(senderTransaction)
+          });
+        }
+  
+        await batch.commit();
+  
+      } catch (error) {
+        console.error("Error processing payment:", error);
+        Alert.alert(
+          t("common.error"),
+          t("paymentCompleted.errors.transactionFailed")
+        );
+      } finally {
+        setLoading(false);
+        setUpdating(false);
+      }
+    };
+  
+    fetchAndUpdateRecipient();
+  }, [recipient.id, amount]);
 
   const handleAnotherPayment = () => {
     navigate("SendMoney");
   };
 
   const handleContactUs = () => {
-    Linking.openURL("mailto:support@yourapp.com");
+    Linking.openURL(`mailto:${t("paymentCompleted.contactEmail")}`);
   };
 
+  if (loading || updating || !recipientData) {
+    return (
+      <View style={[styles.container2, { backgroundColor: colors.backgroundinApp }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={[styles.loadingText, { color: colors.textPrimary }]}>
+          {updating ? t("paymentCompleted.updating") : t("paymentCompleted.processing")}
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Back Button */}
       <TouchableOpacity
         style={styles.backButton}
@@ -87,7 +188,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
           style={[styles.successHeader, { backgroundColor: colors.success }]}
         >
           <Text style={styles.successText}>
-            Transaction completed {formattedDate} at {formattedTime}
+            {t("paymentCompleted.successMessage", { date: formattedDate, time: formattedTime })}
           </Text>
         </View>
       </View>
@@ -100,20 +201,27 @@ const PaymentCompleted = ({ navigation, route }: any) => {
             { backgroundColor: colors.modalBackgroun },
           ]}
         >
-          <Image source={recipientData.image} style={styles.recipientImage} />
+          <Image
+            source={
+              recipientData.photoURL
+                ? { uri: recipientData.photoURL }
+                : require("@/assets/images/user.png")
+            }
+            style={styles.recipientImage}
+          />
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
-            {recipientData.name}
+            {recipient.name}
           </Text>
           <Text
             style={[styles.recipientEmail, { color: colors.textSecondary }]}
           >
-            {recipientData.email}
+            {recipient.email}
           </Text>
         </View>
 
         {/* Selected Account */}
         <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-          Payment Method
+          {t("paymentCompleted.paymentMethod")}
         </Text>
 
         <View
@@ -152,7 +260,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
         >
           <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-              Amount:
+              {t("paymentCompleted.amount")}:
             </Text>
             <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
               {currency} {amount}
@@ -160,7 +268,7 @@ const PaymentCompleted = ({ navigation, route }: any) => {
           </View>
           <View style={styles.detailRow}>
             <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-              Purpose:
+              {t("paymentCompleted.purpose")}:
             </Text>
             <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
               {purpose}
@@ -172,18 +280,17 @@ const PaymentCompleted = ({ navigation, route }: any) => {
       {/* Buttons Container */}
       <View style={styles.buttonsContainer}>
         <PrimaryButton
-          text="Back to Homepage"
+          text={t("paymentCompleted.backToHome")}
           onPress={() => navigate("MainApp")}
         />
         <SecondaryButton
-          text="Make Another Payment"
+          text={t("paymentCompleted.anotherPayment")}
           onPress={handleAnotherPayment}
         />
         <TouchableOpacity onPress={handleContactUs}>
           <Text style={[styles.contactText, { color: colors.textSecondary }]}>
-            Thank you for using our app to send money. If you have any questions
-            or concerns, please
-            <Text style={{ color: colors.primary }}> contact us</Text>
+            {t("paymentCompleted.thankYouMessage")}
+            <Text style={{ color: colors.primary }}> {t("paymentCompleted.contactUs")}</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -191,19 +298,32 @@ const PaymentCompleted = ({ navigation, route }: any) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
+  container2:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 16,
+    fontFamily: "Poppins",
+  },
+  
   backButton: {
     position: "absolute",
     top: 20,
     left: 20,
   },
   successContainer: {
-    marginHorizontal: 20,
-    marginTop: 50,
-    borderRadius: 12,
+    marginHorizontal: 15,
+    marginTop: 55,
+    borderRadius: 10,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -224,17 +344,14 @@ const styles = StyleSheet.create({
     marginTop: 0,
     fontFamily: "Poppins",
   },
-  dateTimeText: {
-    textAlign: "center",
-    paddingVertical: 12,
-    fontSize: 14,
-    fontFamily: "Poppins",
-  },
   scrollContent: {
+    width: "100%",
+    
     paddingHorizontal: 20,
     paddingBottom: 150,
   },
   recipientCard: {
+    
     borderRadius: 12,
     padding: 10,
     alignItems: "center",

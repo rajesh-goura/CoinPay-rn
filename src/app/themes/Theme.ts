@@ -11,6 +11,7 @@ export interface CustomTheme extends Theme {
       border: string;
       notification: string;
       modalBackgroun:string;
+      backgroundinApp:string;
   
       // Custom Colors (Explicitly Adding)
       secondary: string;
@@ -62,7 +63,8 @@ export const LightThemeCustom : CustomTheme= {
     modalBackgroun:"rgba(255, 255, 255, 1)",
 
     // Background
-    background: "rgb(247, 247, 247)",
+    background: "rgba(255, 255, 255, 1)",
+    backgroundinApp:"rgb(247, 247, 247)",
     backgroundAccent: "rgba(48, 79, 254, 1)",
     backgroundSuccess: "rgba(67, 160, 72, 1)",
     backgroundWarning: "rgba(251, 138, 0, 1)",
@@ -108,6 +110,7 @@ export const DarkThemeCustom : CustomTheme = {
 
     // Background
     background: "rgba(18, 18, 18, 1)",
+    backgroundinApp:"rgba(18, 18, 18, 1)",
     backgroundAccent: "rgba(48, 79, 254, 1)",
     backgroundSuccess: "rgba(67, 160, 72, 1)",
     backgroundWarning: "rgba(251, 138, 0, 1)",

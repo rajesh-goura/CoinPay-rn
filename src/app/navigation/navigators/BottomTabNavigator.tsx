@@ -9,6 +9,10 @@ import SampleScreen from "./SampleScreen";
 import HomePage from "../../screens/homepage/HomePage";
 import ScanQr from "../../screens/send/ScanQr";
 import SpendingScreen from "../../screens/spend/SpendingScreen";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
+import ToggleScreen from "../../screens/toggle/ToggleScreen";
+import ChatScreen from "../../screens/chat/ChatScreen";
+
 
 
 const Tab = createBottomTabNavigator();
@@ -101,7 +105,7 @@ const BottomTabNavigator = () => {
       {/* Chat Tab */}
       <Tab.Screen
         name="Chat"
-        component={SampleScreen}
+        component={ChatScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
@@ -118,7 +122,7 @@ const BottomTabNavigator = () => {
       {/* Profile Tab */}
       <Tab.Screen
         name="Profile"
-        component={SampleScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
@@ -156,3 +160,4 @@ const styles = StyleSheet.create({
 });
 
 export default BottomTabNavigator;
+

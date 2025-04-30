@@ -48,10 +48,11 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash screen 1.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "image": "./assets/images/splashscreen.png",
+            "imageWidth": "100%",
+            "imageHeight": "100%",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000"
         }
       ],
       "expo-barcode-scanner"

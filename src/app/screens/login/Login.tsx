@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 // React Native components
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   StyleSheet,
@@ -29,6 +28,7 @@ import { login } from "../../redux/slices/authSlice";
 
 // Internal components
 import PrimaryButton from "../../components/PrimaryButton";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 
 LogBox.ignoreLogs([
@@ -57,7 +57,7 @@ const Login = () => {
     try {
       const result = await dispatch(login({ email, password }));
       if (login.fulfilled.match(result)) {
-        navigate("AddCard");
+        // navigate("AddCard");
       } else if (login.rejected.match(result)) {
         if (result.payload === "EMAIL_NOT_VERIFIED") {
           Alert.alert(t("login.error.title"), t("login.error.emailNotVerified"));
@@ -172,7 +172,7 @@ const Login = () => {
         {/* Login Button */}
         <View style={styles.buttonContainer}>
           {authState.isLoading ? (
-            <ActivityIndicator size="large" color={colors.primary} />
+            <ActivityIndicator />
           ) : (
             <PrimaryButton
               onPress={handleLogin}

@@ -1,405 +1,270 @@
-// SpendingScreen.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
+  ActivityIndicator,
   Dimensions,
-  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
-import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
-import { BarChart } from "react-native-chart-kit";
 import SecondaryHeader from "../../components/SecondaryHeader";
+import { MonthDropdown } from "../../components/MonthDropdown";
+import { SummaryCard } from "../../components/SummaryCard";
+import { SpendingChart } from "../../components/SpendingChart";
+import { SpendingTabs } from "../../components/SpendingTabs";
+import { TransactionList } from "../../components/TransactionList";
+import { sampleData } from "./TransactionData";
 
 const { width } = Dimensions.get("window");
 
-const SpendingScreen = ({ navigation }: any) => {
+type TabType = "spending" | "income" | "bills" | "savings";
+
+interface Transaction {
+  id: string;
+  name: string;
+  amount: number;
+  date: string;
+  icon: any;
+  type: TabType;
+}
+
+interface FirestoreTransaction {
+  amount: number;
+  timestamp: any;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: { data: number[] }[];
+}
+
+
+
+const SpendingScreen = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const [selectedMonth, setSelectedMonth] = useState("January");
-  const [activeTab, setActiveTab] = useState("spending");
-  const [showMonthDropdown, setShowMonthDropdown] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>(
+    route.params?.initialTab || "spending"
+  );
+  const [balance, setBalance] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [sentTransactions, setSentTransactions] = useState<FirestoreTransaction[]>([]);
+  const [receivedTransactions, setReceivedTransactions] = useState<FirestoreTransaction[]>([]);
+  const [chartData, setChartData] = useState<Record<TabType, ChartData>>({
+    spending: {
+      labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+      datasets: [{ data: [0, 0, 0, 0, 0] }],
+    },
+    income: {
+      labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+      datasets: [{ data: [0, 0, 0, 0, 0] }],
+    },
+    bills: {
+      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+      datasets: [{ data: [1200, 800, 1200, 800, 1200] }],
+    },
+    savings: {
+      labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
+      datasets: [{ data: [300, 500, 400, 600, 200] }],
+    },
+  });
 
-  // Months for dropdown
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  useEffect(() => {
+    const user = auth().currentUser;
+  
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+  
+    const unsubscribe = firestore()
+      .collection("users")
+      .doc(user.uid)
+      .onSnapshot(async (documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          const userData = documentSnapshot.data();
+          setBalance(userData?.balance || 0);
+          setSentTransactions(userData?.sent || []);
+          setReceivedTransactions(userData?.received || []);
+        }
+        setLoading(false);
+      });
+  
+    setTransactions(sampleData);
+    return () => unsubscribe();
+  }, [selectedMonth]);
 
-  // Chart data
-  const chartData = {
-    labels: ["2-8", "9-15", "16-22", "23-29", "30-1"],
-    datasets: [
-      {
-        data: [500, 300, 500, 100, 200],
-      },
-    ],
+  const processTransactionsForChart = (
+    transactions: FirestoreTransaction[],
+    month: string
+  ): ChartData => {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const monthIndex = months.indexOf(month);
+
+    const weeklyGroups = {
+      "1-7": 0,
+      "8-14": 0,
+      "15-21": 0,
+      "22-28": 0,
+      "29-31": 0,
+    };
+
+    transactions.forEach((transaction) => {
+      let date: Date;
+      if (transaction.timestamp?.toDate) {
+        date = transaction.timestamp.toDate();
+      } else if (transaction.timestamp instanceof Date) {
+        date = transaction.timestamp;
+      } else {
+        return;
+      }
+
+      if (date.getMonth() !== monthIndex) return;
+
+      const day = date.getDate();
+      let weekRange: keyof typeof weeklyGroups;
+
+      if (day <= 7) weekRange = "1-7";
+      else if (day <= 14) weekRange = "8-14";
+      else if (day <= 21) weekRange = "15-21";
+      else if (day <= 28) weekRange = "22-28";
+      else weekRange = "29-31";
+
+      weeklyGroups[weekRange] += Math.abs(transaction.amount);
+    });
+
+    return {
+      labels: Object.keys(weeklyGroups),
+      datasets: [{ data: Object.values(weeklyGroups) }],
+    };
   };
 
-  // Spending data
-  const spendingData = [
-    {
-      id: "1",
-      name: "Netflix",
-      amount: -500,
-      date: "1st JAN AT 7:20pm",
-      icon: require("@/assets/images/spendicons/netflix.svg"),
-    },
-    {
-      id: "2",
-      name: "Youtube Premium",
-      amount: -300,
-      date: "5th JAN AT 3:45pm",
-      icon: require("@/assets/images/spendicons/youtube.svg"),
-    },
-    {
-      id: "3",
-      name: "Pinterest",
-      amount: -800,
-      date: "10th JAN AT 11:30am",
-      icon: require("@/assets/images/spendicons/pinterest.svg"),
-    },
-    {
-      id: "4",
-      name: "Google Cloud",
-      amount: -1200,
-      date: "15th JAN AT 9:15am",
-      icon: require("@/assets/images/spendicons/google.svg"),
-    },
-    {
-      id: "5",
-      name: "Dribble",
-      amount: -250,
-      date: "20th JAN AT 5:40pm",
-      icon: require("@/assets/images/spendicons/dribble.svg"),
-    },
-  ];
+  useEffect(() => {
+    if (sentTransactions.length > 0 || receivedTransactions.length > 0) {
+      setChartData(prev => ({
+        ...prev,
+        spending: processTransactionsForChart(sentTransactions, selectedMonth),
+        income: processTransactionsForChart(receivedTransactions, selectedMonth),
+      }));
+    }
+  }, [sentTransactions, receivedTransactions, selectedMonth]);
 
-  // Render item for the list
-  const renderItem = ({ item }: any) => (
-    <View style={[styles.listItem, { borderBottomColor:colors.border,borderBottomWidth:1.9 }]}>
-      <Image source={item.icon} style={styles.listIcon} />
-      <View style={styles.listTextContainer}>
-        <Text style={[styles.listName, { color: colors.textPrimary }]}>
-          {item.name}
-        </Text>
-        <Text style={[styles.listDate, { color: colors.textSecondary }]}>
-          {item.date}
-        </Text>
-      </View>
-      <Text style={[styles.listAmount, { color: "#ed4034" }]}>
-        -${Math.abs(item.amount)}
-      </Text>
-    </View>
+  const formatBalance = (amount: number | null) => {
+    if (amount === null) return "$0";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
+  const filteredTransactions = transactions.filter(
+    (transaction) => transaction.type === activeTab
   );
+
+  const calculateTotal = () => {
+    if (activeTab === "spending") {
+      return sentTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+    } else if (activeTab === "income") {
+      return receivedTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+    } else {
+      return filteredTransactions.reduce(
+        (sum, transaction) => sum + transaction.amount,
+        0
+      );
+    }
+  };
+
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case "spending": return "Total Spend";
+      case "income": return "Total Income";
+      case "bills": return "Total Bills";
+      case "savings": return "Total Savings";
+      default: return "";
+    }
+  };
+
+  const getTabIcon = () => {
+    switch (activeTab) {
+      case "spending":
+        return require("@/assets/icons/credit-card-minus.svg");
+      case "income":
+        return require("@/assets/icons/coins.svg");
+      case "bills":
+        return require("@/assets/icons/invoice.svg");
+      case "savings":
+        return require("@/assets/icons/sack-dollar.svg");
+      default:
+        return require("@/assets/icons/credit-card-minus.svg");
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: colors.backgroundinApp }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
+      style={[styles.container, { backgroundColor: colors.backgroundinApp }]}
       contentContainerStyle={styles.scrollContainer}
     >
-      {/* Header */}
-      <SecondaryHeader title="Spending" onBackPress={() => navigation.goBack()} ></SecondaryHeader>
+      <SecondaryHeader
+        title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+        onBackPress={() => navigation.goBack()}
+      />
 
-      {/* Month Dropdown */}
-      <TouchableOpacity
-        style={[
-          styles.monthDropdown,
-          {
-            backgroundColor: colors.modalBackgroun,
-            borderColor: colors.border,
-          },
-        ]}
-        onPress={() => setShowMonthDropdown(true)}
-      >
-        <Text style={[styles.monthText, { color: colors.textPrimary }]}>
-          {selectedMonth}
-        </Text>
-        <Ionicons
-          name="chevron-down"
-          size={16}
-          color={colors.textSecondary}
-          style={styles.dropdownIcon}
-        />
-      </TouchableOpacity>
+      <MonthDropdown 
+        selectedMonth={selectedMonth} 
+        onSelectMonth={setSelectedMonth} 
+      />
 
-      {/* Month Dropdown Modal */}
-      <Modal
-        visible={showMonthDropdown}
-        transparent={true}
-        animationType="fade"
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowMonthDropdown(false)}
-        >
-          <View
-            style={[
-              styles.dropdownMenu,
-              { backgroundColor: colors.modalBackgroun },
-            ]}
-          >
-            {months.map((month) => (
-              <TouchableOpacity
-                key={month}
-                style={styles.dropdownItem}
-                onPress={() => {
-                  setSelectedMonth(month);
-                  setShowMonthDropdown(false);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.dropdownItemText,
-                    { color: colors.textPrimary },
-                  ]}
-                >
-                  {month}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </TouchableOpacity>
-      </Modal>
-
-      {/* Summary Cards */}
       <View style={styles.cardRow}>
-        <View style={[styles.card, { backgroundColor: colors.primary }]}>
-          <View style={styles.cardContent}>
-            <Image
-              source={require("@/assets/icons/credit-card-minus.svg")}
-              style={[styles.cardIcon, { tintColor: "#fff" }]}
-            />
-            <View style={styles.cardTextContainer}>
-              <Text style={[styles.cardTitle, { color: "#fff" }]}>
-                Total Spend
-              </Text>
-              <Text style={[styles.cardAmount, { color: "#fff" }]}>$500</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={[styles.card, { backgroundColor: "#fbd84a" }]}>
-          <View style={styles.cardContent}>
-            <Image
-              source={require("@/assets/icons/credit-card.svg")}
-              style={styles.cardIcon}
-            />
-            <View style={styles.cardTextContainer}>
-              <Text style={[styles.cardTitle, { color: "#000" }]}>
-                Available Balance
-              </Text>
-              <Text style={[styles.cardAmount, { color: "#000" }]}>$2500</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      {/* Bar Chart */}
-      <View
-        style={[
-          styles.chartContainer,
-          { backgroundColor: colors.modalBackgroun, borderRadius: 16 ,borderBottomWidth:2,borderColor:colors.primary},
-        ]}
-      >
-        <BarChart
-          data={{
-            ...chartData,
-            // Add colors to your data
-            datasets: [
-              {
-                data: [500, 300, 500, 100, 200],
-                colors: [
-                  () => colors.primary,
-                  () => "#FFD700",
-                  () => colors.primary,
-                  () => "#FFD700",
-                  () => colors.primary,
-                ],
-              },
-            ],
-          }}
-          width={width - 60}
-          height={180}
-          withInnerLines={false}
-          showValuesOnTopOfBars={true}
-          
-          yAxisLabel="$"
-          yAxisSuffix=""
-          fromZero
-          showBarTops={false}
-          withCustomBarColorFromData={true}
-          flatColor={true}
-          chartConfig={{
-            // propsForHorizontalLabels: {
-            //   fontSize: 0, // Set font size to 0
-            //   color: 'transparent',
-              
-            // },
-            paddingRight: 30,
-            backgroundColor:colors.modalBackgroun,
-            backgroundGradientFrom: colors.modalBackgroun,
-            backgroundGradientTo: colors.modalBackgroun,
-            decimalPlaces: 0,
-            color: (opacity = 1) => colors.textPrimary,
-            labelColor: (opacity = 1) => colors.textPrimary,
-            style: {
-              borderRadius: 16,
-            },
-            barPercentage: 0.9,
-            formatTopBarValue: (value) => `$ ${value}`, 
-            
-            propsForLabels: {
-              fontSize: 10,
-            },
-            
-          }}
-          style={{
-            marginLeft: -10,
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
+        <SummaryCard
+          icon={getTabIcon()}
+          title={getTabTitle()}
+          amount={formatBalance(calculateTotal())}
+          backgroundColor={colors.primary}
+        />
+        <SummaryCard
+          icon={require("@/assets/icons/credit-card.svg")}
+          title="Available Balance"
+          amount={formatBalance(balance)}
+          backgroundColor="#fbd84a"
+          textColor="#000"
         />
       </View>
 
-      {/* Tab Navigation */}
-      <View style={[styles.MaintabContainer, { backgroundColor: colors.modalBackgroun }]}>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[
-            styles.roundTabButton,
-            { backgroundColor:"#eaebfd" },
-          ]}
-          onPress={() => setActiveTab("spending")}
-        >
-          <Image
-            source={require("@/assets/icons/credit-card-minus.svg")}
-            style={[styles.tabIcon, { tintColor:colors.primary }]}
-          />
-        </TouchableOpacity>
+      <SpendingChart 
+        data={chartData[activeTab]} 
+        activeTab={activeTab} 
+      />
 
-        <TouchableOpacity
-          style={[
-            styles.roundTabButton,
-            { backgroundColor: "#e9f5e9" },
-          ]}
-          onPress={() => setActiveTab("income")}
-        >
-          <Image
-            source={require("@/assets/icons/coins.svg")}
-            style={[styles.tabIcon, { tintColor: "#4CAF50" }]}
-          />
-        </TouchableOpacity>
+      <SpendingTabs 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+      />
 
-        <TouchableOpacity
-          style={[
-            styles.roundTabButton,
-             { backgroundColor: "#fff9c5" },
-          ]}
-          onPress={() => setActiveTab("bills")}
-        >
-          <Image
-            source={require("@/assets/icons/invoice.svg")}
-            style={[styles.tabIcon, { tintColor: "#f17e3a" }]}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.roundTabButton,
-            { backgroundColor: "#fdf2e1" },
-          ]}
-          onPress={() => setActiveTab("savings")}
-        >
-          <Image
-            source={require("@/assets/icons/sack-dollar.svg")}
-            style={[styles.tabIcon, { tintColor: "#f39a3e" }]}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* Tab Labels */}
-      <View style={styles.tabLabelContainer}>
-        
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color:
-                activeTab === "spending"
-                  ? colors.primary
-                  : colors.textSecondary,
-            },
-          ]}
-        >
-          Spending
-        </Text>
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: activeTab === "income" ? colors.primary : colors.textSecondary,
-            },
-          ]}
-        >
-          Income
-        </Text>
-        <Text
-          style={[
-            styles.tabLabel,
-            { color: activeTab === "bills" ? colors.primary : colors.textSecondary },
-          ]}
-        >
-          Bills
-        </Text>
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: activeTab === "savings" ? colors.primary : colors.textSecondary,
-            },
-          ]}
-        >
-          Savings
-        </Text>
-      </View>
-      </View>
-
-
-      {/* List Header */}
       <View style={styles.listHeader}>
         <Text style={[styles.listHeaderText, { color: colors.textPrimary }]}>
-          Spending List
+          {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} List
         </Text>
-        <TouchableOpacity>
-          <Ionicons name="filter" size={20} color={colors.textPrimary} />
-        </TouchableOpacity>
       </View>
 
-      {/* Spending List */}
-      <FlatList
-        data={spendingData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        scrollEnabled={false}
-      />
+      <TransactionList transactions={filteredTransactions} />
     </ScrollView>
   );
 };
@@ -408,128 +273,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 20,
-    marginBottom: 16,
-  },
-  backButton: {
-    padding: 4,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+  loadingContainer: {
     flex: 1,
-  },
-  monthDropdown: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width:"49%",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-    marginBottom: 16,
-  },
-  monthText: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  dropdownIcon: {
-    marginLeft: 8,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
-  dropdownMenu: {
-    width: "80%",
-    borderRadius: 10,
-    paddingVertical: 8,
-  },
-  dropdownItem: {
-    padding: 12,
-  },
-  dropdownItemText: {
-    fontSize: 16,
+  scrollContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   cardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
-  },
-  card: {
-    width: "48%",
-    padding: 12,
-    borderRadius: 12,
-  },
-  cardContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cardTextContainer: {
-    marginLeft: 8,
-  },
-  cardIcon: {
-    width: 24,
-    height: 24,
-  },
-  cardTitle: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  cardAmount: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  chartContainer: {
-    marginBottom: 20,
-    padding: 10,
-  },
-  MaintabContainer:{
-    padding: 10,
-    borderRadius: 16,
-    marginBottom: 10,
-  },
-  tabContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  roundTabButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#e0e0e0",
-  },
-  tabIcon: {
-    width: 24,
-    height: 24,
-  },
-  tabLabelContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 0,
-    paddingHorizontal: 0,
-  },
-  tabLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    width: 50,
-    textAlign: "center",
   },
   listHeader: {
     flexDirection: "row",
@@ -540,37 +296,6 @@ const styles = StyleSheet.create({
   listHeaderText: {
     fontSize: 16,
     fontWeight: "bold",
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 0,
-    marginBottom: 8,
-  },
-  listIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  listTextContainer: {
-    flex: 1,
-  },
-  listName: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  listDate: {
-    fontSize: 12,
-  },
-  listAmount: {
-    fontSize: 16,
-    fontWeight:"400",
   },
 });
 

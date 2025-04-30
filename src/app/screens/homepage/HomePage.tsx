@@ -1,8 +1,10 @@
+// Core React
 import React, { useEffect, useState } from "react";
 
-// React Native components
+// React Native Components
 import {
   Dimensions,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,24 +13,26 @@ import {
   View,
 } from "react-native";
 
-// Expo Image
+// Expo Libraries
 import { Image } from 'expo-image';
+import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 
-// Navigation
+// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
+import { CustomTheme } from "../../themes/Theme";
 
-// External libraries
+// Internationalization
 import { useTranslation } from "react-i18next";
-import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+
+// Firebase Services
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 
-// Redux
+// Redux Toolkit
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 
-// Internal components
-import { CustomTheme } from "../../themes/Theme";
+// Custom Components
 import ActivityIndicator from "../../components/ActivityIndicator";
 
 
@@ -38,35 +42,74 @@ const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
   const [balance, setBalance] = useState<number | null>(null);
+  const [transactionTotals, setTransactionTotals] = useState({
+    spending: 0,
+    income: 0,
+    bills: 0,
+    savings: 0
+  });
   
-  // Get loading state from Redux
   const { isLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  // Fetch user balance from Firestore
   useEffect(() => {
     const user = auth().currentUser;
     
     if (!user) {
       return;
     }
-
+  
     const unsubscribe = firestore()
       .collection('users')
       .doc(user.uid)
-      .onSnapshot(documentSnapshot => {
+      .onSnapshot(async (documentSnapshot) => {
         if (documentSnapshot.exists) {
           const userData = documentSnapshot.data();
           setBalance(userData?.balance || 0);
+          
+          // Calculate transaction totals
+          const sentTransactions = userData?.sent || [];
+          const receivedTransactions = userData?.received || [];
+          
+          // Calculate totals (simplified approach)
+          const spendingTotal = sentTransactions.reduce(
+            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
+          
+          const incomeTotal = receivedTransactions.reduce(
+            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
+  
+    
+          const billsTotal = 7500;
+          const savingsTotal = 33000;
+  
+          console.log("Calculated totals:", {
+            spending: spendingTotal,
+            income: incomeTotal,
+            bills: billsTotal,
+            savings: savingsTotal
+          });
+  
+          setTransactionTotals({
+            spending: spendingTotal,
+            income: incomeTotal,
+            bills: billsTotal,
+            savings: savingsTotal
+          });
         } else {
           setBalance(0);
+          setTransactionTotals({
+            spending: 0,
+            income: 0,
+            bills: 0,
+            savings: 0
+          });
         }
       });
-
+  
     return () => unsubscribe();
   }, []);
 
-  // Format balance for display
+
   const formatBalance = (amount: number | null) => {
     if (amount === null) return "$0";
     return new Intl.NumberFormat('en-US', {
@@ -77,72 +120,80 @@ const HomePage = () => {
     }).format(amount);
   };
 
-  // Transaction data
   const transactions = [
     {
       id: 1,
       title: t("homePage.transactions.spending"),
-      amount: -500,
+      amount: -transactionTotals.spending, // Use dynamic value
       icon: require("@/assets/icons/credit-card-minus.svg"),
-      iconBg: "#007AFF",
-      type: "expense",
+      iconBg: "rgba(0, 122, 255, 0.5)",
+      tintColor: "#007AFF",
+      type: "spending",
+      onPress: () => navigate("SpendingScreen", { initialTab: "spending" })
     },
     {
       id: 2,
       title: t("homePage.transactions.income"),
-      amount: 3000,
+      amount: transactionTotals.income, // Use dynamic value
       icon: require("@/assets/icons/coins.svg"),
-      iconBg: "#34C759",
+      iconBg: "rgba(52, 199, 89, 0.5)",
+      tintColor: "#34C759",
       type: "income",
+      onPress: () => navigate("SpendingScreen", { initialTab: "income" })
     },
     {
       id: 3,
       title: t("homePage.transactions.bills"),
-      amount: -800,
+      amount: -transactionTotals.bills, // Use dynamic value
       icon: require("@/assets/icons/invoice.svg"),
-      iconBg: "#FFCC00",
-      type: "expense",
+      iconBg: "rgba(255, 204, 0, 0.5)",
+      tintColor: "#FFCC00",
+      type: "bills",
+      onPress: () => navigate("SpendingScreen", { initialTab: "bills" })
     },
     {
       id: 4,
       title: t("homePage.transactions.savings"),
-      amount: 1000,
+      amount: transactionTotals.savings, // Use dynamic value
       icon: require("@/assets/icons/sack-dollar.svg"),
-      iconBg: "#FF9500",
+      iconBg: "rgba(255, 149, 0, 0.5)",
+      tintColor: "#FF9500",
       type: "savings",
+      onPress: () => navigate("SpendingScreen", { initialTab: "savings" })
     },
   ];
 
   if (isLoading) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp, justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator/>
       </View>
     );
   }
 
   return (
-    <View style={styles.flexContainer}>
-      {/* Background Image - Top Half */}
-      <Image
-        source={require("@/assets/images/bluebg.jpg")}
+    <View style={[styles.flexContainer,{backgroundColor: colors.backgroundinApp}]}>
+      {/* Background Image - Behind all content */}
+      <ImageBackground 
+        source={require('@/assets/images/bluebg3.png')} 
         style={styles.backgroundImage}
         resizeMode="cover"
-      />
+      >
+        {/* Empty container to give the image height */}
+        <View style={{ height: height * 0.5 }} />
+      </ImageBackground>
 
-      {/* Content ScrollView */}
+      {/* Content ScrollView - On top of background */}
       <ScrollView
-        style={[styles.contentScroll, { backgroundColor: colors.background }]}
+        style={[styles.contentScroll, { backgroundColor: 'transparent' }]}
         contentContainerStyle={styles.contentContainer}
       >
         {/* Header Row */}
         <View style={styles.headerRow}>
-          {/* Trophy Icon */}
           <TouchableOpacity style={styles.headerIcon}>
-            <FontAwesome name="trophy" size={24} color={colors.textPrimary} />
+            <FontAwesome name="trophy" size={24} color="#ffffff" />
           </TouchableOpacity>
 
-          {/* Search Bar */}
           <View
             style={[
               styles.searchContainer,
@@ -167,39 +218,35 @@ const HomePage = () => {
             />
           </View>
 
-          {/* Bell Icon */}
           <TouchableOpacity style={styles.headerIcon}>
             <Ionicons
               name="notifications-outline"
               size={24}
-              color={colors.textPrimary}
+              color="#ffffff"
             />
           </TouchableOpacity>
         </View>
 
         {/* Balance Card */}
         <View style={[styles.balanceCard, { backgroundColor: "transparent" }]}>
-          {/* Currency Dropdown */}
           <TouchableOpacity style={styles.currencyDropdown}>
-            <Text style={[styles.currencyText, { color: colors.textPrimary }]}>
+            <Text style={[styles.currencyText, { color: "#ffffff" }]}>
               USD
             </Text>
             <MaterialIcons
               name="arrow-drop-down"
               size={20}
-              color={colors.textPrimary}
+              color="#ffffff"
             />
           </TouchableOpacity>
 
-          {/* Available Balance */}
-          <Text style={[styles.balanceAmount, { color: colors.textPrimary }]}>
+          <Text style={[styles.balanceAmount, { color: "#ffffff" }]}>
             {formatBalance(balance)}
           </Text>
-          <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>
+          <Text style={[styles.balanceLabel, { color: "#ffffff" }]}>
             {t("homePage.availableBalance")}
           </Text>
 
-          {/* Add Money Button */}
           <TouchableOpacity
             style={[
               styles.addMoneyButton,
@@ -210,9 +257,9 @@ const HomePage = () => {
             <MaterialCommunityIcons
               name="wallet-outline"
               size={20}
-              color={colors.textPrimary}
+              color="#ffffff"
             />
-            <Text style={[styles.addMoneyText, { color: colors.textPrimary }]}>
+            <Text style={[styles.addMoneyText, { color: "#ffffff" }]}>
               {t("homePage.addMoney")}
             </Text>
           </TouchableOpacity>
@@ -234,9 +281,8 @@ const HomePage = () => {
               style={[
                 styles.actionIcon,
                 {
-                  backgroundColor: colors.primary,
-                  borderRadius: 50,
-                  borderWidth: 0,
+                  backgroundColor: "transparent",
+                  tintColor: "#576af6",
                 },
               ]}
             />
@@ -247,12 +293,18 @@ const HomePage = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.actionButton]}  onPress={() => navigate("QrCode")}>
+          <TouchableOpacity 
+            style={[styles.actionButton]}  
+            onPress={() => navigate("QrCode")}
+          >
             <Image
               source={require("@/assets/icons/dollar-receive-circle.svg")}
               style={[
                 styles.actionIcon,
-                { backgroundColor: "#FFD700", borderRadius: 50, borderWidth: 0 },
+                { 
+                  backgroundColor: "transparent", 
+                  tintColor: "#FFD700" 
+                },
               ]}
             />
             <Text
@@ -263,7 +315,16 @@ const HomePage = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionButton]}>
-            <FontAwesome name="bank" size={24} color={"#FFD700"} />
+          <Image
+              source={require("@/assets/icons/bank.svg")}
+              style={[
+                styles.actionIcon,
+                { 
+                  backgroundColor: "transparent", 
+                  tintColor: "#FFD700" 
+                },
+              ]}
+            />
             <Text
               style={[styles.actionButtonText, { color: colors.textPrimary }]}
             >
@@ -291,17 +352,21 @@ const HomePage = () => {
                 styles.transactionItem,
                 { backgroundColor: colors.modalBackgroun },
               ]}
+              onPress={transaction.onPress}
             >
               <View style={styles.transactionLeft}>
                 <View
                   style={[
                     styles.transactionIconContainer,
-                    { backgroundColor: transaction.iconBg },
+                    { backgroundColor: transaction.iconBg ,
+                      
+                    },
                   ]}
                 >
                   <Image
                     source={transaction.icon}
-                    style={styles.transactionIcon}
+                    style={[styles.transactionIcon,{tintColor: transaction.tintColor}]}
+                    
                   />
                 </View>
                 <Text
@@ -313,7 +378,8 @@ const HomePage = () => {
               <Text
                 style={[
                   styles.transactionAmount,
-                  transaction.type === "expense" && { color: "#FF3B30" },
+                  transaction.type === "spending" && { color: "#b82925"},
+                  transaction.type === "bills" && { color: "#b82925" },
                   transaction.type === "income" && { color: "#34C759" },
                   transaction.type === "savings" && { color: "#FFD700" },
                 ]}
@@ -336,19 +402,17 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     position: 'absolute',
-    top: 0,
+    top: -35,
     left: 0,
     right: 0,
-    width:1000,
-    height: height * 0.5, // Half of screen height
-    zIndex: 0,
+    height: height * 0.5, // Half of the screen height
   },
   contentScroll: {
     flex: 1,
-    zIndex: 1,
   },
   contentContainer: {
     paddingBottom: 30,
+    backgroundColor: 'transparent',
   },
   headerRow: {
     flexDirection: "row",
@@ -360,10 +424,6 @@ const styles = StyleSheet.create({
   },
   headerIcon: {
     padding: 8,
-  },
-  headerIconImage: {
-    width: 24,
-    height: 24,
   },
   searchContainer: {
     flex: 1,
@@ -438,7 +498,6 @@ const styles = StyleSheet.create({
     width: "30%",
     paddingVertical: 10,
     borderRadius: 10,
-    borderWidth: 0,
   },
   actionIcon: {
     width: 28,
@@ -491,11 +550,11 @@ const styles = StyleSheet.create({
   },
   transactionAmount: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: "400",
   },
   container: {
     flex: 1,
   },
 });
 
-export default HomePage;
+export default HomePage;     

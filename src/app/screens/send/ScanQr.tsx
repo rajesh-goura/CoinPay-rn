@@ -19,8 +19,9 @@ import { navigate } from '../../navigation/navigationService';
 // Icons
 import { Ionicons } from '@expo/vector-icons';
 
-// Expo
+// libraries
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useTranslation } from 'react-i18next';
 
 // Internal components
 import RoundButton from '../../components/RoundButton';
@@ -31,6 +32,7 @@ import { CustomTheme } from '../../themes/Theme';
 
 const ScanQr = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(true);
@@ -42,18 +44,14 @@ const ScanQr = ({ navigation }: any) => {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,
             {
-              title: 'Camera Permission',
-              message: 'This app needs access to your camera to scan QR codes.',
-              buttonNeutral: 'Ask Me Later',
-              buttonNegative: 'Cancel',
-              buttonPositive: 'OK',
+              title: t('scanQr.permission.title'),
+              message: t('scanQr.permission.message'),
+              buttonNeutral: t('common.askLater'),
+              buttonNegative: t('common.cancel'),
+              buttonPositive: t('common.ok'),
             }
           );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            setHasPermission(true);
-          } else {
-            setHasPermission(false);
-          }
+          setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
         } else {
           const { status } = await BarCodeScanner.requestPermissionsAsync();
           setHasPermission(status === 'granted');
@@ -71,18 +69,16 @@ const ScanQr = ({ navigation }: any) => {
     setScanned(true);
     setIsCameraActive(false);
     
-    // Validate the QR data (this would depend on your QR format)
     if (isValidRecipientData(data)) {
-      // Parse the data and navigate to SendAmount screen
       const recipient = parseRecipientData(data);
       navigate('SendAmount', { recipient });
     } else {
       Alert.alert(
-        'Invalid QR Code',
-        'The scanned QR code does not contain valid recipient information.',
+        t('scanQr.invalidQr.title'),
+        t('scanQr.invalidQr.message'),
         [
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => {
               setScanned(false);
               setIsCameraActive(true);
@@ -93,10 +89,7 @@ const ScanQr = ({ navigation }: any) => {
     }
   };
 
-  // Helper function to validate QR data
   const isValidRecipientData = (data: string): boolean => {
-    // Implement your validation logic here
-    // For example, check if it's a JSON with required fields
     try {
       const parsed = JSON.parse(data);
       return parsed && parsed.email && parsed.name;
@@ -105,7 +98,6 @@ const ScanQr = ({ navigation }: any) => {
     }
   };
 
-  // Helper function to parse QR data
   const parseRecipientData = (data: string): any => {
     try {
       const parsed = JSON.parse(data);
@@ -119,7 +111,7 @@ const ScanQr = ({ navigation }: any) => {
     } catch {
       return {
         id: 'qr-' + Math.random().toString(36).substring(7),
-        name: 'QR Recipient',
+        name: t('scanQr.defaultRecipient.name'),
         email: data,
         amount: 0,
         image: require('@/assets/images/user.png'),
@@ -139,9 +131,9 @@ const ScanQr = ({ navigation }: any) => {
 
   if (hasPermission === null) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <Text style={[styles.permissionText, { color: colors.textPrimary }]}>
-          Requesting for camera permission...
+          {t('scanQr.requestingPermission')}
         </Text>
       </View>
     );
@@ -149,7 +141,7 @@ const ScanQr = ({ navigation }: any) => {
 
   if (hasPermission === false) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -158,7 +150,7 @@ const ScanQr = ({ navigation }: any) => {
             <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
           </TouchableOpacity>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            Scan QR Code
+            {t('scanQr.title')}
           </Text>
         </View>
 
@@ -170,12 +162,10 @@ const ScanQr = ({ navigation }: any) => {
             style={styles.cameraIcon}
           />
           <Text style={[styles.permissionText, { color: colors.textPrimary }]}>
-            Camera permission is required to scan QR codes.
+            {t('scanQr.permissionRequired')}
           </Text>
-          <Text
-            style={[styles.permissionSubtext, { color: colors.textSecondary }]}
-          >
-            Please enable camera access in settings to continue.
+          <Text style={[styles.permissionSubtext, { color: colors.textSecondary }]}>
+            {t('scanQr.enableCameraAccess')}
           </Text>
 
           <TouchableOpacity
@@ -183,19 +173,16 @@ const ScanQr = ({ navigation }: any) => {
             onPress={openSettings}
           >
             <Text style={[styles.settingsButtonText, { color: 'white' }]}>
-              Open Settings
+              {t('scanQr.openSettings')}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.tryAgainButton,
-              { borderColor: colors.primary, borderWidth: 1 },
-            ]}
+            style={[styles.tryAgainButton, { borderColor: colors.primary }]}
             onPress={requestPermissionAgain}
           >
             <Text style={[styles.tryAgainButtonText, { color: colors.primary }]}>
-              Try Again
+              {t('scanQr.tryAgain')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -204,8 +191,7 @@ const ScanQr = ({ navigation }: any) => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header Section */}
+    <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -214,14 +200,13 @@ const ScanQr = ({ navigation }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Scan QR Code
+          {t('scanQr.title')}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Align the QR code within the frame to scan
+          {t('scanQr.instructions')}
         </Text>
       </View>
 
-      {/* Camera View */}
       {isCameraActive && (
         <View style={styles.cameraContainer}>
           <BarCodeScanner
@@ -239,19 +224,18 @@ const ScanQr = ({ navigation }: any) => {
         </View>
       )}
 
-      {/* Bottom Controls */}
       <View style={styles.controlsContainer}>
         {scanned && (
           <RoundButton
-          onPress={() => {}}
-          iconName="qr-code-outline"
-          size={32}
-        />
+            onPress={() => {}}
+            iconName="qr-code-outline"
+            size={32}
+          />
         )}
 
         {!scanned && (
           <Text style={[styles.helpText, { color: colors.textSecondary }]}>
-            Having trouble scanning? Try moving closer or adjusting the angle.
+            {t('scanQr.troubleshooting')}
           </Text>
         )}
       </View>

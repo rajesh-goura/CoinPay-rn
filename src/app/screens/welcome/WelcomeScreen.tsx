@@ -1,12 +1,26 @@
+// Core Libraries
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
+
+// React Native Components (alphabetical)
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+// Third-Party Libraries
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import PrimaryButton from "../../components/PrimaryButton";
-import Header from "../../components/Header";
+// Navigation Services
 import { navigate } from "../../navigation/navigationService";
+
+// Custom Components
+import Header from "../../components/Header";
+import PrimaryButton from "../../components/PrimaryButton";
 
 
 

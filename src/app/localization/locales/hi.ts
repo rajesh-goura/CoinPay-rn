@@ -232,6 +232,25 @@ const hi ={
           error: "त्रुटि",
           loadFailed: "कार्ड लोड करने में विफल",
           deleteFailed: "कार्ड हटाने में विफल"
+        },
+        settings: {
+          title: "सेटिंग्स",
+          language: "भाषा",
+          theme: "प्रकटन",
+          themeDescription: "लाइट और डार्क मोड के बीच बदलें",
+          account: "खाता",
+          logout: "लॉग आउट करें"
+        },
+        profileScreen: {
+          title: "मेरी प्रोफाइल",
+          lightMode: "लाइट मोड",
+          darkMode: "डार्क मोड",
+          personalInfo: "व्यक्तिगत जानकारी",
+          bankCards: "बैंक और कार्ड",
+          transactions: "लेन-देन",
+          settings: "सेटिंग्स",
+          dataPrivacy: "डेटा गोपनीयता",
+          logout: "लॉगआउट"
         }
       }
       

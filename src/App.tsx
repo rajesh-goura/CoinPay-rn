@@ -1,20 +1,35 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { Appearance } from 'react-native';
+// Core Libraries
+import React, { useEffect } from "react";
+import { Appearance, LogBox } from "react-native";
 
-import { store, persistor } from './app/redux/store';
-import { updateSystemTheme } from './app/redux/slices/themeSlice';
-import { loadToken } from './app/redux/slices/authSlice';
-import MainNavigator from './app/index';
+// State Management
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./app/redux/store";
+import { updateSystemTheme } from "./app/redux/slices/themeSlice";
+import { loadToken } from "./app/redux/slices/authSlice";
+
+// App Components
+import MainNavigator from "./app/index";
+
+// Localization
 import "./app/localization/i18n";
 
+// Ignore all Firebase deprecation warnings
+LogBox.ignoreLogs([
+  /\[react-native-firebase\]/,
+  /deprecated/i,
+  /React Native Firebase namespaced API/i,
+  /Method called was `.*`/i,
+  /Please use `.*` instead/i,
+  /NOBRIDGE/,
+]);
 
 const ThemeListener = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set initial theme
     store.dispatch(updateSystemTheme(Appearance.getColorScheme()));
-    
+
     // Listen for theme changes
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       store.dispatch(updateSystemTheme(colorScheme));

@@ -11,6 +11,8 @@ const en = {
       next: "Next",
       getStarted: "Get Started",
       ok:"Ok",
+      Loading: "Loading...",
+      askLater:"Ask later",
       
     },
     onboarding: {
@@ -53,11 +55,11 @@ const en = {
       },
       emailVerification: {
         title: "Verify your email",
-        sentEmail: "We sent a verification email to {email}",
+        sentEmail: "We sent a verification email to {{email}}",
         instructions: "Please check your inbox and click the verification link to continue.",
         didNotReceive: "Didn't receive email?",
         resend: "Resend",
-        resendIn: "Resend in {seconds}s",
+        resendIn: "Resend in {{seconds}}s",
         verifiedButton: "I've Verified My Email",
         success: "Success",
         resendSuccess: "Verification email has been resent",
@@ -266,9 +268,126 @@ const en = {
           title: "Confirm",
           add: "Add {{amount}} to your balance?",
           deduct: "Deduct {{amount}} from your balance?"
+        },
+        settings: {
+          title: "Settings",
+          language: "Language",
+          theme: "Appearance",
+          themeDescription: "Change between light and dark mode",
+          account: "Account",
+          logout: "Log Out"
+        }, 
+        
+        
+      },
+      sendMoney: {
+        noName: "No name",
+        chooseRecipient: "Choose Recipient",
+        selectRecipientMessage: "Please select your recipient to send your money",
+        searchPlaceholder: "Search Recipient",
+        mostRecent: "Most Recent",
+        noRecipientsAvailable: "No recipients available",
+        noMatchingRecipients: "No matching recipients found"
+      },
+      sendAmount: {
+        title: "Enter Amount",
+        subtitle: "Enter the amount you want to send",
+        currencies: {
+          usd: "US Dollar",
+          eur: "Euro",
+          gbp: "British Pound",
+          jpy: "Japanese Yen",
+          aud: "Australian Dollar"
         }
-      }
-      
+      },
+      selectAccount: {
+        title: "Select Account",
+        chooseAccount: "Choose Account",
+        noCards: "No cards available. Please add a card first.",
+        payButton: "Pay {{currency}} {{amount}}",
+        processing: "Processing...",
+        cardTypes: {
+          visa: "Visa",
+          mastercard: "Mastercard",
+          amex: "Amex",
+          other: "Card"
+        },
+        cardNumber: "•••• •••• •••• {{lastFour}}",
+        cardDetails: "{{name}} • Expires {{expiry}}",
+        errors: {
+          notLoggedIn: "You must be logged in to make payments",
+          invalidAmount: "Invalid amount",
+          paymentFailed: "Failed to process payment"
+        }
+      },
+      purposeScreen: {
+        title: "Select Purpose",
+        subtitle: "Choose the purpose of your payment",
+        purposes: {
+          personal: {
+            title: "Personal",
+            subtitle: "Pay to friends and family",
+          },
+          business: {
+            title: "Business",
+            subtitle: "Pay to employees",
+          },
+          payment: {
+            title: "Payment",
+            subtitle: "Pay for bills",
+          },
+        },
+      },
+      paymentCompleted: {
+        successMessage: "Transaction completed {{date}} at {{time}}",
+        processing: "Processing payment...",
+        updating: "Completing transaction...",
+        paymentMethod: "Payment Method",
+        amount: "Amount",
+        purpose: "Purpose",
+        backToHome: "Back to Homepage",
+        anotherPayment: "Make Another Payment",
+        thankYouMessage: "Thank you for using our app to send money. If you have any questions or concerns, please",
+        contactUs: "contact us",
+        contactEmail: "support@yourapp.com",
+        errors: {
+          transactionFailed: "Failed to complete transaction. Please try again later.",
+        },
+      },
+      scanQr: {
+        title: "Scan QR Code",
+        instructions: "Align the QR code within the frame to scan",
+        requestingPermission: "Requesting for camera permission...",
+        permissionRequired: "Camera permission is required to scan QR codes.",
+        enableCameraAccess: "Please enable camera access in settings to continue.",
+        openSettings: "Open Settings",
+        tryAgain: "Try Again",
+        troubleshooting: "Having trouble scanning? Try moving closer or adjusting the angle.",
+        invalidQr: {
+          title: "Invalid QR Code",
+          message: "The scanned QR code does not contain valid recipient information."
+        },
+        permission: {
+          title: "Camera Permission",
+          message: "This app needs access to your camera to scan QR codes."
+        },
+        defaultRecipient: {
+          name: "QR Recipient"
+        }
+      },
+      profile: {
+        title: "My Profile",
+        options: {
+          darkMode: "Dark Mode",
+          lightMode: "Light Mode",
+          personalInfo: "Personal Info",
+          bankCards: "Bank & Cards",
+          transactions: "Transactions",
+          settings: "Settings",
+          dataPrivacy: "Data Privacy",
+          logout: "Logout",
+        },
+      },
     
   };
   
