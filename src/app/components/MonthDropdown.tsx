@@ -3,11 +3,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CustomTheme } from "../../app/themes/Theme";
 import { useTheme } from "@react-navigation/native";
-
-const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+import { useTranslation } from "react-i18next";
 
 export const MonthDropdown = ({ 
   selectedMonth, 
@@ -17,7 +13,23 @@ export const MonthDropdown = ({
   onSelectMonth: (month: string) => void 
 }) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+
+  const months = [
+    t("months.january"),
+    t("months.february"),
+    t("months.march"),
+    t("months.april"),
+    t("months.may"),
+    t("months.june"),
+    t("months.july"),
+    t("months.august"),
+    t("months.september"),
+    t("months.october"),
+    t("months.november"),
+    t("months.december"),
+  ];
 
   return (
     <>
@@ -69,6 +81,7 @@ export const MonthDropdown = ({
     </>
   );
 };
+
 
 const styles = StyleSheet.create({
   monthDropdown: {

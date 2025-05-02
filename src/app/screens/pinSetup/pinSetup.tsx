@@ -191,7 +191,7 @@ const CreatePasscode = () => {
     content: {
       flex: 1,
       paddingHorizontal: 20,
-      paddingTop: screenHeight * 0.15, // Push content down
+      paddingTop: screenHeight * 0.15, 
     },
     textContainer: {
       alignSelf: "flex-start",
@@ -223,7 +223,7 @@ const CreatePasscode = () => {
       flex: 1,
     },
     numberPad: {
-      height: screenHeight * 0.32, // Take 30% of screen height
+      height: screenHeight * 0.32, 
       justifyContent: "space-between",
       marginBottom: 30,
      
@@ -236,7 +236,7 @@ const CreatePasscode = () => {
     numberButton: {
       width: 85,
       height: 50,
-      borderRadius: 3, // Circle
+      borderRadius: 3, 
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 1,

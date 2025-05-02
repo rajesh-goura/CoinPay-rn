@@ -55,7 +55,7 @@ const PersonalInfo = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const route = useRoute<RouteProp<{ params: PersonalInfoRouteParams }, "params">>();
-  const { t } = useTranslation(); // Hook for translations
+  const { t } = useTranslation(); 
 
   const { countryName } = route.params;
 
@@ -98,7 +98,7 @@ const PersonalInfo = () => {
 
   const handleContinue = () => {
     if (!fullName || !username || !dateOfBirth) {
-      alert(t("personalInfo.error")); // Use translation for error message
+      alert(t("personalInfo.error")); 
       return;
     }
 
@@ -131,10 +131,10 @@ const PersonalInfo = () => {
         <View style={styles.content}>
           <View>
             <Text style={[styles.heading, { color: colors.textPrimary }]}>
-              {t("personalInfo.title")} {/* Title from translations */}
+              {t("personalInfo.title")} 
             </Text>
             <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-              {t("personalInfo.instructions")} {/* Instructions from translations */}
+              {t("personalInfo.instructions")} 
             </Text>
 
             {/* Full Name Input */}
@@ -229,7 +229,7 @@ const PersonalInfo = () => {
           <View style={styles.buttonContainer}>
             <PrimaryButton
               onPress={handleContinue}
-              text={t("personalInfo.continue")} // Button text from translations
+              text={t("personalInfo.continue")} 
               disabled={!fullName || !username || !dateOfBirth}
             />
           </View>

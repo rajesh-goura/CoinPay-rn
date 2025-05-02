@@ -29,24 +29,33 @@ import PrimaryButton from "../../components/PrimaryButton";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+//libraries
+import { useTranslation } from "react-i18next";
 
 
 const { height } = Dimensions.get("window");
 
+interface Currency {
+  code: string;
+  name: string;
+  flag: string;
+}
+
 const RequestAmount = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [amount, setAmount] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const { recipient ,purpose } = route.params;
+  const { recipient, purpose } = route.params;
 
-  const currencies = [
-    { code: "USD", name: "US Dollar", flag: "🇺🇸" },
-    { code: "EUR", name: "Euro", flag: "🇪🇺" },
-    { code: "GBP", name: "British Pound", flag: "🇬🇧" },
-    { code: "JPY", name: "Japanese Yen", flag: "🇯🇵" },
-    { code: "AUD", name: "Australian Dollar", flag: "🇦🇺" },
+  const currencies: Currency[] = [
+    { code: "USD", name: t("currencies.usd"), flag: "🇺🇸" },
+    { code: "EUR", name: t("currencies.eur"), flag: "🇪🇺" },
+    { code: "GBP", name: t("currencies.gbp"), flag: "🇬🇧" },
+    { code: "JPY", name: t("currencies.jpy"), flag: "🇯🇵" },
+    { code: "AUD", name: t("currencies.aud"), flag: "🇦🇺" },
   ];
 
   React.useEffect(() => {
@@ -74,7 +83,7 @@ const RequestAmount = ({ navigation, route }: any) => {
     });
   };
 
-  const renderCurrencyItem = ({ item }: any) => (
+  const renderCurrencyItem = ({ item }: { item: Currency }) => (
     <TouchableOpacity
       style={[styles.currencyItem, { backgroundColor: colors.card }]}
       onPress={() => {
@@ -100,10 +109,10 @@ const RequestAmount = ({ navigation, route }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Enter Amount
+          {t("requestAmount.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Enter the amount you want to send
+          {t("requestAmount.subtitle")}
         </Text>
       </View>
 
@@ -123,7 +132,7 @@ const RequestAmount = ({ navigation, route }: any) => {
               styles.modalCard,
               {
                 backgroundColor: colors.modalBackgroun,
-                marginTop: height * 0.05, // Higher on screen
+                marginTop: height * 0.05,
                 maxHeight: height * 0.4,
                 paddingVertical: 20,
               },
@@ -184,7 +193,7 @@ const RequestAmount = ({ navigation, route }: any) => {
                     styles.dropdownContainer,
                     {
                       backgroundColor: colors.modalBackgroun,
-                      top: height * 0.35, // Adjusted position
+                      top: height * 0.35,
                     },
                   ]}
                 >
@@ -204,7 +213,7 @@ const RequestAmount = ({ navigation, route }: any) => {
               <Text
                 style={[styles.currencySymbol, { color: colors.textSecondary }]}
               >
-                $
+                {currencies.find((c) => c.code === selectedCurrency)?.flag}
               </Text>
               <TextInput
                 style={[
@@ -246,7 +255,7 @@ const RequestAmount = ({ navigation, route }: any) => {
         ]}
       >
         <PrimaryButton
-          text="Continue"
+          text={t("common.continue")}
           onPress={handleContinue}
           disabled={!amount}
         />
@@ -254,6 +263,7 @@ const RequestAmount = ({ navigation, route }: any) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -327,6 +337,7 @@ const styles = StyleSheet.create({
   },
   currencyIcon: {
     marginLeft: 5,
+    marginRight: 5,
   },
   dropdownOverlay: {
     flex: 1,

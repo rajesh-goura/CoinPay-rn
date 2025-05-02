@@ -36,7 +36,7 @@ const AccountSetup = () => {
   const { colors, dark } = useTheme();
   const navigation = useNavigation();
 
-  // Mock states - in a real app these would come from your verification process
+  // Mock states 
   const [phoneVerified, setPhoneVerified] = React.useState(true);
   const [docVerified, setDocVerified] = React.useState(true);
   const [photoVerified, setPhotoVerified] = React.useState(false);

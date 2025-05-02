@@ -252,6 +252,186 @@ const hi ={
           dataPrivacy: "डेटा गोपनीयता",
           logout: "लॉगआउट"
         }
+      },
+      sendMoney: {
+        noName: "कोई नाम नहीं",
+        chooseRecipient: "प्राप्तकर्ता चुनें",
+        selectRecipientMessage: "कृपया अपना पैसा भेजने के लिए प्राप्तकर्ता चुनें",
+        searchPlaceholder: "प्राप्तकर्ता खोजें",
+        mostRecent: "हाल ही के",
+        noRecipientsAvailable: "कोई प्राप्तकर्ता उपलब्ध नहीं",
+        noMatchingRecipients: "कोई मिलान प्राप्तकर्ता नहीं मिला"
+      },
+      sendAmount: {
+        title: "राशि दर्ज करें",
+        subtitle: "वह राशि दर्ज करें जो आप भेजना चाहते हैं",
+        currencies: {
+          usd: "अमेरिकी डॉलर",
+          eur: "यूरो",
+          gbp: "ब्रिटिश पाउंड",
+          jpy: "जापानी येन",
+          aud: "ऑस्ट्रेलियाई डॉलर"
+        }
+      },
+      selectAccount: {
+        title: "खाता चुनें",
+        chooseAccount: "खाता चुनें",
+        noCards: "कोई कार्ड उपलब्ध नहीं। कृपया पहले एक कार्ड जोड़ें।",
+        payButton: "भुगतान करें {{currency}} {{amount}}",
+        processing: "प्रसंस्करण...",
+        cardTypes: {
+          visa: "वीज़ा",
+          mastercard: "मास्टरकार्ड",
+          amex: "एमेक्स",
+          other: "कार्ड"
+        },
+        cardNumber: "•••• •••• •••• {{lastFour}}",
+        cardDetails: "{{name}} • समाप्ति {{expiry}}",
+        errors: {
+          notLoggedIn: "भुगतान करने के लिए आपको लॉग इन होना चाहिए",
+          invalidAmount: "अमान्य राशि",
+          paymentFailed: "भुगतान प्रसंस्करण विफल"
+        }
+      },
+      purposeScreen: {
+        title: "उद्देश्य चुनें",
+        subtitle: "अपने भुगतान का उद्देश्य चुनें",
+        purposes: {
+          personal: {
+            title: "व्यक्तिगत",
+            subtitle: "दोस्तों और परिवार को भुगतान करें"
+          },
+          business: {
+            title: "व्यवसाय",
+            subtitle: "कर्मचारियों को भुगतान करें"
+          },
+          payment: {
+            title: "भुगतान",
+            subtitle: "बिलों का भुगतान करें"
+          }
+        }
+      },
+      paymentCompleted: {
+        successMessage: "लेनदेन पूरा हुआ {{date}} को {{time}}",
+        processing: "भुगतान प्रसंस्करण...",
+        updating: "लेनदेन पूरा हो रहा है...",
+        paymentMethod: "भुगतान विधि",
+        amount: "राशि",
+        purpose: "उद्देश्य",
+        backToHome: "होमपेज पर वापस जाएं",
+        anotherPayment: "एक और भुगतान करें",
+        thankYouMessage: "पैसा भेजने के लिए हमारे ऐप का उपयोग करने के लिए धन्यवाद। यदि आपके कोई प्रश्न या चिंताएं हैं, तो कृपया",
+        contactUs: "हमसे संपर्क करें",
+        contactEmail: "support@yourapp.com",
+        errors: {
+          transactionFailed: "लेनदेन पूरा करने में विफल। कृपया बाद में पुनः प्रयास करें।"
+        }
+      },
+      scanQr: {
+        title: "QR कोड स्कैन करें",
+        instructions: "स्कैन करने के लिए QR कोड को फ्रेम के भीतर संरेखित करें",
+        requestingPermission: "कैमरा अनुमति के लिए अनुरोध...",
+        permissionRequired: "QR कोड स्कैन करने के लिए कैमरा अनुमति आवश्यक है।",
+        enableCameraAccess: "जारी रखने के लिए कृपया सेटिंग्स में कैमरा एक्सेस सक्षम करें।",
+        openSettings: "सेटिंग्स खोलें",
+        tryAgain: "पुनः प्रयास करें",
+        troubleshooting: "स्कैन करने में समस्या हो रही है? करीब जाकर या कोण समायोजित करके प्रयास करें।",
+        invalidQr: {
+          title: "अमान्य QR कोड",
+          message: "स्कैन किया गया QR कोड में वैध प्राप्तकर्ता जानकारी नहीं है।"
+        },
+        permission: {
+          title: "कैमरा अनुमति",
+          message: "QR कोड स्कैन करने के लिए इस ऐप को आपके कैमरा तक पहुंच की आवश्यकता है।"
+        },
+        defaultRecipient: {
+          name: "QR प्राप्तकर्ता"
+        }
+      },
+      profile: {
+        title: "मेरी प्रोफ़ाइल",
+        options: {
+          darkMode: "डार्क मोड",
+          lightMode: "लाइट मोड",
+          personalInfo: "व्यक्तिगत जानकारी",
+          bankCards: "बैंक और कार्ड",
+          transactions: "लेनदेन",
+          settings: "सेटिंग्स",
+          dataPrivacy: "डेटा गोपनीयता",
+          logout: "लॉग आउट"
+        }
+      },
+      sendRequest: {
+        title: "अनुरोध की पुष्टि करें",
+        subtitle: "अपने अनुरोध विवरण की समीक्षा करें",
+        amountLabel: "राशि",
+        purposeLabel: "उद्देश्य",
+        requestButton: "{{amount}} {{currency}} का अनुरोध करें"
+      },
+      requestRecipient: {
+        title: "प्राप्तकर्ता चुनें",
+        subtitle: "कृपया पैसा मांगने के लिए प्राप्तकर्ता चुनें",
+        searchPlaceholder: "प्राप्तकर्ता खोजें",
+        mostRecent: "हाल ही के",
+        noRecipients: "कोई प्राप्तकर्ता उपलब्ध नहीं",
+        noMatches: "कोई मिलान प्राप्तकर्ता नहीं मिला"
+      },
+      requestPurpose: {
+        title: "उद्देश्य चुनें",
+        subtitle: "अपने अनुरोध का उद्देश्य चुनें",
+        purposes: {
+          personal: {
+            title: "व्यक्तिगत",
+            subtitle: "दोस्तों और परिवार से अनुरोध करें"
+          },
+          business: {
+            title: "व्यवसाय",
+            subtitle: "कर्मचारियों या ग्राहकों से अनुरोध करें"
+          }
+        }
+      },
+      requestAmount: {
+        title: "राशि दर्ज करें",
+        subtitle: "वह राशि दर्ज करें जो आप मांगना चाहते हैं"
+      },
+      currencies: {
+        usd: "अमेरिकी डॉलर",
+        eur: "यूरो",
+        gbp: "ब्रिटिश पाउंड",
+        jpy: "जापानी येन",
+        aud: "ऑस्ट्रेलियाई डॉलर"
+      },
+      months: {
+        january: "जनवरी",
+        february: "फरवरी",
+        march: "मार्च",
+        april: "अप्रैल",
+        may: "मई",
+        june: "जून",
+        july: "जुलाई",
+        august: "अगस्त",
+        september: "सितंबर",
+        october: "अक्टूबर",
+        november: "नवंबर",
+        december: "दिसंबर"
+      },
+      spending: {
+        tabs: {
+          spending: "खर्च",
+          income: "आय",
+          bills: "बिल",
+          savings: "बचत"
+        },
+        totalSpend: "कुल खर्च",
+        totalIncome: "कुल आय",
+        totalBills: "कुल बिल",
+        totalSavings: "कुल बचत",
+        availableBalance: "उपलब्ध शेष",
+        list: "सूची"
+      },
+      qrCode: {
+        requestPayment: "भुगतान का अनुरोध करें",
+        shareToReceive: "प्राप्त करने के लिए साझा करें"
       }
       
 };

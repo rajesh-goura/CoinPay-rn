@@ -388,6 +388,84 @@ const en = {
           logout: "Logout",
         },
       },
+      sendRequest: {
+        title: "Confirm Request",
+        subtitle: "Review your request details",
+        amountLabel: "Amount",
+        purposeLabel: "Purpose",
+        requestButton: "Request {{amount}} {{currency}}",
+      },
+      requestRecipient: {
+        title: "Choose Recipient",
+        subtitle: "Please select your recipient to request money from",
+        searchPlaceholder: "Search Recipient",
+        mostRecent: "Most Recent",
+        noRecipients: "No recipients available",
+        noMatches: "No matching recipients found",
+      },
+      requestPurpose: {
+        title: "Select Purpose",
+        subtitle: "Choose the purpose of your request",
+        purposes: {
+          personal: {
+            title: "Personal",
+            subtitle: "Request from friends and family",
+          },
+          business: {
+            title: "Business",
+            subtitle: "Request from employees or clients",
+          },
+        },
+      },
+      requestAmount: {
+        title: "Enter Amount",
+        subtitle: "Enter the amount you want to request",
+      },
+    
+      currencies: {
+        usd: "US Dollar",
+        eur: "Euro",
+        gbp: "British Pound",
+        jpy: "Japanese Yen",
+        aud: "Australian Dollar",
+      },
+      months: {
+        january: "January",
+        february: "February",
+        march: "March",
+        april: "April",
+        may: "May",
+        june: "June",
+        july: "July",
+        august: "August",
+        september: "September",
+        october: "October",
+        november: "November",
+        december: "December",
+      },
+    
+      spending: {
+        tabs: {
+          spending: "Spending",
+          income: "Income",
+          bills: "Bills",
+          savings: "Savings",
+        },
+        totalSpend: "Total Spend",
+        totalIncome: "Total Income",
+        totalBills: "Total Bills",
+        totalSavings: "Total Savings",
+        availableBalance: "Available Balance",
+        list: "List",
+      },
+      qrCode:{
+        requestPayment:"Request Payment",
+        shareToReceive:"Share to Receive",
+      },
+    
+     
+    
+    
     
   };
   

@@ -37,7 +37,7 @@ const Onboarding = () => {
       id: "1",
       imageLight: require("@/assets/images/Onboarding/Trust.png"),
       imageDark: require("@/assets/images/Onboarding/darkmode/Trust.png"),
-      textKey: "onboarding.slide1", // Using translation key instead of hardcoded text
+      textKey: "onboarding.slide1", 
     },
     {
       id: "2",
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   indicatorAbsoluteContainer: {
     position: 'absolute',
-    top: screenHeight * 0.5 + 12, // Position below the image (image height + margin)
+    top: screenHeight * 0.5 + 12, 
     width: '100%',
     alignItems: 'center',
   },

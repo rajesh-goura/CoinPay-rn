@@ -86,13 +86,13 @@ const ProfileScreen = () => {
   // Interpolate background color for icon
   const iconBgColor = iconColorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["#fff9c5", "#b8b8b8"], // yellow to gray
+    outputRange: ["#fff9c5", "#b8b8b8"], 
   });
 
   // Interpolate tint color for icon
   const iconTintColor = iconTintAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["#f1803a", "#5a5a5a"], // yellow to dark gray
+    outputRange: ["#f1803a", "#5a5a5a"], 
   });
 
   const renderProfileOption = (

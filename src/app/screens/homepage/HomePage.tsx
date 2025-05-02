@@ -124,7 +124,7 @@ const HomePage = () => {
     {
       id: 1,
       title: t("homePage.transactions.spending"),
-      amount: -transactionTotals.spending, // Use dynamic value
+      amount: -transactionTotals.spending, 
       icon: require("@/assets/icons/credit-card-minus.svg"),
       iconBg: "rgba(0, 122, 255, 0.5)",
       tintColor: "#007AFF",
@@ -134,7 +134,7 @@ const HomePage = () => {
     {
       id: 2,
       title: t("homePage.transactions.income"),
-      amount: transactionTotals.income, // Use dynamic value
+      amount: transactionTotals.income, 
       icon: require("@/assets/icons/coins.svg"),
       iconBg: "rgba(52, 199, 89, 0.5)",
       tintColor: "#34C759",
@@ -144,7 +144,7 @@ const HomePage = () => {
     {
       id: 3,
       title: t("homePage.transactions.bills"),
-      amount: -transactionTotals.bills, // Use dynamic value
+      amount: -transactionTotals.bills, 
       icon: require("@/assets/icons/invoice.svg"),
       iconBg: "rgba(255, 204, 0, 0.5)",
       tintColor: "#FFCC00",
@@ -154,7 +154,7 @@ const HomePage = () => {
     {
       id: 4,
       title: t("homePage.transactions.savings"),
-      amount: transactionTotals.savings, // Use dynamic value
+      amount: transactionTotals.savings, 
       icon: require("@/assets/icons/sack-dollar.svg"),
       iconBg: "rgba(255, 149, 0, 0.5)",
       tintColor: "#FF9500",
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     top: -35,
     left: 0,
     right: 0,
-    height: height * 0.5, // Half of the screen height
+    height: height * 0.5,
   },
   contentScroll: {
     flex: 1,

@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import runChat from './config';
 import SecondaryHeader from '../../components/SecondaryHeader';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { CustomTheme } from '../../themes/Theme'; // Adjust path as needed
+import { CustomTheme } from '../../themes/Theme'; 
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
 
@@ -15,7 +15,7 @@ const ChatScreen = () => {
   const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
-  const { colors } = useTheme() as CustomTheme;// Get theme colors
+  const { colors } = useTheme() as CustomTheme;
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -40,7 +40,7 @@ const ChatScreen = () => {
     }
   };
 
-  const currentDateTime = format(new Date(), "EEEE 'at' h:mm a"); // e.g. "Tuesday at 2:48 PM"
+  const currentDateTime = format(new Date(), "EEEE 'at' h:mm a"); 
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -78,7 +78,7 @@ const ChatScreen = () => {
             {!message.isUser && (
               <View style={styles.botIconContainer}>
                 <Image 
-                  source={require('@/assets/icons/chatbott.png')} // Adjust path to your bot icon
+                  source={require('@/assets/icons/chatbott.png')} 
                   style={styles.botIcon}
                 />
               </View>
@@ -103,7 +103,7 @@ const ChatScreen = () => {
             {message.isUser && (
               <View style={styles.userIconContainer}>
                 <Image 
-                  source={require('@/assets/images/user.png')} // Adjust path to your user icon
+                  source={require('@/assets/images/user.png')} 
                   style={styles.userIcon}
                 />
               </View>
@@ -115,7 +115,7 @@ const ChatScreen = () => {
           <View style={[styles.messageContainer, styles.aiContainer]}>
             <View style={styles.botIconContainer}>
               <Image 
-                source={require('@/assets/icons/chatbott.png')} // Adjust path to your bot icon
+                source={require('@/assets/icons/chatbott.png')} 
                 style={styles.botIcon}
               />
             </View>
@@ -148,7 +148,7 @@ const ChatScreen = () => {
           onPress={handleSend}
         >
           <Image 
-            source={require('@/assets/icons/send-right.svg')} // Adjust path to your send icon
+            source={require('@/assets/icons/send-right.svg')}
             style={[styles.sendButtonIcon]}/>
         </TouchableOpacity>
       </View>
@@ -238,8 +238,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     borderRadius: 24,
-    width:60,
-    height: 60,
+    width:50,
+    height: 50,
   },
   sendButtonText: {
     color: 'white',

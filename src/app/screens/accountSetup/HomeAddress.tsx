@@ -59,7 +59,7 @@ const HomeAddress = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const route = useRoute<RouteProp<{ params: HomeAddressRouteParams }, "params">>();
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation(); 
 
   const { countryName, personalInfo, email } = route.params;
 

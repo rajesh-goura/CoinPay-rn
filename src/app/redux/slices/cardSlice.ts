@@ -120,7 +120,7 @@ const cardsSlice = createSlice({
   name: 'cards',
   initialState,
   reducers: {
-    // You can add manual reducers here if needed
+    
   },
   extraReducers: (builder) => {
     builder

@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import { CustomTheme } from "../../app/themes/Theme";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 type TabType = "spending" | "income" | "bills" | "savings";
 
@@ -11,39 +12,7 @@ interface TabConfig {
   icon: any;
   backgroundColor: string;
   iconColor: string;
-  label: string;
 }
-
-const tabs: TabConfig[] = [
-  {
-    id: "spending",
-    icon: require("@/assets/icons/credit-card-minus.svg"),
-    backgroundColor: "#eaebfd",
-    iconColor: "#3a7cff",
-    label: "Spending"
-  },
-  {
-    id: "income",
-    icon: require("@/assets/icons/coins.svg"),
-    backgroundColor: "#e9f5e9",
-    iconColor: "#4CAF50",
-    label: "Income"
-  },
-  {
-    id: "bills",
-    icon: require("@/assets/icons/invoice.svg"),
-    backgroundColor: "#fff9c5",
-    iconColor: "#f17e3a",
-    label: "Bills"
-  },
-  {
-    id: "savings",
-    icon: require("@/assets/icons/sack-dollar.svg"),
-    backgroundColor: "#fdf2e1",
-    iconColor: "#f39a3e",
-    label: "Savings"
-  }
-];
 
 export const SpendingTabs = ({
   activeTab,
@@ -53,6 +22,38 @@ export const SpendingTabs = ({
   onTabChange: (tab: TabType) => void;
 }) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
+
+  const tabs: TabConfig[] = [
+    {
+      id: "spending",
+      icon: require("@/assets/icons/credit-card-minus.svg"),
+      backgroundColor: "#eaebfd",
+      iconColor: "#3a7cff"
+    },
+    {
+      id: "income",
+      icon: require("@/assets/icons/coins.svg"),
+      backgroundColor: "#e9f5e9",
+      iconColor: "#4CAF50"
+    },
+    {
+      id: "bills",
+      icon: require("@/assets/icons/invoice.svg"),
+      backgroundColor: "#fff9c5",
+      iconColor: "#f17e3a"
+    },
+    {
+      id: "savings",
+      icon: require("@/assets/icons/sack-dollar.svg"),
+      backgroundColor: "#fdf2e1",
+      iconColor: "#f39a3e"
+    }
+  ];
+
+  const getTabLabel = (tabId: TabType) => {
+    return t(`spending.tabs.${tabId}`);
+  };
 
   return (
     <View style={[styles.MaintabContainer, { backgroundColor: colors.modalBackgroun }]}>
@@ -82,7 +83,7 @@ export const SpendingTabs = ({
               },
             ]}
           >
-            {tab.label}
+            {getTabLabel(tab.id)}
           </Text>
         ))}
       </View>

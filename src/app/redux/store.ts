@@ -7,19 +7,19 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 import themeReducer from './slices/themeSlice';
 import authReducer from './slices/authSlice';
-import cardsReducer from './slices/cardSlice'; // Add this import
+import cardsReducer from './slices/cardSlice';
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['theme', 'auth'], // Only persist theme and auth
+  whitelist: ['theme', 'auth'], 
   version: 1,
 };
 
 const rootReducer = combineReducers({
   theme: themeReducer,
   auth: authReducer,
-  cards: cardsReducer, // Add cards reducer
+  cards: cardsReducer, 
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
