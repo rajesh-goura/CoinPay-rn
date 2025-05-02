@@ -38,7 +38,7 @@ const progress = currentScreen / totalScreens;
 const CountrySelector = () => {
   const { colors, dark } = useTheme() as CustomTheme;
   const navigation = useNavigation();
-  const { t } = useTranslation(); // Hook for translations
+  const { t } = useTranslation(); 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [country, setCountry] = useState({
     name: "",
@@ -57,11 +57,11 @@ const CountrySelector = () => {
 
   const handleContinue = () => {
     if (!country.code) {
-      alert(t("countrySelector.error")); // Use translation for error message
+      alert(t("countrySelector.error")); 
       return;
     }
 
-    // Navigate to next screen with JUST the country name (not flag or code)
+    // Navigate to next screen with JUST the country name 
     navigate("PersonalInfo", {
       countryName: country.name,
     });
@@ -76,13 +76,13 @@ const CountrySelector = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            {t("countrySelector.title")} {/* Title from translations */}
+            {t("countrySelector.title")} 
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            {t("countrySelector.instructions")} {/* Instructions from translations */}
+            {t("countrySelector.instructions")} 
           </Text>
           <Text style={[styles.subtext1, { color: colors.textSecondary }]}>
-            {t("countrySelector.country")} {/* Country label from translations */}
+            {t("countrySelector.country")} 
           </Text>
           {/* Country Picker */}
           <TouchableOpacity
@@ -106,7 +106,7 @@ const CountrySelector = () => {
               </View>
             ) : (
               <Text style={[styles.placeholder, { color: colors.textTertiary }]}>
-                {t("countrySelector.selectCountry")} {/* Placeholder text */}
+                {t("countrySelector.selectCountry")} 
               </Text>
             )}
             <Ionicons
@@ -157,7 +157,7 @@ const CountrySelector = () => {
         <View style={styles.buttonContainer}>
           <PrimaryButton
             onPress={handleContinue}
-            text={t("countrySelector.continue")} // Button text from translations
+            text={t("countrySelector.continue")} 
             disabled={!country.code}
           />
         </View>
@@ -166,7 +166,7 @@ const CountrySelector = () => {
   );
 };
 
-// KEEP ALL STYLES EXACTLY THE SAME
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

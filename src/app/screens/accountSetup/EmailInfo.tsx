@@ -53,7 +53,7 @@ const EmailInfo = () => {
   const { colors } = useTheme() as CustomTheme;
   const navigation = useNavigation();
   const route = useRoute<RouteProp<{ params: EmailInfoRouteParams }, "params">>();
-  const { t } = useTranslation(); // Use translation hook
+  const { t } = useTranslation(); 
 
   // Get data from previous screens
   const { countryName, personalInfo } = route.params;
@@ -70,7 +70,7 @@ const EmailInfo = () => {
 
   const handleContinue = () => {
     if (!isValidEmail) {
-      alert(t("emailInfo.error")); // Use translation for error message
+      alert(t("emailInfo.error")); 
       return;
     }
 
@@ -91,10 +91,10 @@ const EmailInfo = () => {
       <View style={styles.content}>
         <View>
           <Text style={[styles.heading, { color: colors.textPrimary }]}>
-            {t("emailInfo.title")} {/* Title from translations */}
+            {t("emailInfo.title")} 
           </Text>
           <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-            {t("emailInfo.instructions")} {/* Instructions from translations */}
+            {t("emailInfo.instructions")} 
           </Text>
 
           {/* Email Input with Mail Icon */}
@@ -117,7 +117,7 @@ const EmailInfo = () => {
                   backgroundColor: colors.modalBackgroun,
                 },
               ]}
-              placeholder={t("emailInfo.emailPlaceholder")} // Placeholder from translations
+              placeholder={t("emailInfo.emailPlaceholder")} 
               placeholderTextColor={colors.textTertiary}
               value={email}
               onChangeText={validateEmail}
@@ -132,7 +132,7 @@ const EmailInfo = () => {
         <View style={styles.buttonContainer}>
           <PrimaryButton
             onPress={handleContinue}
-            text={t("emailInfo.continue")} // Button text from translations
+            text={t("emailInfo.continue")} 
             disabled={!isValidEmail}
           />
         </View>
@@ -141,7 +141,7 @@ const EmailInfo = () => {
   );
 };
 
-// Keep all styles the same
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

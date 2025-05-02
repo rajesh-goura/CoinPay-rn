@@ -253,6 +253,186 @@ const od = {
           dataPrivacy: "ଡାଟା ଗୋପନୀୟତା",
           logout: "ଲଗଆଉଟ୍"
         }
+      },
+      sendMoney: {
+        noName: "ନାମ ନାହିଁ",
+        chooseRecipient: "ଗ୍ରହୀତା ଚୟନ କରନ୍ତୁ",
+        selectRecipientMessage: "ଦୟାକରି ଟଙ୍କା ପଠାଇବା ପାଇଁ ଆପଣଙ୍କର ଗ୍ରହୀତା ଚୟନ କରନ୍ତୁ",
+        searchPlaceholder: "ଗ୍ରହୀତା ଖୋଜନ୍ତୁ",
+        mostRecent: "ସଦ୍ୟତମ",
+        noRecipientsAvailable: "କୌଣସି ଗ୍ରହୀତା ଉପଲବ୍ଧ ନାହିଁ",
+        noMatchingRecipients: "କୌଣସି ମେଳ ଖାଉଥିବା ଗ୍ରହୀତା ମିଳିଲା ନାହିଁ"
+      },
+      sendAmount: {
+        title: "ପରିମାଣ ପ୍ରବେଶ କରନ୍ତୁ",
+        subtitle: "ଆପଣ ପଠାଇବାକୁ ଚାହୁଁଥିବା ପରିମାଣ ପ୍ରବେଶ କରନ୍ତୁ",
+        currencies: {
+          usd: "ଆମେରିକୀୟ ଡଲାର",
+          eur: "ୟୁରୋ",
+          gbp: "ବ୍ରିଟିଶ୍ ପାଉଣ୍ଡ",
+          jpy: "ଜାପାନୀ ୟେନ",
+          aud: "ଅଷ୍ଟ୍ରେଲିଆନ୍ ଡଲାର"
+        }
+      },
+      selectAccount: {
+        title: "ଖାତା ଚୟନ କରନ୍ତୁ",
+        chooseAccount: "ଖାତା ଚୟନ କରନ୍ତୁ",
+        noCards: "କୌଣସି କାର୍ଡ ଉପଲବ୍ଧ ନାହିଁ। ଦୟାକରି ପ୍ରଥମେ ଏକ କାର୍ଡ ଯୋଡନ୍ତୁ।",
+        payButton: "ଦେୟ ଦିଅନ୍ତୁ {{currency}} {{amount}}",
+        processing: "ପ୍ରକ୍ରିୟାକରଣ...",
+        cardTypes: {
+          visa: "ଭିଜା",
+          mastercard: "ମାଷ୍ଟରକାର୍ଡ",
+          amex: "ଆମେକ୍ସ",
+          other: "କାର୍ଡ"
+        },
+        cardNumber: "•••• •••• •••• {{lastFour}}",
+        cardDetails: "{{name}} • ସମାପ୍ତି {{expiry}}",
+        errors: {
+          notLoggedIn: "ଦେୟ ଦେବା ପାଇଁ ଆପଣଙ୍କୁ ଲଗ୍ ଇନ୍ ହୋଇଥିବା ଆବଶ୍ୟକ",
+          invalidAmount: "ଅବୈଧ ପରିମାଣ",
+          paymentFailed: "ଦେୟ ପ୍ରକ୍ରିୟାକରଣ ବିଫଳ ହେଲା"
+        }
+      },
+      purposeScreen: {
+        title: "ଉଦ୍ଦେଶ୍ୟ ଚୟନ କରନ୍ତୁ",
+        subtitle: "ଆପଣଙ୍କର ଦେୟର ଉଦ୍ଦେଶ୍ୟ ଚୟନ କରନ୍ତୁ",
+        purposes: {
+          personal: {
+            title: "ବ୍ୟକ୍ତିଗତ",
+            subtitle: "ସାଙ୍ଗମାନଙ୍କୁ ଏବଂ ପରିବାରକୁ ଦେୟ ଦିଅନ୍ତୁ"
+          },
+          business: {
+            title: "ବ୍ୟବସାୟ",
+            subtitle: "କର୍ମଚାରୀମାନଙ୍କୁ ଦେୟ ଦିଅନ୍ତୁ"
+          },
+          payment: {
+            title: "ଦେୟ",
+            subtitle: "ବିଲ୍ ପାଇଁ ଦେୟ ଦିଅନ୍ତୁ"
+          }
+        }
+      },
+      paymentCompleted: {
+        successMessage: "ଟ୍ରାନ୍ସାକ୍ସନ୍ ସମ୍ପୂର୍ଣ୍ଣ ହେଲା {{date}} ରେ {{time}}",
+        processing: "ଦେୟ ପ୍ରକ୍ରିୟାକରଣ...",
+        updating: "ଟ୍ରାନ୍ସାକ୍ସନ୍ ସମ୍ପୂର୍ଣ୍ଣ ହେଉଛି...",
+        paymentMethod: "ଦେୟ ପଦ୍ଧତି",
+        amount: "ପରିମାଣ",
+        purpose: "ଉଦ୍ଦେଶ୍ୟ",
+        backToHome: "ମୂଳପୃଷ୍ଠାକୁ ଫେରନ୍ତୁ",
+        anotherPayment: "ଅନ୍ୟ ଏକ ଦେୟ କରନ୍ତୁ",
+        thankYouMessage: "ଟଙ୍କା ପଠାଇବା ପାଇଁ ଆମ ଆପ୍ ବ୍ୟବହାର କରିଥିବାରୁ ଧନ୍ୟବାଦ। ଯଦି ଆପଣଙ୍କର କୌଣସି ପ୍ରଶ୍ନ କିମ୍ବା ଚିନ୍ତା ଅଛି, ଦୟାକରି",
+        contactUs: "ଆମ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ",
+        contactEmail: "support@yourapp.com",
+        errors: {
+          transactionFailed: "ଟ୍ରାନ୍ସାକ୍ସନ୍ ସମ୍ପୂର୍ଣ୍ଣ କରିବାରେ ବିଫଳ। ଦୟାକରି ପରେ ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।"
+        }
+      },
+      scanQr: {
+        title: "QR କୋଡ୍ ସ୍କାନ୍ କରନ୍ତୁ",
+        instructions: "ସ୍କାନ୍ କରିବା ପାଇଁ QR କୋଡ୍ କୁ ଫ୍ରେମ୍ ଭିତରେ ସଜାଡନ୍ତୁ",
+        requestingPermission: "କ୍ୟାମେରା ଅନୁମତି ପାଇଁ ଅନୁରୋଧ...",
+        permissionRequired: "QR କୋଡ୍ ସ୍କାନ୍ କରିବା ପାଇଁ କ୍ୟାମେରା ଅନୁମତି ଆବଶ୍ୟକ।",
+        enableCameraAccess: "ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ସେଟିଂସ୍ ରେ କ୍ୟାମେରା ପ୍ରବେଶ ସକ୍ଷମ କରନ୍ତୁ।",
+        openSettings: "ସେଟିଂସ୍ ଖୋଲନ୍ତୁ",
+        tryAgain: "ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ",
+        troubleshooting: "ସ୍କାନ୍ କରିବାରେ ସମସ୍ୟା ହେଉଛି? ନିକଟରେ ଯାଇ କିମ୍ବା କୋଣ ସଂଯୋଜନ କରି ଚେଷ୍ଟା କରନ୍ତୁ।",
+        invalidQr: {
+          title: "ଅବୈଧ QR କୋଡ୍",
+          message: "ସ୍କାନ୍ କରାଯାଇଥିବା QR କୋଡ୍ ରେ ବୈଧ ଗ୍ରହୀତା ସୂଚନା ନାହିଁ।"
+        },
+        permission: {
+          title: "କ୍ୟାମେରା ଅନୁମତି",
+          message: "QR କୋଡ୍ ସ୍କାନ୍ କରିବା ପାଇଁ ଏହି ଆପ୍ କୁ ଆପଣଙ୍କ କ୍ୟାମେରା ପ୍ରବେଶ ଆବଶ୍ୟକ।"
+        },
+        defaultRecipient: {
+          name: "QR ଗ୍ରହୀତା"
+        }
+      },
+      profile: {
+        title: "ମୋର ପ୍ରୋଫାଇଲ୍",
+        options: {
+          darkMode: "ଡାର୍କ ମୋଡ୍",
+          lightMode: "ଲାଇଟ୍ ମୋଡ୍",
+          personalInfo: "ବ୍ୟକ୍ତିଗତ ସୂଚନା",
+          bankCards: "ବ୍ୟାଙ୍କ ଏବଂ କାର୍ଡଗୁଡିକ",
+          transactions: "ଟ୍ରାନ୍ସାକ୍ସନ୍‌ଗୁଡିକ",
+          settings: "ସେଟିଂସ୍",
+          dataPrivacy: "ଡାଟା ଗୋପନୀୟତା",
+          logout: "ଲଗ୍ ଆଉଟ୍"
+        }
+      },
+      sendRequest: {
+        title: "ଅନୁରୋଧ ନିଶ୍ଚିତ କରନ୍ତୁ",
+        subtitle: "ଆପଣଙ୍କର ଅନୁରୋଧ ବିବରଣୀ ସମୀକ୍ଷା କରନ୍ତୁ",
+        amountLabel: "ପରିମାଣ",
+        purposeLabel: "ଉଦ୍ଦେଶ୍ୟ",
+        requestButton: "{{amount}} {{currency}} ର ଅନୁରୋଧ କରନ୍ତୁ"
+      },
+      requestRecipient: {
+        title: "ଗ୍ରହୀତା ଚୟନ କରନ୍ତୁ",
+        subtitle: "ଦୟାକରି ଟଙ୍କା ମାଗିବା ପାଇଁ ଗ୍ରହୀତା ଚୟନ କରନ୍ତୁ",
+        searchPlaceholder: "ଗ୍ରହୀତା ଖୋଜନ୍ତୁ",
+        mostRecent: "ସଦ୍ୟତମ",
+        noRecipients: "କୌଣସି ଗ୍ରହୀତା ଉପଲବ୍ଧ ନାହିଁ",
+        noMatches: "କୌଣସି ମେଳ ଖାଉଥିବା ଗ୍ରହୀତା ମିଳିଲା ନାହିଁ"
+      },
+      requestPurpose: {
+        title: "ଉଦ୍ଦେଶ୍ୟ ଚୟନ କରନ୍ତୁ",
+        subtitle: "ଆପଣଙ୍କର ଅନୁରୋଧର ଉଦ୍ଦେଶ୍ୟ ଚୟନ କରନ୍ତୁ",
+        purposes: {
+          personal: {
+            title: "ବ୍ୟକ୍ତିଗତ",
+            subtitle: "ସାଙ୍ଗମାନଙ୍କ ଏବଂ ପରିବାରଠାରୁ ଅନୁରୋଧ କରନ୍ତୁ"
+          },
+          business: {
+            title: "ବ୍ୟବସାୟ",
+            subtitle: "କର୍ମଚାରୀ କିମ୍ବା ଗ୍ରାହକଙ୍କଠାରୁ ଅନୁରୋଧ କରନ୍ତୁ"
+          }
+        }
+      },
+      requestAmount: {
+        title: "ପରିମାଣ ପ୍ରବେଶ କରନ୍ତୁ",
+        subtitle: "ଆପଣ ମାଗିବାକୁ ଚାହୁଁଥିବା ପରିମାଣ ପ୍ରବେଶ କରନ୍ତୁ"
+      },
+      currencies: {
+        usd: "ଆମେରିକୀୟ ଡଲାର",
+        eur: "ୟୁରୋ",
+        gbp: "ବ୍ରିଟିଶ୍ ପାଉଣ୍ଡ",
+        jpy: "ଜାପାନୀ ୟେନ",
+        aud: "ଅଷ୍ଟ୍ରେଲିଆନ୍ ଡଲାର"
+      },
+      months: {
+        january: "ଜାନୁଆରୀ",
+        february: "ଫେବୃଆରୀ",
+        march: "ମାର୍ଚ୍ଚ",
+        april: "ଅପ୍ରେଲ",
+        may: "ମଇ",
+        june: "ଜୁନ",
+        july: "ଜୁଲାଇ",
+        august: "ଅଗଷ୍ଟ",
+        september: "ସେପ୍ଟେମ୍ବର",
+        october: "ଅକ୍ଟୋବର",
+        november: "ନଭେମ୍ବର",
+        december: "ଡିସେମ୍ବର"
+      },
+      spending: {
+        tabs: {
+          spending: "ଖର୍ଚ୍ଚ",
+          income: "ଆୟ",
+          bills: "ବିଲ୍‌ଗୁଡିକ",
+          savings: "ସଞ୍ଚୟ"
+        },
+        totalSpend: "ସର୍ବମୋଟ ଖର୍ଚ୍ଚ",
+        totalIncome: "ସର୍ବମୋଟ ଆୟ",
+        totalBills: "ସର୍ବମୋଟ ବିଲ୍‌",
+        totalSavings: "ସର୍ବମୋଟ ସଞ୍ଚୟ",
+        availableBalance: "ଉପଲବ୍ଧ ବାକି",
+        list: "ତାଲିକା"
+      },
+      qrCode: {
+        requestPayment: "ଦେୟ ଅନୁରୋଧ କରନ୍ତୁ",
+        shareToReceive: "ଗ୍ରହଣ କରିବା ପାଇଁ ଅଂଶୀଦାର କରନ୍ତୁ"
       }
       
 };

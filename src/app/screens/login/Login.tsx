@@ -42,7 +42,7 @@ const Login = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
-  const { t } = useTranslation(); // Hook for translations
+  const { t } = useTranslation(); 
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");

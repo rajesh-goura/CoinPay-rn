@@ -81,7 +81,7 @@ export const logout = createAsyncThunk(
     try {
       await auth().signOut();
       await SecureStore.deleteItemAsync('userToken');
-      // Note: We don't clear hasCompletedCardSetup here so it persists between sessions
+      
     } catch (error) {
       throw new Error('Logout failed');
     }
@@ -130,7 +130,7 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.token = null;
         state.isLoading = false;
-        // Note: We keep hasCompletedCardSetup even after logout
+        
       })
       .addCase(logout.rejected, (state) => {
         state.isLoading = false;

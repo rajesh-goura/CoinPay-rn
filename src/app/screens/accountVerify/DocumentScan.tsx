@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 12,
     overflow: "hidden",
-    marginBottom: 40, // Added space below camera
+    marginBottom: 40, 
   },
   cameraOverlay: {
     flex: 1,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   bottomSection: {
-    marginTop: "auto", // Pushes to bottom
+    marginTop: "auto", 
     paddingBottom: 20,
   },
   statusContainer: {
