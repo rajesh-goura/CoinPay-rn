@@ -1,6 +1,6 @@
 // Example SettingsScreen.tsx
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text , StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import LanguageSwitcher from '../../components/LanguageSwitcher';
@@ -11,8 +11,8 @@ const SettingsScreen = () => {
   const { colors } = useTheme();
 
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: colors.background }}>
-      <Text style={{ fontSize: 18, color: colors.text, marginBottom: 20 }}>
+    <View style={styles.settings}>
+      <Text style={{ fontSize: 18, color: colors.textPrimary, marginBottom: 20 }}>
         {t('settings.language')}
       </Text>
       <LanguageSwitcher />
@@ -21,3 +21,12 @@ const SettingsScreen = () => {
 };
 
 export default SettingsScreen;
+
+const styles = StyleSheet.create({
+  settings: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+});
