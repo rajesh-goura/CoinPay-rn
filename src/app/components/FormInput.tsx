@@ -43,7 +43,7 @@ const FormInput: React.FC<FormInputProps> = ({
           placeholderTextColor={colors.textTertiary}
           value={value}
           onChangeText={onChangeText}
-          {...props} // Spread any additional TextInput props
+          {...props} 
         />
       </View>
     </>

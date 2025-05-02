@@ -21,31 +21,42 @@ import PrimaryButton from "../../components/PrimaryButton";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+//libraries
+import { useTranslation } from "react-i18next";
 
+
+interface PurposeOption {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: any;
+  color: string;
+  iconComponent: React.ComponentType<any>;
+}
 
 const RequestPurpose = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
-  const { recipient} = route.params;
+  const { recipient } = route.params;
 
-  const purposes = [
+  const purposes: PurposeOption[] = [
     {
       id: "personal",
-      title: "Personal",
-      subtitle: "Pay to friends and family",
-      icon: "person" as any,
+      title: t("requestPurpose.purposes.personal.title"),
+      subtitle: t("requestPurpose.purposes.personal.subtitle"),
+      icon: "person",
       color: "#007AFF",
       iconComponent: Ionicons,
     },
     {
       id: "business",
-      title: "Business",
-      subtitle: "Pay to employees",
+      title: t("requestPurpose.purposes.business.title"),
+      subtitle: t("requestPurpose.purposes.business.subtitle"),
       icon: "laptop",
       color: "#FFCC00",
       iconComponent: MaterialCommunityIcons,
     },
-    
   ];
 
   const handleContinue = () => {
@@ -66,10 +77,10 @@ const RequestPurpose = ({ navigation, route }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Select Purpose
+          {t("requestPurpose.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Choose the purpose of your payment
+          {t("requestPurpose.subtitle")}
         </Text>
       </View>
 
@@ -130,7 +141,7 @@ const RequestPurpose = ({ navigation, route }: any) => {
       {/* Continue Button */}
       <View style={styles.buttonContainer}>
         <PrimaryButton
-          text="Continue"
+          text={t("common.continue")}
           onPress={handleContinue}
           disabled={!selectedPurpose}
         />
@@ -138,6 +149,7 @@ const RequestPurpose = ({ navigation, route }: any) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

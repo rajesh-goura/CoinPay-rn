@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { CustomTheme } from "../../app/themes/Theme";
-import { useTheme } from "@react-navigation/native";
+
 
 export const SummaryCard = ({
   icon,

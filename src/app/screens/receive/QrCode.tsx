@@ -21,18 +21,21 @@ import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
 import { CustomTheme } from "../../themes/Theme";
 
-// Firebase Services
+// libraries
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 // Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
 
+
 const { width } = Dimensions.get("window");
 
 const QrCode = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [userData, setUserData] = React.useState<any>(null);
   const qrCodeRef = useRef<any>(null);
 
@@ -57,7 +60,7 @@ const QrCode = ({ navigation }: any) => {
     if (!userData) return "";
     return JSON.stringify({
       id: auth().currentUser?.uid,
-      name: userData.personalInfo?.fullName || "User",
+      name: userData.personalInfo?.fullName || t("common.user"),
       email: userData.personalInfo?.email || "",
       image: require("@/assets/images/user.png"),
     });
@@ -67,20 +70,19 @@ const QrCode = ({ navigation }: any) => {
     try {
       if (!qrCodeRef.current) return;
 
-      // Generate base64 image from QR code
       const qrCodeBase64 = await new Promise((resolve, reject) => {
         qrCodeRef.current?.toDataURL((data: string) => {
           resolve(data);
         });
       });
 
-      const message = `Send me money via ${userData?.personalInfo?.fullName}'s QR code`;
+      const message = t("qrCode.shareMessage", { name: userData?.personalInfo?.fullName || t("common.user") });
       const url = `data:image/png;base64,${qrCodeBase64}`;
       
       await Share.share({
         message: `${message}\n\n`,
         url: url,
-        title: 'Share QR Code',
+        title: t("qrCode.shareTitle"),
       });
     } catch (error) {
       console.error("Error sharing:", error);
@@ -91,7 +93,7 @@ const QrCode = ({ navigation }: any) => {
     navigate("SendAmount", {
       recipient: {
         id: auth().currentUser?.uid,
-        name: userData?.personalInfo?.fullName || "User",
+        name: userData?.personalInfo?.fullName || t("common.user"),
         email: userData?.personalInfo?.email || "",
         image: require("@/assets/images/user.png"),
       },
@@ -102,7 +104,7 @@ const QrCode = ({ navigation }: any) => {
   if (!userData) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
-        <Text style={{ color: colors.textPrimary }}>Loading...</Text>
+        <Text style={{ color: colors.textPrimary }}>{t("common.loading")}</Text>
       </View>
     );
   }
@@ -155,11 +157,11 @@ const QrCode = ({ navigation }: any) => {
       {/* Buttons Section */}
       <View style={styles.buttonsContainer}>
         <PrimaryButton
-          text="Request for Payment"
+          text={t("qrCode.requestPayment")}
           onPress={() => navigate("RequestRecipient")}
         />
         <SecondaryButton
-          text="Share to Receive Money"
+          text={t("qrCode.shareToReceive")}
           onPress={handleShare}
         />
       </View>

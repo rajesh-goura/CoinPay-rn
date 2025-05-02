@@ -38,7 +38,7 @@ const SampleScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>Sample Screen</Text>
+      
       
       <View style={styles.buttonContainer}>
         <PrimaryButton

@@ -1,3 +1,4 @@
+// Core Libraries
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -7,16 +8,24 @@ import {
   Text,
   View,
 } from "react-native";
+
+// Firebase Services
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+
+// Theming
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
+
+// Custom Components
 import SecondaryHeader from "../../components/SecondaryHeader";
-import { MonthDropdown } from "../../components/MonthDropdown";
-import { SummaryCard } from "../../components/SummaryCard";
-import { SpendingChart } from "../../components/SpendingChart";
-import { SpendingTabs } from "../../components/SpendingTabs";
-import { TransactionList } from "../../components/TransactionList";
+import {MonthDropdown} from "../../components/MonthDropdown";
+import {SummaryCard} from "../../components/SummaryCard";
+import {SpendingChart} from "../../components/SpendingChart";
+import {SpendingTabs} from "../../components/SpendingTabs";
+import {TransactionList} from "../../components/TransactionList";
+
+// Local Data
 import { sampleData } from "./TransactionData";
 
 const { width } = Dimensions.get("window");

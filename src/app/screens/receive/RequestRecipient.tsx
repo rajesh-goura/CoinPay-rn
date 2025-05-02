@@ -20,6 +20,7 @@ import {
 // Third-Party Libraries
 import { Ionicons } from "@expo/vector-icons";
 import firestore from '@react-native-firebase/firestore';
+import { useTranslation } from "react-i18next";
 
 // Navigation & Theming
 import { useTheme } from "@react-navigation/native";
@@ -28,6 +29,7 @@ import { CustomTheme } from "../../themes/Theme";
 
 // Custom Components
 import RoundButton from "../../components/RoundButton";
+
 
 interface Recipient {
   id: string;
@@ -39,6 +41,7 @@ interface Recipient {
 
 const RequestRecipient = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [recipients, setRecipients] = useState<Recipient[]>([]);
@@ -46,7 +49,6 @@ const RequestRecipient = ({ navigation }: any) => {
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
-    // Fetch users from Firestore with nested personalInfo.fullName
     const unsubscribe = firestore()
       .collection('users')
       .onSnapshot(querySnapshot => {
@@ -57,10 +59,10 @@ const RequestRecipient = ({ navigation }: any) => {
           
           users.push({
             id: documentSnapshot.id,
-            name: personalInfo.fullName || 'No name',
+            name: personalInfo.fullName || t('common.noName'),
             email: personalInfo.email || '',
-            amount: -100, // Default amount or remove if not needed
-            image: require("@/assets/images/user.png") // Default image
+            amount: -100,
+            image: require("@/assets/images/user.png")
           });
         });
         setRecipients(users);
@@ -102,9 +104,7 @@ const RequestRecipient = ({ navigation }: any) => {
           <Text style={[styles.recipientName, { color: colors.textPrimary }]}>
             {item.name}
           </Text>
-          <Text
-            style={[styles.recipientEmail, { color: colors.textSecondary }]}
-          >
+          <Text style={[styles.recipientEmail, { color: colors.textSecondary }]}>
             {item.email}
           </Text>
         </View>
@@ -121,6 +121,9 @@ const RequestRecipient = ({ navigation }: any) => {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: colors.backgroundinApp }]}>
         <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={{ color: colors.textPrimary, marginTop: 16 }}>
+          {t('common.loading')}
+        </Text>
       </View>
     );
   }
@@ -136,10 +139,10 @@ const RequestRecipient = ({ navigation }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Choose Recipient
+          {t('requestRecipient.title')}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Please select your recipient to request money from
+          {t('requestRecipient.subtitle')}
         </Text>
       </View>
 
@@ -173,7 +176,7 @@ const RequestRecipient = ({ navigation }: any) => {
               style={styles.searchIcon}
             />
             <TextInput
-              placeholder="Search Recipient"
+              placeholder={t('requestRecipient.searchPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
               value={searchQuery}
@@ -181,10 +184,8 @@ const RequestRecipient = ({ navigation }: any) => {
             />
           </View>
 
-          <Text
-            style={[styles.mostRecentText, { color: colors.textSecondary }]}
-          >
-            Most Recent
+          <Text style={[styles.mostRecentText, { color: colors.textSecondary }]}>
+            {t('requestRecipient.mostRecent')}
           </Text>
 
           {filteredRecipients.length > 0 ? (
@@ -198,7 +199,9 @@ const RequestRecipient = ({ navigation }: any) => {
           ) : (
             <View style={styles.noResultsContainer}>
               <Text style={{ color: colors.textSecondary }}>
-                {recipients.length === 0 ? "No recipients available" : "No matching recipients found"}
+                {recipients.length === 0 
+                  ? t('requestRecipient.noRecipients') 
+                  : t('requestRecipient.noMatches')}
               </Text>
             </View>
           )}

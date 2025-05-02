@@ -25,16 +25,18 @@ import PrimaryButton from "../../components/PrimaryButton";
 
 // Theme
 import { CustomTheme } from "../../themes/Theme";
+//libraries
+import { useTranslation } from "react-i18next";
 
 
 const { height } = Dimensions.get("window");
 
 const SendRequest = ({ navigation, route }: any) => {
   const { colors } = useTheme() as CustomTheme;
+  const { t } = useTranslation();
   const { recipient, amount, currency, purpose } = route.params;
 
   const handleConfirmRequest = () => {
-    // Handle the request confirmation logic here
     navigate("MainApp", {
       recipient,
       amount,
@@ -45,7 +47,7 @@ const SendRequest = ({ navigation, route }: any) => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
-      {/* Header Section - Same as SendAmount */}
+      {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -54,10 +56,10 @@ const SendRequest = ({ navigation, route }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-          Confirm Request
+          {t("sendRequest.title")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
-          Review your request details
+          {t("sendRequest.subtitle")}
         </Text>
       </View>
 
@@ -96,7 +98,7 @@ const SendRequest = ({ navigation, route }: any) => {
             <View style={styles.detailsContainer}>
               <View style={styles.detailRow}>
                 <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-                  Amount
+                  {t("sendRequest.amountLabel")}
                 </Text>
                 <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
                   {currency} {amount}
@@ -106,7 +108,7 @@ const SendRequest = ({ navigation, route }: any) => {
               {purpose && (
                 <View style={styles.detailRow}>
                   <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
-                    Purpose
+                    {t("sendRequest.purposeLabel")}
                   </Text>
                   <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
                     {purpose}
@@ -121,7 +123,7 @@ const SendRequest = ({ navigation, route }: any) => {
       {/* Fixed Request Button at Bottom */}
       <View style={[styles.buttonContainer, { backgroundColor: colors.backgroundinApp }]}>
         <PrimaryButton
-          text={`Request ${amount} ${currency}`}
+          text={t("sendRequest.requestButton", { amount, currency })}
           onPress={handleConfirmRequest}
         />
       </View>
