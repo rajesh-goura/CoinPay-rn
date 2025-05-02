@@ -13,6 +13,7 @@ const en = {
       ok:"Ok",
       Loading: "Loading...",
       askLater:"Ask later",
+      loading:"Loading...",
       
     },
     onboarding: {
@@ -279,6 +280,9 @@ const en = {
         }, 
         
         
+      },
+      settings:{
+        language:"Choose your Language"
       },
       sendMoney: {
         noName: "No name",

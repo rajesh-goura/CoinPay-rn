@@ -30,7 +30,7 @@ const LanguageSwitcher = () => {
         >
           <Text style={[
             styles.text,
-            { color: currentLanguage === lang.code ? '#fff' : colors.text }
+            { color: currentLanguage === lang.code ? '#fff' : colors.textPrimary }
           ]}>
             {lang.name}
           </Text>
