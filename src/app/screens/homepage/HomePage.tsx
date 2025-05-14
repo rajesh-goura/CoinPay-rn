@@ -1,5 +1,4 @@
-// Core React
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 // React Native Components
 import {
@@ -25,90 +24,32 @@ import { CustomTheme } from "../../themes/Theme";
 // Internationalization
 import { useTranslation } from "react-i18next";
 
-// Firebase Services
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
-
 // Redux Toolkit
 import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { fetchUserData } from "../../redux/slices/userDataSlice";
 
 // Custom Components
 import ActivityIndicator from "../../components/ActivityIndicator";
-
 
 const { height } = Dimensions.get("window");
 
 const HomePage = () => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
-  const [balance, setBalance] = useState<number | null>(null);
-  const [transactionTotals, setTransactionTotals] = useState({
-    spending: 0,
-    income: 0,
-    bills: 0,
-    savings: 0
-  });
-  
-  const { isLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  
+  // Get data from Redux store
+  const { 
+    balance, 
+    transactionTotals, 
+    isLoading: isUserDataLoading 
+  } = useAppSelector((state) => state.userData);
+  
+  const { isLoading: isAuthLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    const user = auth().currentUser;
-    
-    if (!user) {
-      return;
-    }
-  
-    const unsubscribe = firestore()
-      .collection('users')
-      .doc(user.uid)
-      .onSnapshot(async (documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          const userData = documentSnapshot.data();
-          setBalance(userData?.balance || 0);
-          
-          // Calculate transaction totals
-          const sentTransactions = userData?.sent || [];
-          const receivedTransactions = userData?.received || [];
-          
-          // Calculate totals (simplified approach)
-          const spendingTotal = sentTransactions.reduce(
-            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
-          
-          const incomeTotal = receivedTransactions.reduce(
-            (sum: number, tx: { amount: number }) => sum + Math.abs(tx.amount), 0);
-  
-    
-          const billsTotal = 7500;
-          const savingsTotal = 33000;
-  
-          console.log("Calculated totals:", {
-            spending: spendingTotal,
-            income: incomeTotal,
-            bills: billsTotal,
-            savings: savingsTotal
-          });
-  
-          setTransactionTotals({
-            spending: spendingTotal,
-            income: incomeTotal,
-            bills: billsTotal,
-            savings: savingsTotal
-          });
-        } else {
-          setBalance(0);
-          setTransactionTotals({
-            spending: 0,
-            income: 0,
-            bills: 0,
-            savings: 0
-          });
-        }
-      });
-  
-    return () => unsubscribe();
-  }, []);
-
+    dispatch(fetchUserData());
+  }, [dispatch]);
 
   const formatBalance = (amount: number | null) => {
     if (amount === null) return "$0";
@@ -163,13 +104,14 @@ const HomePage = () => {
     },
   ];
 
-  if (isLoading) {
+  if (isAuthLoading || isUserDataLoading) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundinApp, justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator/>
       </View>
     );
   }
+
 
   return (
     <View style={[styles.flexContainer,{backgroundColor: colors.backgroundinApp}]}>

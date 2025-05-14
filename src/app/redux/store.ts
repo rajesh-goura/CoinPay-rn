@@ -8,6 +8,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import themeReducer from './slices/themeSlice';
 import authReducer from './slices/authSlice';
 import cardsReducer from './slices/cardSlice';
+import userDataReducer from "./slices/userDataSlice"; 
 
 const persistConfig = {
   key: 'root',
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   auth: authReducer,
   cards: cardsReducer, 
+  userData: userDataReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

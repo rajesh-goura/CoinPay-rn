@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-
-// React Native components
 import {
   Alert,
   KeyboardAvoidingView,
@@ -12,19 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Navigation
 import { useNavigation, useTheme } from "@react-navigation/native";
-
-// External libraries
 import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
-
-// Internal components
 import { CustomTheme } from "../../themes/Theme";
-
+import { useAppDispatch } from "../../redux/store";
+import { updateBalance, fetchUserData } from "../../redux/slices/userDataSlice";
 
 const UpdateMoney = () => {
   const { colors } = useTheme() as CustomTheme;
@@ -32,6 +23,7 @@ const UpdateMoney = () => {
   const { t } = useTranslation();
   const [amount, setAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleUpdateBalance = async (operation: "add" | "deduct") => {
     if (!amount) {
@@ -46,37 +38,30 @@ const UpdateMoney = () => {
     }
 
     setIsSubmitting(true);
-
     try {
-      const user = auth().currentUser;
-
-      if (!user) {
-        Alert.alert(t("updateMoney.error.title"), t("updateMoney.error.userNotLoggedIn"));
-        return;
-      }
-
-      await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .update({
-          balance: firestore.FieldValue.increment(
-            operation === "add" ? numericAmount : -numericAmount
-          ),
-          updatedAt: firestore.FieldValue.serverTimestamp(),
-        });
-
-      Alert.alert(
-        t("updateMoney.success.title"),
-        operation === "add"
-          ? t("updateMoney.success.added", { amount: numericAmount.toFixed(2) })
-          : t("updateMoney.success.deducted", { amount: numericAmount.toFixed(2) }),
-        [
-          {
-            text: t("common.ok"),
-            onPress: () => navigation.goBack(),
-          },
-        ]
+      const resultAction = await dispatch(
+        updateBalance({ operation, amount: numericAmount })
       );
+
+      if (updateBalance.fulfilled.match(resultAction)) {
+        // Refresh user data after successful update
+        await dispatch(fetchUserData());
+        
+        Alert.alert(
+          t("updateMoney.success.title"),
+          operation === "add"
+            ? t("updateMoney.success.added", { amount: numericAmount.toFixed(2) })
+            : t("updateMoney.success.deducted", { amount: numericAmount.toFixed(2) }),
+          [
+            {
+              text: t("common.ok"),
+              onPress: () => navigation.goBack(),
+            },
+          ]
+        );
+      } else if (updateBalance.rejected.match(resultAction)) {
+        Alert.alert(t("updateMoney.error.title"), resultAction.payload as string);
+      }
     } catch (error) {
       console.error("Error updating balance:", error);
       Alert.alert(t("updateMoney.error.title"), t("updateMoney.error.general"));
