@@ -24,9 +24,9 @@ export default SettingsScreen;
 
 const styles = StyleSheet.create({
   settings: {
-    flex: 1,
+    flex:1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems:'flex-start',
     padding: 20,
   },
 });

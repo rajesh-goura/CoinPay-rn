@@ -14,6 +14,9 @@ import MainNavigator from "./app/index";
 
 // Localization
 import "./app/localization/i18n";
+//env
+import 'dotenv/config'; 
+
 
 // Ignore all Firebase deprecation warnings
 LogBox.ignoreLogs([
