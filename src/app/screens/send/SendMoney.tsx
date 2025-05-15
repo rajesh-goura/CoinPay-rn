@@ -1,7 +1,5 @@
-// Core Libraries
+// src/screens/SendMoney/SendMoney.tsx
 import React, { useEffect, useState } from "react";
-
-// React Native Components (alphabetical)
 import {
   ActivityIndicator,
   Dimensions,
@@ -16,19 +14,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Third-Party Libraries
 import { Ionicons } from "@expo/vector-icons";
-import firestore from "@react-native-firebase/firestore";
 import { useTranslation } from "react-i18next";
-
-// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
-
-// Custom Components
 import RoundButton from "../../components/RoundButton";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { fetchRecipients, setSearchQuery } from "../../redux/slices/sendMoneySlice";
+
 
 interface Recipient {
   id: string;
@@ -41,36 +35,22 @@ interface Recipient {
 const SendMoney = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useAppDispatch();
+  const {
+    recipients,
+    loading,
+    searchQuery,
+  } = useAppSelector((state) => state.sendMoney);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [recipients, setRecipients] = useState<Recipient[]>([]);
-  const [loading, setLoading] = useState(true);
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('users')
-      .onSnapshot(querySnapshot => {
-        const users: Recipient[] = [];
-        querySnapshot.forEach(documentSnapshot => {
-          const userData = documentSnapshot.data();
-          const personalInfo = userData.personalInfo || {};
-          
-          users.push({
-            id: documentSnapshot.id,
-            name: personalInfo.fullName || t('sendMoney.noName'),
-            email: personalInfo.email || '',
-            amount: -100,
-            image: require("@/assets/images/user.png")
-          });
-        });
-        setRecipients(users);
-        setLoading(false);
-      }, error => {
-        console.error("Error fetching users:", error);
-        setLoading(false);
-      });
-
+    const setup = async () => {
+      await dispatch(fetchRecipients());
+    };
+  
+    setup();
+  
     const keyboardDidShowListener = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       () => setKeyboardVisible(true)
@@ -79,18 +59,22 @@ const SendMoney = ({ navigation }: any) => {
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => setKeyboardVisible(false)
     );
-
+  
     return () => {
-      unsubscribe();
+      
       keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+     
     };
-  }, []);
+  }, [dispatch]);
 
   const filteredRecipients = recipients.filter((recipient) =>
     recipient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     recipient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleSearchChange = (text: string) => {
+    dispatch(setSearchQuery(text));
+  };
 
   const renderRecipientItem = ({ item }: { item: Recipient }) => (
     <TouchableOpacity
@@ -137,7 +121,7 @@ const SendMoney = ({ navigation }: any) => {
           <Ionicons name="arrow-back" size={28} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={[styles.heading, { color: colors.textPrimary }]}>
-        {t("sendMoney.chooseRecipient")}
+          {t("sendMoney.chooseRecipient")}
         </Text>
         <Text style={[styles.subtext, { color: colors.textSecondary }]}>
           {t('sendMoney.selectRecipientMessage')}
@@ -178,7 +162,7 @@ const SendMoney = ({ navigation }: any) => {
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={handleSearchChange}
             />
           </View>
 
@@ -221,6 +205,10 @@ const SendMoney = ({ navigation }: any) => {
     </View>
   );
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {

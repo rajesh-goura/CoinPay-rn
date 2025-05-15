@@ -1,5 +1,5 @@
 // Core React
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 // React Native Components
 import {
@@ -21,47 +21,40 @@ import { useTheme } from "@react-navigation/native";
 import { navigate } from "../../navigation/navigationService";
 import { CustomTheme } from "../../themes/Theme";
 
-// libraries
+// Libraries
 import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 import { useTranslation } from "react-i18next";
+import { fetchUserData } from "../../redux/slices/userSlice";
+import { RootState } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 // Custom Components
 import PrimaryButton from "../../components/PrimaryButton";
 import SecondaryButton from "../../components/SecondaryButton";
-
 
 const { width } = Dimensions.get("window");
 
 const QrCode = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
-  const [userData, setUserData] = React.useState<any>(null);
   const qrCodeRef = useRef<any>(null);
+  const dispatch = useAppDispatch();
 
-  React.useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = auth().currentUser;
-      if (currentUser) {
-        const userDoc = await firestore()
-          .collection("users")
-          .doc(currentUser.uid)
-          .get();
-        if (userDoc.exists) {
-          setUserData(userDoc.data());
-        }
-      }
-    };
+  // Get user data from Redux store
+  const { data: userData, loading, error } = useAppSelector((state: RootState) => state.user);
+  const fullName = userData?.fullName;
+  const email = userData?.email;
 
-    fetchUserData();
-  }, []);
+  // Fetch user data when component mounts
+  useEffect(() => {
+    dispatch(fetchUserData());
+  }, [dispatch]);
 
   const generateQrData = () => {
-    if (!userData) return "";
     return JSON.stringify({
       id: auth().currentUser?.uid,
-      name: userData.personalInfo?.fullName || t("common.user"),
-      email: userData.personalInfo?.email || "",
+      name: fullName || t("common.user"),
+      email: email || "",
       image: require("@/assets/images/user.png"),
     });
   };
@@ -76,7 +69,7 @@ const QrCode = ({ navigation }: any) => {
         });
       });
 
-      const message = t("qrCode.shareMessage", { name: userData?.personalInfo?.fullName || t("common.user") });
+      const message = t("qrCode.shareMessage", { name: fullName || t("common.user") });
       const url = `data:image/png;base64,${qrCodeBase64}`;
       
       await Share.share({
@@ -90,18 +83,19 @@ const QrCode = ({ navigation }: any) => {
   };
 
   const handleRequestPayment = () => {
-    navigate("SendAmount", {
+    navigate("RequestRecipient", {
       recipient: {
         id: auth().currentUser?.uid,
-        name: userData?.personalInfo?.fullName || t("common.user"),
-        email: userData?.personalInfo?.email || "",
+        name: fullName || t("common.user"),
+        email: email || "",
         image: require("@/assets/images/user.png"),
       },
       isRequest: true,
     });
   };
 
-  if (!userData) {
+  // Loading state
+  if (loading) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <Text style={{ color: colors.textPrimary }}>{t("common.loading")}</Text>
@@ -109,6 +103,16 @@ const QrCode = ({ navigation }: any) => {
     );
   }
 
+  // Error state
+  if (error) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
+        <Text style={{ color: colors.textPrimary }}>{error}</Text>
+      </View>
+    );
+  }
+
+  // Main render
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
       {/* Header Section */}
@@ -135,10 +139,10 @@ const QrCode = ({ navigation }: any) => {
             style={styles.userImage}
           />
           <Text style={[styles.userName, { color: colors.textPrimary }]}>
-            {userData.personalInfo?.fullName}
+            {fullName}
           </Text>
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
-            {userData.personalInfo?.email}
+            {email}
           </Text>
 
           {/* QR Code with ref */}
@@ -158,7 +162,7 @@ const QrCode = ({ navigation }: any) => {
       <View style={styles.buttonsContainer}>
         <PrimaryButton
           text={t("qrCode.requestPayment")}
-          onPress={() => navigate("RequestRecipient")}
+          onPress={handleRequestPayment}
         />
         <SecondaryButton
           text={t("qrCode.shareToReceive")}

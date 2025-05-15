@@ -11,33 +11,34 @@ import {
 import { Image } from "expo-image";
 import { useTheme } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../redux/store";
 import { toggleTheme, setTheme } from "../../redux/slices/themeSlice";
+import { fetchUserData } from "../../redux/slices/userSlice";
 import SecondaryHeader from "../../components/SecondaryHeader";
 import { CustomTheme } from "../../themes/Theme";
 import { navigate } from "../../navigation/navigationService";
 import { useTranslation } from "react-i18next";
+import { RootState } from "../../redux/store";
 
 const ProfileScreen = () => {
-  type ThemeState = {
-    mode: "light" | "dark";
-    systemEnabled: boolean;
-  };
-
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const themeMode = useSelector(
-    (state: { theme: ThemeState }) => state.theme.mode
-  );
-  const systemEnabled = useSelector(
-    (state: { theme: ThemeState }) => state.theme.systemEnabled
-  );
+  const dispatch = useAppDispatch();
+  
+  // Theme selectors
+  const themeMode = useSelector((state: RootState) => state.theme.mode);
+  const systemEnabled = useSelector((state: RootState) => state.theme.systemEnabled);
+  
+  // User data selectors
+  
+  const userLoading = useSelector((state: RootState) => state.user.loading);
+  const userError = useSelector((state: RootState) => state.user.error);
+  const fullName = useSelector((state: RootState) => state.user.data?.fullName);
+  const email = useSelector((state: RootState) => state.user.data?.email);
 
-  const [userData, setUserData] = useState<any>(null);
+
   const iconColorAnim = useRef(
     new Animated.Value(themeMode === "dark" ? 1 : 0)
   ).current;
@@ -46,21 +47,8 @@ const ProfileScreen = () => {
   ).current;
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = auth().currentUser;
-      if (currentUser) {
-        const userDoc = await firestore()
-          .collection("users")
-          .doc(currentUser.uid)
-          .get();
-        if (userDoc.exists) {
-          setUserData(userDoc.data());
-        }
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    dispatch(fetchUserData());
+  }, [dispatch]);
 
   useEffect(() => {
     // Animate when theme changes
@@ -151,7 +139,7 @@ const ProfileScreen = () => {
     );
   };
 
-  if (!userData) {
+  if (userLoading) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
         <SecondaryHeader
@@ -160,6 +148,20 @@ const ProfileScreen = () => {
         />
         <Text style={{ color: colors.textPrimary, textAlign: "center" }}>
           {t("common.loading")}
+        </Text>
+      </View>
+    );
+  }
+
+  if (userError) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.backgroundinApp }]}>
+        <SecondaryHeader
+          title={t("profile.title")}
+          onBackPress={() => navigation.goBack()}
+        />
+        <Text style={{ color: colors.textPrimary, textAlign: "center" }}>
+          {t("common.error")}: {userError}
         </Text>
       </View>
     );
@@ -198,10 +200,10 @@ const ProfileScreen = () => {
             contentFit="cover"
           />
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
-            {userData.personalInfo?.fullName}
+          {fullName}
           </Text>
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
-            {userData.personalInfo?.email}
+            {email}
           </Text>
         </View>
 
@@ -277,7 +279,6 @@ const ProfileScreen = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

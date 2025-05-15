@@ -1,7 +1,5 @@
-// Core React
-import React, { useState, useEffect } from "react";
-
-// React Native Components
+// src/screens/RequestRecipient/RequestRecipient.tsx
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -16,19 +14,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Third-Party Libraries
 import { Ionicons } from "@expo/vector-icons";
-import firestore from '@react-native-firebase/firestore';
 import { useTranslation } from "react-i18next";
-
-// Navigation & Theming
 import { useTheme } from "@react-navigation/native";
-import { navigate } from "../../navigation/navigationService";
 import { CustomTheme } from "../../themes/Theme";
-
-// Custom Components
+import { navigate } from "../../navigation/navigationService";
 import RoundButton from "../../components/RoundButton";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { fetchRecipients, setSearchQuery } from "../../redux/slices/sendMoneySlice";
 
 
 interface Recipient {
@@ -42,35 +35,23 @@ interface Recipient {
 const RequestRecipient = ({ navigation }: any) => {
   const { colors } = useTheme() as CustomTheme;
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState("");
+  const dispatch = useAppDispatch();
+  const {
+    recipients,
+    loading,
+    searchQuery,
+  } = useAppSelector((state) => state.sendMoney);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [recipients, setRecipients] = useState<Recipient[]>([]);
-  const [loading, setLoading] = useState(true);
   const screenHeight = Dimensions.get("window").height;
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('users')
-      .onSnapshot(querySnapshot => {
-        const users: Recipient[] = [];
-        querySnapshot.forEach(documentSnapshot => {
-          const userData = documentSnapshot.data();
-          const personalInfo = userData.personalInfo || {};
-          
-          users.push({
-            id: documentSnapshot.id,
-            name: personalInfo.fullName || t('common.noName'),
-            email: personalInfo.email || '',
-            amount: -100,
-            image: require("@/assets/images/user.png")
-          });
-        });
-        setRecipients(users);
-        setLoading(false);
-      }, error => {
-        console.error("Error fetching users:", error);
-        setLoading(false);
-      });
+    let unsubscribeFromRecipients: () => void = () => {};
+
+    const setup = async () => {
+      await dispatch(fetchRecipients());
+    };
+
+    setup();
 
     const keyboardDidShowListener = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
@@ -82,11 +63,15 @@ const RequestRecipient = ({ navigation }: any) => {
     );
 
     return () => {
-      unsubscribe();
+      unsubscribeFromRecipients();
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-  }, []);
+  }, [dispatch]);
+
+  const handleSearchChange = (text: string) => {
+    dispatch(setSearchQuery(text));
+  };
 
   const filteredRecipients = recipients.filter((recipient) =>
     recipient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -180,7 +165,7 @@ const RequestRecipient = ({ navigation }: any) => {
               placeholderTextColor={colors.textSecondary}
               style={[styles.searchInput, { color: colors.textPrimary }]}
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={handleSearchChange}
             />
           </View>
 
@@ -221,6 +206,7 @@ const RequestRecipient = ({ navigation }: any) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
