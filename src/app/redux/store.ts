@@ -10,6 +10,7 @@ import authReducer from './slices/authSlice';
 import cardsReducer from './slices/cardSlice';
 import userDataReducer from "./slices/userDataSlice"; 
 import userReducer from "./slices/userSlice";
+import sendMoneyReducer from "./slices/sendMoneySlice";
 
 const persistConfig = {
   key: 'root',
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   cards: cardsReducer, 
   user: userReducer,
   userData: userDataReducer,
+  sendMoney: sendMoneyReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

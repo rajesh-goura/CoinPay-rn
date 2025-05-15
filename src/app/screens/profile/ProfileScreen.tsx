@@ -32,7 +32,7 @@ const ProfileScreen = () => {
   const systemEnabled = useSelector((state: RootState) => state.theme.systemEnabled);
   
   // User data selectors
-  const userData = useSelector((state: RootState) => state.user.data);
+  
   const userLoading = useSelector((state: RootState) => state.user.loading);
   const userError = useSelector((state: RootState) => state.user.error);
   const fullName = useSelector((state: RootState) => state.user.data?.fullName);
